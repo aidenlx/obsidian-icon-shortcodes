@@ -3,13 +3,15 @@
 import emoji from "node-emoji";
 
 export const RE_SHORTCODE = /:\+1:|:-1:|:[\w-]+:/g;
-const RE_UNDERSTORE = /_/g;
+export const RE_UNDERSTORE = /_/g;
 const RE_DASH = /-/g;
 
 import emojiByName from "node-emoji/lib/emoji.json";
 
-export const SCEmojiList = (
-  [...Object.entries(emojiByName)] as [key: string, emoji: string][]
+export type EmojiRec = [key: string, emoji: string];
+
+export const SCEmojiList: EmojiRec[] = (
+  [...Object.entries(emojiByName)] as EmojiRec[]
 ).map((entry) => {
   const [key, emoji] = entry;
   if (key.startsWith("man-")) {

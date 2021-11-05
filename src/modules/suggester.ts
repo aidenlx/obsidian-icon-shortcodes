@@ -4,17 +4,20 @@ import {
   EditorSuggest,
   EditorSuggestContext,
   EditorSuggestTriggerInfo,
-  TFile,
+  FuzzyMatch,
+  fuzzySearch,
+  prepareQuery,
+  sortSearchResults,
 } from "obsidian";
 
 import IconSC from "../isc-main";
-import { SCEmojiList } from "./emoji";
+import { EmojiRec, RE_UNDERSTORE, SCEmojiList } from "./emoji";
 
 const CLASS_ID = "alx-isc";
 
-type emojiRec = typeof SCEmojiList[0];
-
-export default class EmojiSuggester extends EditorSuggest<emojiRec> {
+export default class EmojiSuggester extends EditorSuggest<
+  FuzzyMatch<EmojiRec>
+> {
   constructor(public plugin: IconSC) {
     super(plugin.app);
     this.suggestEl.addClass(CLASS_ID);
@@ -42,18 +45,26 @@ export default class EmojiSuggester extends EditorSuggest<emojiRec> {
   }
 
   getSuggestions(context: EditorSuggestContext) {
-    return SCEmojiList.filter((p) => p[0].startsWith(context.query));
+    const query = prepareQuery(context.query);
+    let searchResults = SCEmojiList.reduce((results, rec) => {
+      const [key] = rec,
+        match = fuzzySearch(query, key);
+      match && results.push({ item: rec, match });
+      return results;
+    }, [] as FuzzyMatch<EmojiRec>[]);
+    sortSearchResults(searchResults);
+    return searchResults;
   }
 
-  renderSuggestion(suggestion: emojiRec, el: HTMLElement): void {
-    const [key, emoji] = suggestion;
-    el.createDiv({ cls: `shortcode` }).setText(key);
+  renderSuggestion(suggestion: FuzzyMatch<EmojiRec>, el: HTMLElement): void {
+    const [key, emoji] = suggestion.item;
+    el.createDiv({ cls: `shortcode` }).setText(key.replace(RE_UNDERSTORE, " "));
     el.createDiv({ cls: `emoji` }).setText(emoji);
   }
 
-  selectSuggestion(suggestion: emojiRec): void {
+  selectSuggestion(suggestion: FuzzyMatch<EmojiRec>): void {
     if (!this.context) return;
-    const [key, emoji] = suggestion;
+    const [key, emoji] = suggestion.item;
     this.context.editor.replaceRange(
       this.plugin.settings.code2emoji ? emoji : `:${key}: `,
       this.context.start,
