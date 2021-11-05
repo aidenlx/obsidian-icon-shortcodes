@@ -1,0 +1,10 @@
+{
+  "id": "obsidian-icon-shortcodes",
+  "name": "Icon Shortcodes",
+  "version": "0.0.0",
+  "minAppVersion": "0.12.17",
+  "description": "myplugindesc",
+  "author": "AidenLx",
+  "authorUrl": "https://github.com/aidenlx",
+  "isDesktopOnly": true
+}
