@@ -59,7 +59,7 @@ export const getIcon = (key: string): string | HTMLElement | null => {
     return createEl(
       "span",
       { cls: "alx-isc-icon" },
-      (el) => (el.innerHTML = src),
+      (el) => (el.innerHTML = src.trim()),
     );
   }
   return null;
