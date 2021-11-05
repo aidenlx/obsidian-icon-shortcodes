@@ -11,13 +11,11 @@ import {
 } from "obsidian";
 
 import IconSC from "../isc-main";
-import { EmojiRec, RE_UNDERSTORE, SCEmojiList } from "./emoji";
+import { getIcon, isEmoji, RE_UNDERSTORE, Shortcodes } from "./icon";
 
 const CLASS_ID = "alx-isc";
 
-export default class EmojiSuggester extends EditorSuggest<
-  FuzzyMatch<EmojiRec>
-> {
+export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<string>> {
   constructor(public plugin: IconSC) {
     super(plugin.app);
     this.suggestEl.addClass(CLASS_ID);
@@ -46,27 +44,33 @@ export default class EmojiSuggester extends EditorSuggest<
 
   getSuggestions(context: EditorSuggestContext) {
     const query = prepareQuery(context.query);
-    let searchResults = SCEmojiList.reduce((results, rec) => {
-      const [key] = rec,
-        match = fuzzySearch(query, key);
-      match && results.push({ item: rec, match });
+    let searchResults = Shortcodes.reduce((results, key) => {
+      const match = fuzzySearch(query, key);
+      match && results.push({ item: key, match });
       return results;
-    }, [] as FuzzyMatch<EmojiRec>[]);
+    }, [] as FuzzyMatch<string>[]);
     sortSearchResults(searchResults);
     return searchResults;
   }
 
-  renderSuggestion(suggestion: FuzzyMatch<EmojiRec>, el: HTMLElement): void {
-    const [key, emoji] = suggestion.item;
+  renderSuggestion(suggestion: FuzzyMatch<string>, el: HTMLElement): void {
+    const { item: key } = suggestion,
+      icon = getIcon(key);
+    if (!icon) throw new TypeError("Failed to get icon for key: " + key);
+
     el.createDiv({ cls: `shortcode` }).setText(key.replace(RE_UNDERSTORE, " "));
-    el.createDiv({ cls: `emoji` }).setText(emoji);
+    el.createDiv({ cls: `emoji` }, (el) =>
+      typeof icon === "string" ? (el.textContent = icon) : el.appendChild(icon),
+    );
   }
 
-  selectSuggestion(suggestion: FuzzyMatch<EmojiRec>): void {
+  selectSuggestion(suggestion: FuzzyMatch<string>): void {
     if (!this.context) return;
-    const [key, emoji] = suggestion.item;
+    const { item: key } = suggestion;
     this.context.editor.replaceRange(
-      this.plugin.settings.code2emoji ? emoji : `:${key}: `,
+      this.plugin.settings.code2emoji && isEmoji(key)
+        ? (getIcon(key) as string)
+        : `:${key}:`,
       this.context.start,
       this.context.end,
     );

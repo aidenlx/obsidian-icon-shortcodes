@@ -4,6 +4,7 @@
   "description": "myplugindesc",
   "main": "main.js",
   "scripts": {
+    "prepare": "node ./scripts/generate-icon.js",
     "dev": "cross-env BUILD=dev node esbuild.js",
     "build": "cross-env BUILD=production node esbuild.js",
     "prettier": "prettier --write 'src/**/*.+(ts|tsx|json|html|css)'",
@@ -14,6 +15,7 @@
   "author": "AidenLx",
   "license": "MIT",
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.4",
     "@release-it/bumper": "^3.0.1",
     "@release-it/conventional-changelog": "^3.3.0",
     "@types/json-schema": "^7.0.9",
@@ -33,11 +35,14 @@
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "fast-glob": "^3.2.7",
+    "fs-extra": "^10.0.0",
     "json": "^11.0.0",
     "node-emoji": "^1.11.0",
     "obsidian": "^0.12.17",
     "prettier": "^2.4.1",
     "release-it": "^14.11.6",
+    "remixicon": "^2.5.0",
     "tslib": "^2.3.1",
     "typescript": "^4.4.4"
   },

@@ -11,6 +11,7 @@ main.js
 *.js.map
 styles.css
 build
+src/icons.ts
 
 # saved config
 data.json

@@ -1,10 +1,21 @@
-.alx-isc {
-  &.suggestion-container .suggestion-item {
-    display: flex;
-    place-content: space-between;
+@id: .alx-isc;
 
-    .shortcode {
-      margin-right: 8px;
-    }
+@{id}.suggestion-container .suggestion-item {
+  display: flex;
+  place-content: space-between;
+
+  .shortcode {
+    margin-right: 8px;
+  }
+  span@{id}-icon > svg {
+    height: var(--font-normal);
+    width: var(--font-normal);
+  }
+}
+.markdown-preview-view {
+  span@{id}-icon > svg {
+    height: var(--preview-font-size);
+    width: var(--preview-font-size);
+    vertical-align: text-top;
   }
 }
