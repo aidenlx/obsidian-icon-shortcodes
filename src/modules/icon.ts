@@ -2,7 +2,9 @@
 
 import emoji from "node-emoji";
 
-import * as icons from "../icons";
+import { fa, ri } from "../icons/index";
+
+const icons = { ...fa, ...ri };
 
 export const RE_SHORTCODE = /:\+1:|:-1:|:[\w-]+:/g;
 export const RE_UNDERSTORE = /_/g;

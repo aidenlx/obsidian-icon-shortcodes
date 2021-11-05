@@ -1,31 +1,49 @@
-const { readFile, writeFile } = require("fs-extra");
+const { writeFile } = require("fs-extra");
 const { basename, dirname, join } = require("path");
 
 const fg = require("fast-glob");
 
-const importFontAwesome = async (faPath) =>
-  (await fg([join(faPath, "**/*.svg")])).map((path) => {
+const formatLines = (lines) => {
+  lines.unshift("/* eslint-disable simple-import-sort/exports */");
+  lines.push("");
+  return lines.join("\n");
+};
+
+/**
+ * @param {string} faPath
+ */
+const importFontAwesome = async (faPath) => {
+  const bundleName = "fa";
+  let lines = (await fg([join(faPath, "**/*.svg")])).map((path) => {
     const varName = basename(path).slice(0, -4).replace(/-/g, "_"),
       type = basename(dirname(path)),
       prefix = `fa_${type === "regular" ? "" : type + "_"}`,
       importPath = path.replace(/^node_modules\//, "");
     return `export { default as ${prefix}${varName} } from "${importPath}";`;
   });
-const importRemixicon = async (faPath) =>
-  (await fg([join(faPath, "**/*.svg")])).map((path) => {
+  await writeFile(join(iconsDir, bundleName + ".ts"), formatLines(lines));
+  return bundleName;
+};
+
+/**
+ * @param {string} faPath
+ */
+const importRemixicon = async (faPath) => {
+  const bundleName = "ri";
+  let lines = (await fg([join(faPath, "**/*.svg")])).map((path) => {
     const varName = basename(path).slice(0, -4).replace(/-/g, "_"),
       importPath = path.replace(/^node_modules\//, "");
     return `export { default as ri_${varName} } from "${importPath}";`;
   });
+  await writeFile(join(iconsDir, bundleName + ".ts"), formatLines(lines));
+  return bundleName;
+};
 
 (async (writeTo) => {
-  let lines = ["/* eslint-disable simple-import-sort/exports */"];
-  lines.push(
-    ...(await importFontAwesome(
-      "node_modules/@fortawesome/fontawesome-free/svgs",
-    )),
-    ...(await importRemixicon("node_modules/remixicon/icons")),
-  );
-  lines.push("");
-  await writeFile(writeTo, lines.join("\n"));
-})("src/icons.ts");
+  const all = await Promise.all([
+    importFontAwesome("node_modules/@fortawesome/fontawesome-free/svgs"),
+    importRemixicon("node_modules/remixicon/icons"),
+  ]);
+  let lines = all.map((name) => `export * as ${name} from "./${name}";`);
+  await writeFile(writeTo, formatLines(lines));
+})("src/icons/index.ts");
