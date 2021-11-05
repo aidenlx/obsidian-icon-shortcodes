@@ -12,6 +12,7 @@ import {
 
 import IconSC from "../isc-main";
 import {
+  getDisabledPackPrefix,
   getIcon,
   isEmoji,
   RE_PACK_PREFIX,
@@ -50,7 +51,10 @@ export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<string>> {
 
   getSuggestions(context: EditorSuggestContext) {
     const query = prepareQuery(context.query);
+    const disabledPack = getDisabledPackPrefix(this.plugin.settings.iconpack);
+
     let searchResults = Shortcodes.reduce((results, key) => {
+      if (disabledPack?.test(key)) return results;
       const match = fuzzySearch(query, key);
       match && results.push({ item: key, match });
       return results;

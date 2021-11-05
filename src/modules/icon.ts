@@ -9,6 +9,20 @@ export const RE_PACK_PREFIX = new RegExp(
   `^(?:${[...Object.keys(iconsets)].join("|")})_`,
 );
 
+/**
+ * @returns null if no icon pack is disabled
+ */
+export const getDisabledPackPrefix = (
+  setting: Record<IconPackNames, boolean>,
+): RegExp | null => {
+  const names = [...Object.keys(iconsets)].filter(
+    (name) => !setting[name as IconPackNames],
+  );
+  if (names.length === 0) return null;
+  else return new RegExp(`^(?:${names.join("|")})_`);
+};
+export type IconPackNames = keyof typeof iconsets;
+
 export const RE_SHORTCODE = /:\+1:|:-1:|:[\w-]+:/g;
 export const RE_UNDERSTORE_DASH = /[-_]/g;
 
