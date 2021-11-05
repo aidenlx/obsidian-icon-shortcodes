@@ -2,13 +2,15 @@
 
 import emoji from "node-emoji";
 
-import { fa, ri } from "../icons/index";
+import * as iconsets from "../icons/index";
 
-const icons = { ...fa, ...ri };
+const icons = { ...iconsets.fa, ...iconsets.ri };
+export const RE_PACK_PREFIX = new RegExp(
+  `^(?:${[...Object.keys(iconsets)].join("|")})_`,
+);
 
 export const RE_SHORTCODE = /:\+1:|:-1:|:[\w-]+:/g;
-export const RE_UNDERSTORE = /_/g;
-const RE_DASH = /-/g;
+export const RE_UNDERSTORE_DASH = /[-_]/g;
 
 import emojiByName from "node-emoji/lib/emoji.json";
 

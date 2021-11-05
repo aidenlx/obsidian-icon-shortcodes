@@ -11,7 +11,13 @@ import {
 } from "obsidian";
 
 import IconSC from "../isc-main";
-import { getIcon, isEmoji, RE_UNDERSTORE, Shortcodes } from "./icon";
+import {
+  getIcon,
+  isEmoji,
+  RE_PACK_PREFIX,
+  RE_UNDERSTORE_DASH,
+  Shortcodes,
+} from "./icon";
 
 const CLASS_ID = "alx-isc";
 
@@ -58,8 +64,10 @@ export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<string>> {
       icon = getIcon(key);
     if (!icon) throw new TypeError("Failed to get icon for key: " + key);
 
-    el.createDiv({ cls: `shortcode` }).setText(key.replace(RE_UNDERSTORE, " "));
-    el.createDiv({ cls: `emoji` }, (el) =>
+    el.createDiv({ cls: `shortcode` }).setText(
+      key.replace(RE_PACK_PREFIX, "").replace(RE_UNDERSTORE_DASH, " "),
+    );
+    el.createDiv({ cls: `icon` }, (el) =>
       typeof icon === "string" ? (el.textContent = icon) : el.appendChild(icon),
     );
   }
