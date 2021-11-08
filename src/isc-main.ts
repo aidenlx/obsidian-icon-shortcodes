@@ -53,11 +53,10 @@ export default class IconSC extends Plugin {
   async saveCustomIcons() {
     const { vault } = this.app,
       data = this.iconPacks.customIcons;
-    if (data)
-      await vault.writeJson(
-        normalizePath(this.manifest.dir + CUSTOM_ICON_PATH),
-        data,
-      );
+    await vault.writeJson(
+      normalizePath(this.manifest.dir + CUSTOM_ICON_PATH),
+      data ?? {},
+    );
   }
 
   async saveSettings() {

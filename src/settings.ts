@@ -161,9 +161,16 @@ export class IconSCSettingTab extends PluginSettingTab {
             ),
           ),
       )
-      // .addButton((btn) =>
-      //   btn.setIcon("trash").setTooltip("delete").setWarning(),
-      // )
+      .addButton((btn) =>
+        btn
+          .setIcon("trash")
+          .setTooltip("delete")
+          .setWarning()
+          .onClick(() => {
+            this.plugin.iconPacks.filter((k, v) => v.pack !== pack);
+            containerEl.removeChild(setting.settingEl);
+          }),
+      )
       // .addButton((btn) =>
       //   btn.setIcon("popup-open").setTooltip("manage icons").setCta(),
       // )

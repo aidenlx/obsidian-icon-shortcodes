@@ -127,6 +127,16 @@ export default class IconPacks extends Map<string, IconInfo> {
     }
     this.refresh();
   }
+  filter(predicate: (key: string, value: IconInfo) => boolean): void {
+    let changed = false;
+    for (const [key, value] of this.entries()) {
+      if (!predicate(key, value)) {
+        super.delete(key);
+        changed || (changed = true);
+      }
+    }
+    if (changed) this.refresh();
+  }
   set(id: string, info: IconInfo) {
     const result = super.set(id, info);
     this.refresh();
