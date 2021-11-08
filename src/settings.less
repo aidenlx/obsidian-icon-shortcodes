@@ -1,0 +1,18 @@
+.alx-isc-settings-custom-icon .dragover {
+  position: relative;
+
+  &:before {
+    content: "Drop SVG icon(s) here";
+    font-size: 16px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  background-color: lightgray;
+  border-radius: 5px;
+  & > * {
+    filter: blur(50px);
+  }
+}

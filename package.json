@@ -36,6 +36,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "fast-glob": "^3.2.7",
+    "file-select-dialog": "^1.5.4",
     "fs-extra": "^10.0.0",
     "json": "^11.0.0",
     "node-emoji": "github:rhysd/node-emoji#fix-gh-short-codes",

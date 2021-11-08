@@ -9,19 +9,32 @@ export type IconId = { id: string; pack: string };
 type IconInfo = { pack: string; svg: string };
 
 import * as iconsets from "../icons/index";
-import IconSC from "../isc-main";
-const builtInPacks = (Object.keys(iconsets) as string[]).concat(["emoji"]);
+export type BuiltInPacks = keyof typeof iconsets;
+
+export const builtInPacks = (Object.keys(iconsets) as string[]).concat([
+  "emoji",
+]);
 const RE_UNDERSTORE_DASH = /[-_]/g;
 
 const toEntries = <T extends Object>(obj: T) =>
   Object.entries(obj) as EntriesFromRecord<T>;
 
+import IconSC from "../isc-main";
+
+type exportIcons = {
+  [key: Parameters<typeof getIconInfoFromId>[0]]: Parameters<
+    typeof getIconInfoFromId
+  >[1];
+};
 export default class IconPacks extends Map<string, IconInfo> {
-  get customIcons(): IdIconMap | null {
-    let icons = [...this].filter(
-      ([, info]) => !builtInPacks.includes(info.pack),
-    );
+  get customIcons(): exportIcons | null {
+    let icons = [...this]
+      .filter(([, info]) => !builtInPacks.includes(info.pack))
+      .map(([id, { svg }]) => [id, svg] as [key: string, value: string]);
     return icons.length > 0 ? Object.fromEntries(icons) : null;
+  }
+  get customPacks(): string[] {
+    return [...this._iconPacks].filter((pack) => !builtInPacks.includes(pack));
   }
 
   hasIcon(id: string): boolean {
@@ -63,7 +76,7 @@ export default class IconPacks extends Map<string, IconInfo> {
   get iconIds() {
     return this._iconIds;
   }
-  private refresh(): void {
+  private refresh(save = true): void {
     this._iconIds.length = 0;
     this._iconPacks.clear();
     for (const id of Object.keys(emojiByName)) {
@@ -73,18 +86,36 @@ export default class IconPacks extends Map<string, IconInfo> {
       this._iconIds.push({ pack, id });
       this._iconPacks.add(pack);
     }
+    if (save) this.plugin.saveCustomIcons();
   }
   constructor(public plugin: IconSC, toset?: IdIconMap) {
     super(toset ? toEntries(toset) : void 0);
     for (const [pack, icons] of toEntries(iconsets)) {
       for (const [id, svg] of toEntries(icons)) {
-        this.set(id, { pack, svg });
+        super.set(id, { pack, svg });
       }
     }
-    this.refresh();
+    this.refresh(false);
   }
-  setMultiple(toset: IdIconMap) {
-    for (const entry of toEntries(toset)) {
+  addFromFiles(pack: string, icons: { name: string; svg: string }[]) {
+    if (builtInPacks.includes(pack)) {
+      console.error("failed to add pack: pack name %s reserved", pack);
+      return;
+    }
+    let addedIds = [] as string[];
+    for (const { name, svg } of icons) {
+      const id = `${pack}_${name}`;
+      if (this.has(id))
+        console.warn("icon id %s already exists, overriding...", id);
+      super.set(id, { pack, svg });
+      addedIds.push(id);
+    }
+    this.refresh();
+    return addedIds;
+  }
+  setMultiple(toset: IdIconMap | EntriesFromRecord<IdIconMap>) {
+    const entries = Array.isArray(toset) ? toset : toEntries(toset);
+    for (const entry of entries) {
       super.set(...entry);
     }
     this.refresh();
