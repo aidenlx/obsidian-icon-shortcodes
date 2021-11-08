@@ -1,3 +1,4 @@
+import svg2uri from "mini-svg-data-uri";
 import emoji from "node-emoji";
 import emojiByName from "node-emoji/lib/emoji.json";
 
@@ -9,17 +10,18 @@ type IconInfo = { pack: string; svg: string };
 
 import * as iconsets from "../icons/index";
 import IconSC from "../isc-main";
-const builtInPacks = Object.keys(iconsets) as string[];
+const builtInPacks = (Object.keys(iconsets) as string[]).concat(["emoji"]);
 const RE_UNDERSTORE_DASH = /[-_]/g;
 
 const toEntries = <T extends Object>(obj: T) =>
   Object.entries(obj) as EntriesFromRecord<T>;
 
 export default class IconPacks extends Map<string, IconInfo> {
-  get customIcons(): IdIconMap {
-    return Object.fromEntries(
-      [...this].filter(([, info]) => !builtInPacks.includes(info.pack)),
+  get customIcons(): IdIconMap | null {
+    let icons = [...this].filter(
+      ([, info]) => !builtInPacks.includes(info.pack),
     );
+    return icons.length > 0 ? Object.fromEntries(icons) : null;
   }
 
   hasIcon(id: string): boolean {
@@ -30,11 +32,10 @@ export default class IconPacks extends Map<string, IconInfo> {
     if (emoji.hasEmoji(id)) return emoji.get(id);
     else if ((info = this.get(id))) {
       const { svg } = info;
-      return createEl(
-        "span",
-        { cls: "alx-isc-icon" },
-        (el) => (el.innerHTML = svg.trim()),
-      );
+      return createEl("img", {
+        cls: "alx-isc-icon",
+        attr: { src: svg2uri(svg) },
+      });
     } else return null;
   }
   getNameFromId(id: string): string | null {
@@ -51,7 +52,8 @@ export default class IconPacks extends Map<string, IconInfo> {
     if (icon.pack === "emoji") return true;
     const status = this.plugin.settings.iconpack;
     return (
-      icon.pack in status && status[icon.pack as keyof typeof status] === true
+      !(icon.pack in status) ||
+      status[icon.pack as keyof typeof status] === true
     );
   }
 
@@ -132,20 +134,23 @@ export const stripColons = (str: string): string => {
   return str;
 };
 
-export const isIconPackRec = (obj: any): obj is IdIconMap => {
-  if (!(obj instanceof Object)) return false;
-  for (const pack in obj) {
-    if (typeof pack !== "string" || !(obj[pack] instanceof Object)) {
-      console.error("invaild pack: pack %o, data %o", pack, obj[pack]);
-      return false;
-    }
-    for (const id in obj[pack]) {
-      const svg = obj[pack][id];
-      if (typeof id !== "string" || typeof svg !== "string") {
-        console.error("invaild value: pack %o, id %o, svg %o", pack, id, svg);
-        return false;
-      }
-    }
+export const getIconInfoFromId = (id: string, svg: string): IconInfo | null => {
+  let indexOfDash;
+  if ((indexOfDash = id.indexOf("_")) < 0) {
+    console.error("No pack id found in: ", id);
+    return null;
   }
-  return true;
+  const pack = id.substring(0, indexOfDash),
+    name = id.substring(indexOfDash + 1);
+  if (!name || !pack) {
+    console.error("Missing icon name or pack id in: ", id);
+    return null;
+  }
+  svg = svg.trim();
+  if (svg.startsWith("<svg")) {
+    return { pack, svg };
+  } else {
+    console.error("invalild svg given in icon %s: %o", id, svg);
+    return null;
+  }
 };
