@@ -11,11 +11,11 @@ import {
 } from "obsidian";
 
 import IconSC from "../isc-main";
-import { IconRec } from "./icon-packs";
+import { IconId } from "./icon-packs";
 
 const CLASS_ID = "alx-isc";
 
-export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconRec>> {
+export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconId>> {
   constructor(public plugin: IconSC) {
     super(plugin.app);
     this.suggestEl.addClass(CLASS_ID);
@@ -54,12 +54,12 @@ export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconRec>> {
         match && results.push({ item: rec, match });
       }
       return results;
-    }, [] as FuzzyMatch<IconRec>[]);
+    }, [] as FuzzyMatch<IconId>[]);
     sortSearchResults(searchResults);
     return searchResults;
   }
 
-  renderSuggestion(suggestion: FuzzyMatch<IconRec>, el: HTMLElement): void {
+  renderSuggestion(suggestion: FuzzyMatch<IconId>, el: HTMLElement): void {
     const { id } = suggestion.item,
       result = this.iconPacks.getIcon(id);
     if (!result) throw new TypeError("Failed to get icon for key: " + id);
@@ -73,7 +73,7 @@ export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconRec>> {
     );
   }
 
-  selectSuggestion(suggestion: FuzzyMatch<IconRec>): void {
+  selectSuggestion(suggestion: FuzzyMatch<IconId>): void {
     if (!this.context) return;
     const { id, pack } = suggestion.item;
     this.context.editor.replaceRange(

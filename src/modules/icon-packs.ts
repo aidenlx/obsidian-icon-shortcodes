@@ -1,33 +1,35 @@
 import emoji from "node-emoji";
 import emojiByName from "node-emoji/lib/emoji.json";
 
-type IconPackRecord = Record<string, Record<string, string>>;
-type IconPackEntries = [pack: string, icons: Record<string, string>][];
-export type IconRec = { id: string; pack: string };
+type EntriesFromRecord<T> = [key: keyof T, value: T[keyof T]][];
+
+type IdIconMap = Record<string, IconInfo>;
+export type IconId = { id: string; pack: string };
+type IconInfo = { pack: string; svg: string };
 
 import * as iconsets from "../icons/index";
 import IconSC from "../isc-main";
 const builtInPacks = Object.keys(iconsets) as string[];
 const RE_UNDERSTORE_DASH = /[-_]/g;
 
-export default class IconPacks extends Map<string, Record<string, string>> {
-  getCustomIcons() {
-    let data = Object.fromEntries(this);
-    for (const toDelete of builtInPacks) {
-      delete data[toDelete];
-    }
-    return data as IconPackRecord;
+const toEntries = <T extends Object>(obj: T) =>
+  Object.entries(obj) as EntriesFromRecord<T>;
+
+export default class IconPacks extends Map<string, IconInfo> {
+  get customIcons(): IdIconMap {
+    return Object.fromEntries(
+      [...this].filter(([, info]) => !builtInPacks.includes(info.pack)),
+    );
   }
 
-  /** store icon id-svg map */
-  private _iconMap: Map<string, string> = new Map();
   hasIcon(id: string): boolean {
-    return emoji.hasEmoji(id) || this._iconMap.has(id);
+    return emoji.hasEmoji(id) || this.has(id);
   }
   getIcon(id: string): string | HTMLSpanElement | null {
+    let info;
     if (emoji.hasEmoji(id)) return emoji.get(id);
-    else if (this._iconMap.has(id)) {
-      const svg = this._iconMap.get(id) as string;
+    else if ((info = this.get(id))) {
+      const { svg } = info;
       return createEl(
         "span",
         { cls: "alx-isc-icon" },
@@ -41,16 +43,11 @@ export default class IconPacks extends Map<string, Record<string, string>> {
   }
 
   private stripPackPrefix(id: string): string {
-    const pattern = new RegExp(`^(?:${[...this.keys()].join("|")})_`);
+    const pattern = new RegExp(`^(?:${[...this._iconPacks].join("|")})_`);
     return id.replace(pattern, "");
   }
-  /** store ids of both icon and emoji  */
-  private _iconIds: IconRec[] = [];
-  get iconIds() {
-    return this._iconIds;
-  }
 
-  isEnabled(icon: IconRec): boolean {
+  isEnabled(icon: IconId): boolean {
     if (icon.pack === "emoji") return true;
     const status = this.plugin.settings.iconpack;
     return (
@@ -58,43 +55,52 @@ export default class IconPacks extends Map<string, Record<string, string>> {
     );
   }
 
+  /** store ids of both icon and emoji  */
+  private _iconIds: IconId[] = [];
+  private _iconPacks: Set<string> = new Set();
+  get iconIds() {
+    return this._iconIds;
+  }
   private refresh(): void {
     this._iconIds.length = 0;
-    this._iconMap.clear();
+    this._iconPacks.clear();
     for (const id of Object.keys(emojiByName)) {
       this._iconIds.push({ pack: "emoji", id });
     }
-    for (const [pack, icons] of this.entries()) {
-      for (const [id, svg] of Object.entries(icons)) {
-        this._iconIds.push({ pack, id });
-        this._iconMap.set(id, svg);
-      }
+    for (const [id, { pack }] of this) {
+      this._iconIds.push({ pack, id });
+      this._iconPacks.add(pack);
     }
   }
-  constructor(public plugin: IconSC, toset?: IconPackRecord) {
-    super(toset ? Object.entries(toset) : void 0);
-    this.setMultiple(iconsets);
+  constructor(public plugin: IconSC, toset?: IdIconMap) {
+    super(toset ? toEntries(toset) : void 0);
+    for (const [pack, icons] of toEntries(iconsets)) {
+      for (const [id, svg] of toEntries(icons)) {
+        this.set(id, { pack, svg });
+      }
+    }
+    this.refresh();
   }
-  setMultiple(toset: IconPackRecord) {
-    for (const [pack, icons] of Object.entries(toset) as IconPackEntries) {
-      super.set(pack, icons);
+  setMultiple(toset: IdIconMap) {
+    for (const entry of toEntries(toset)) {
+      super.set(...entry);
     }
     this.refresh();
     return this;
   }
-  deleteMultiple(...packs: string[]) {
-    for (const pack of packs) {
-      super.delete(pack);
+  deleteMultiple(...ids: string[]) {
+    for (const id of ids) {
+      super.delete(id);
     }
     this.refresh();
   }
-  set(pack: string, icons: Record<string, string>) {
-    const result = super.set(pack, icons);
+  set(id: string, info: IconInfo) {
+    const result = super.set(id, info);
     this.refresh();
     return result;
   }
-  delete(pack: string) {
-    const result = super.delete(pack);
+  delete(id: string) {
+    const result = super.delete(id);
     this.refresh();
     return result;
   }
@@ -126,7 +132,7 @@ export const stripColons = (str: string): string => {
   return str;
 };
 
-export const isIconPackRec = (obj: any): obj is IconPackRecord => {
+export const isIconPackRec = (obj: any): obj is IdIconMap => {
   if (!(obj instanceof Object)) return false;
   for (const pack in obj) {
     if (typeof pack !== "string" || !(obj[pack] instanceof Object)) {
