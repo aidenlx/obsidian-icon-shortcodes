@@ -1,6 +1,9 @@
 import { MarkdownPostProcessor } from "obsidian";
 
-import { getIcon, RE_SHORTCODE } from "./icon";
+import IconSC from "../isc-main";
+import { stripColons } from "./icon-packs";
+
+const RE_SHORTCODE = /:\+1:|:-1:|:[\w-]+:/g;
 
 const acceptNode = (node: Node): number => {
   switch (node.nodeName) {
@@ -18,42 +21,43 @@ const acceptNode = (node: Node): number => {
   }
 };
 
-const scReplace = (text: Text) => {
-  RE_SHORTCODE.lastIndex = 0;
-  for (const code of [...text.wholeText.matchAll(RE_SHORTCODE)]
-    .sort((a, b) => (a.index as number) - (b.index as number))
-    .map((arr) => arr[0])) {
-    text = insertElToText(text, code);
-  }
-};
-
-const insertElToText = (text: Text, pattern: string) => {
-  const index = text.wholeText.indexOf(pattern);
-  if (index < 0) return text;
-  const icon = getIcon(pattern);
-  if (!icon) return text;
-  if (typeof icon === "string") {
-    text.textContent &&
-      (text.textContent = text.textContent?.replace(pattern, icon));
-  } else {
-    text = text.splitText(index);
-    text.parentElement?.insertBefore(icon, text);
-    text.textContent = text.wholeText.substring(pattern.length);
-  }
-  return text;
-};
-
-const ShortcodeProcessor: MarkdownPostProcessor = (el: HTMLElement) => {
-  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
-    acceptNode,
-  });
-  let currentNode: Node | null = walker.currentNode;
-  while (currentNode) {
-    if (currentNode.nodeType === 3) {
-      scReplace(currentNode as Text);
+const getShortcodeProcessor = (plugin: IconSC): MarkdownPostProcessor => {
+  const scReplace = (text: Text) => {
+    RE_SHORTCODE.lastIndex = 0;
+    for (const code of [...text.wholeText.matchAll(RE_SHORTCODE)]
+      .sort((a, b) => (a.index as number) - (b.index as number))
+      .map((arr) => arr[0])) {
+      text = insertElToText(text, code);
     }
-    currentNode = walker.nextNode();
-  }
+  };
+  const insertElToText = (text: Text, pattern: string) => {
+    const index = text.wholeText.indexOf(pattern);
+    if (index < 0) return text;
+    const icon = plugin.iconPacks.getIcon(stripColons(pattern));
+    if (!icon) return text;
+    if (typeof icon === "string") {
+      text.textContent &&
+        (text.textContent = text.textContent?.replace(pattern, icon));
+    } else {
+      text = text.splitText(index);
+      text.parentElement?.insertBefore(icon, text);
+      text.textContent = text.wholeText.substring(pattern.length);
+    }
+    return text;
+  };
+
+  return (el: HTMLElement) => {
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+      acceptNode,
+    });
+    let currentNode: Node | null = walker.currentNode;
+    while (currentNode) {
+      if (currentNode.nodeType === 3) {
+        scReplace(currentNode as Text);
+      }
+      currentNode = walker.nextNode();
+    }
+  };
 };
 
-export default ShortcodeProcessor;
+export default getShortcodeProcessor;

@@ -1,7 +1,11 @@
 import "obsidian";
 
 declare module "obsidian" {
-  export interface EditorSuggest<T> {
+  interface EditorSuggest<T> {
     suggestEl: HTMLElement;
+  }
+  interface Vault {
+    readJson(path: string): Promise<unknown>;
+    writeJson(path: string, data: any): Promise<void>;
   }
 }
