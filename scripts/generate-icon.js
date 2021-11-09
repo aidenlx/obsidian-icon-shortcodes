@@ -8,6 +8,7 @@ const formatLines = (lines) => {
   lines.push("");
   return lines.join("\n");
 };
+const iconsDir = "src/icons";
 
 /**
  * @param {string} faPath
