@@ -104,7 +104,11 @@ export default class IconPacks extends Map<string, IconInfo> {
     }
     let addedIds = [] as string[];
     for (const { name, svg } of icons) {
-      const id = `${pack}_${sanitizeId(name)}`;
+      const id = sanitizeId(`${pack}_${name}`);
+      if (!id) {
+        console.warn("failed to add icon: id %s invalid, skipping...", id);
+        continue;
+      }
       if (this.has(id))
         console.warn("icon id %s already exists, overriding...", id);
       super.set(id, { pack, svg });
@@ -147,8 +151,12 @@ export default class IconPacks extends Map<string, IconInfo> {
       console.log("failed to rename icon: id %s not found", id);
       return null;
     }
-    newId = sanitizeId(newId);
-    super.set(newId, info);
+    const renameTo = sanitizeId(newId);
+    if (!renameTo) {
+      console.log("failed to rename icon: id %s invalid", id);
+      return null;
+    }
+    super.set(renameTo, info);
     super.delete(id);
     this.refresh();
     return newId;
@@ -192,6 +200,19 @@ export const stripColons = (str: string): string => {
 };
 
 export const getIconInfoFromId = (id: string, svg: string): IconInfo | null => {
+  const result = getPacknNameFromId(id);
+  if (!result) return null;
+  svg = svg.trim();
+  if (svg.startsWith("<svg")) {
+    return { pack: result.pack, svg };
+  } else {
+    console.error("invalild svg given in icon %s: %o", id, svg);
+    return null;
+  }
+};
+export const getPacknNameFromId = (
+  id: string,
+): { pack: string; name: string } | null => {
   let indexOfDash;
   if ((indexOfDash = id.indexOf("_")) < 0) {
     console.error("No pack id found in: ", id);
@@ -203,14 +224,17 @@ export const getIconInfoFromId = (id: string, svg: string): IconInfo | null => {
     console.error("Missing icon name or pack id in: ", id);
     return null;
   }
-  svg = svg.trim();
-  if (svg.startsWith("<svg")) {
-    return { pack, svg };
-  } else {
-    console.error("invalild svg given in icon %s: %o", id, svg);
-    return null;
-  }
+  return { pack, name };
 };
 
-const sanitizeId = (id: string): string =>
-  id.trim().replace(/[ -]/g, "_").replace(/\s+/g, "");
+const sanitizeId = (id: string): string | null => {
+  const result = getPacknNameFromId(id);
+  if (!result) {
+    console.log("failed to rename icon: id %s invalid", id);
+    return null;
+  }
+  return `${result.pack}_${result.name
+    .trim()
+    .replace(/[ -]+/g, "_")
+    .replace(/\s+/g, "")}`;
+};
