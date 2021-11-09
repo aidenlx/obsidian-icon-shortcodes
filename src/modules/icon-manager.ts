@@ -39,8 +39,14 @@ export default class IconManager extends Modal {
             if (this.plugin.iconPacks.hasIcon(value)) {
               new Notice(`Failed to rename to ${value}, id already exists`);
             } else {
-              this.plugin.iconPacks.rename(id, value);
-              new Notice(`The icon is renamed to ${value}`);
+              const newId = this.plugin.iconPacks.rename(id, value);
+              if (!newId) {
+                new Notice(
+                  `Failed to rename to ${value}, check log for details`,
+                );
+              } else {
+                new Notice(`The icon is renamed to ${newId}`);
+              }
             }
           };
           namebox = new TextAreaComponent(name)

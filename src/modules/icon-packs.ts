@@ -104,7 +104,7 @@ export default class IconPacks extends Map<string, IconInfo> {
     }
     let addedIds = [] as string[];
     for (const { name, svg } of icons) {
-      const id = `${pack}_${name}`;
+      const id = `${pack}_${sanitizeId(name)}`;
       if (this.has(id))
         console.warn("icon id %s already exists, overriding...", id);
       super.set(id, { pack, svg });
@@ -137,20 +137,21 @@ export default class IconPacks extends Map<string, IconInfo> {
     }
     if (changed) this.refresh();
   }
-  rename(id: string, newId: string): boolean {
+  rename(id: string, newId: string): string | null {
     if (this.has(newId)) {
       console.log("failed to rename icon: id %s already exists", newId);
-      return false;
+      return null;
     }
     const info = this.get(id);
     if (!info) {
       console.log("failed to rename icon: id %s not found", id);
-      return false;
+      return null;
     }
+    newId = sanitizeId(newId);
     super.set(newId, info);
     super.delete(id);
     this.refresh();
-    return true;
+    return newId;
   }
   set(id: string, info: IconInfo) {
     const result = super.set(id, info);
@@ -210,3 +211,6 @@ export const getIconInfoFromId = (id: string, svg: string): IconInfo | null => {
     return null;
   }
 };
+
+const sanitizeId = (id: string): string =>
+  id.trim().replace(/[ -]/g, "_").replace(/\s+/g, "");
