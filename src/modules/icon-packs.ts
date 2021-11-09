@@ -40,7 +40,7 @@ export default class IconPacks extends Map<string, IconInfo> {
   hasIcon(id: string): boolean {
     return emoji.hasEmoji(id) || this.has(id);
   }
-  getIcon(id: string): string | HTMLSpanElement | null {
+  getIcon(id: string): string | HTMLImageElement | null {
     let info;
     if (emoji.hasEmoji(id)) return emoji.get(id);
     else if ((info = this.get(id))) {
@@ -136,6 +136,21 @@ export default class IconPacks extends Map<string, IconInfo> {
       }
     }
     if (changed) this.refresh();
+  }
+  rename(id: string, newId: string): boolean {
+    if (this.has(newId)) {
+      console.log("failed to rename icon: id %s already exists", newId);
+      return false;
+    }
+    const info = this.get(id);
+    if (!info) {
+      console.log("failed to rename icon: id %s not found", id);
+      return false;
+    }
+    super.set(newId, info);
+    super.delete(id);
+    this.refresh();
+    return true;
   }
   set(id: string, info: IconInfo) {
     const result = super.set(id, info);

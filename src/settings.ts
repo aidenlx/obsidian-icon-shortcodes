@@ -4,6 +4,7 @@ import { fileDialog } from "file-select-dialog";
 import IconSC from "isc-main";
 import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 
+import IconManager from "./modules/icon-manager";
 import { BuiltInPacks, builtInPacks } from "./modules/icon-packs";
 
 export interface IconSCSettings {
@@ -115,7 +116,7 @@ export class IconSCSettingTab extends PluginSettingTab {
       .setDesc("Reserved names: " + builtInPacks.join(", "))
       .then((s) => {
         s.addText((txt) => {
-          txt.setPlaceholder("Enter shortcode for new pack");
+          txt.setPlaceholder("Enter name");
           const apply = () => {
             const packName = txt.getValue();
             if (!packName) return;
@@ -171,9 +172,13 @@ export class IconSCSettingTab extends PluginSettingTab {
             containerEl.removeChild(setting.settingEl);
           }),
       )
-      // .addButton((btn) =>
-      //   btn.setIcon("popup-open").setTooltip("manage icons").setCta(),
-      // )
+      .addButton((btn) =>
+        btn
+          .setIcon("popup-open")
+          .setTooltip("manage icons")
+          .setCta()
+          .onClick(() => new IconManager(this.plugin, pack).open()),
+      )
       .then((s) =>
         setupDnd(s.settingEl, async (evt) => {
           if (!evt.dataTransfer) {

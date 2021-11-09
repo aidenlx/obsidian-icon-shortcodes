@@ -1,0 +1,78 @@
+@color-brand: #e91e63;
+@color-link: #1971c2;
+@color-brand-rgb: 233, 30, 99;
+@color-black: #172b4d;
+@color-white: #fff;
+@color-gray-0: #fbfbfb;
+@color-gray-1: #f4f5f7;
+@color-gray-2: #eaecef;
+@color-gray-3: #cbcdd4;
+@sidebar-width: 18rem;
+@border-radius-md: 6px;
+@space-2: 1rem;
+
+.isc-icon-manager .modal-content.icons {
+  display: grid;
+  grid-auto-rows: auto;
+  grid-auto-columns: -webkit-max-content;
+  grid-auto-columns: max-content;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  grid-column-gap: @space-2;
+  grid-row-gap: @space-2;
+  text-align: center;
+
+  padding-left: 5px;
+  padding-right: 5px;
+
+  .item {
+    outline: none;
+    .icon {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: @color-white;
+      border-radius: @border-radius-md;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+        0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      border: 2px solid transparent;
+      font-size: 1.6em;
+
+      & > img {
+        width: 1em;
+        height: 1em;
+      }
+      .theme-dark & {
+        background: @color-black;
+        & > img {
+          filter: invert(100%);
+        }
+      }
+    }
+    .name {
+      margin-top: 0.5rem;
+      font-size: 0.7em;
+      overflow: hidden;
+      textarea {
+        padding: 0;
+        width: 100%;
+        &:disabled {
+          border: hidden;
+          text-align: center;
+        }
+      }
+    }
+    .buttons button {
+      padding: 4px 8px;
+    }
+    // &:focus {
+    //   .icon {
+    //     border-color: rgba(@color-brand-rgb), 0.5;
+    //     background: rgba(@color-brand-rgb), 0.05;
+    //   }
+    //   .name {
+    //     color: @color-brand;
+    //   }
+    // }
+  }
+}
