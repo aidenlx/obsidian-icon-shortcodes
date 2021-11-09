@@ -13,7 +13,7 @@ import {
 import IconSC from "../isc-main";
 import { IconId } from "./icon-packs";
 
-const CLASS_ID = "alx-isc";
+const CLASS_ID = "isc";
 
 export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconId>> {
   constructor(public plugin: IconSC) {

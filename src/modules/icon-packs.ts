@@ -46,7 +46,7 @@ export default class IconPacks extends Map<string, IconInfo> {
     else if ((info = this.get(id))) {
       const { svg } = info;
       return createEl("img", {
-        cls: "alx-isc-icon",
+        cls: "isc-icon",
         attr: { src: svg2uri(svg) },
       });
     } else return null;

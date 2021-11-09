@@ -38,8 +38,8 @@ export class IconSCSettingTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName("Replace emoji shortcode with emoji character")
       .setDesc(
-        "If this is turned on, emoji shortcodes will be immediately replaced by emoji after typing." +
-          " Otherwise they are still stored as a shortcode and you only see the Emoji in Preview Mode.",
+        "If this is turned on, emoji shortcodes will be immediately replaced by emoji after typing. " +
+          "Otherwise they are still stored as a shortcode and you only see the Emoji in Preview Mode.",
       )
       .addToggle((cb) => {
         cb.setValue(this.plugin.settings.code2emoji).onChange(async (value) => {
@@ -108,7 +108,7 @@ export class IconSCSettingTab extends PluginSettingTab {
   manageCustomIcons(): void {
     this.containerEl.createEl("h2", { text: "Custom Icons" });
     const containerEl = this.containerEl.createDiv({
-      cls: "alx-isc-settings-custom-icon",
+      cls: "isc-settings-custom-icon",
     });
 
     new Setting(containerEl)
@@ -117,6 +117,7 @@ export class IconSCSettingTab extends PluginSettingTab {
       .then((s) => {
         s.addText((txt) => {
           txt.setPlaceholder("Enter name");
+          txt.inputEl.addClass("isc-add-pack-input");
           const apply = () => {
             const packName = txt.getValue();
             if (!packName) return;
@@ -145,7 +146,7 @@ export class IconSCSettingTab extends PluginSettingTab {
         return;
       }
       new Notice(
-        "add icons: " +
+        "icons added: " +
           this.plugin.iconPacks.addFromFiles(pack, icons)?.join(", "),
       );
     };
