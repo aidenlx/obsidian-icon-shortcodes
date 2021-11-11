@@ -93,7 +93,7 @@ export default class IconPacks extends Map<string, IconInfo> {
   private async refresh(save = true): Promise<void> {
     this._iconIds.length = 0;
     this._iconPacks.clear();
-    for (const id of Object.entries(emojiByName)) {
+    for (const id of Object.keys(emojiByName)) {
       this._iconIds.push({ pack: "emoji", id });
     }
     for (const [id, { pack, md5 }] of this) {
