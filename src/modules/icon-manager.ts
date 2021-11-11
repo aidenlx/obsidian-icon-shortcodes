@@ -24,10 +24,11 @@ export default class IconManager extends Modal {
       .map(({ id }) => id);
   }
 
-  onOpen() {
+  async onOpen() {
     this.contentEl.empty();
     this.contentEl.addClass("icons");
     this.ids.sort().forEach((id) => {
+      let idBeforeEdit = id;
       const icon = this.plugin.iconPacks.getIcon(id);
       if (!(icon instanceof HTMLElement)) return;
       const iconEl = this.contentEl.createDiv({ cls: "item" }, (container) => {
@@ -36,13 +37,12 @@ export default class IconManager extends Modal {
           preview.append(icon);
         });
         container.createDiv({ cls: "name" }, (name) => {
-          let idBeforeEdit = id;
           const onChange = async (value: string) => {
             const renameTo = `${this.pack}_${value}`;
             if (this.plugin.iconPacks.hasIcon(renameTo)) {
               new Notice(`Failed to rename to ${value}, id already exists`);
             } else {
-              const newId = this.plugin.iconPacks.rename(
+              const newId = await this.plugin.iconPacks.rename(
                 idBeforeEdit,
                 renameTo,
               );
@@ -69,8 +69,8 @@ export default class IconManager extends Modal {
           new ButtonComponent(container)
             .setIcon("trash")
             .setWarning()
-            .onClick(() => {
-              this.plugin.iconPacks.delete(id);
+            .onClick(async () => {
+              await this.plugin.iconPacks.delete(idBeforeEdit);
               this.contentEl.removeChild(iconEl);
             });
           new ButtonComponent(container)
@@ -79,6 +79,12 @@ export default class IconManager extends Modal {
             .onClick(() => {
               if (!namebox) return;
               namebox.setDisabled(!namebox.disabled);
+            });
+          new ButtonComponent(container)
+            .setIcon("star")
+            .setCta()
+            .onClick(async () => {
+              await this.plugin.iconPacks.star(idBeforeEdit);
             });
         });
       });

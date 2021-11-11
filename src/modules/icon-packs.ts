@@ -76,7 +76,7 @@ export default class IconPacks extends Map<string, IconInfo> {
   get iconIds() {
     return this._iconIds;
   }
-  private refresh(save = true): void {
+  private async refresh(save = true): Promise<void> {
     this._iconIds.length = 0;
     this._iconPacks.clear();
     for (const id of Object.keys(emojiByName)) {
@@ -86,7 +86,7 @@ export default class IconPacks extends Map<string, IconInfo> {
       this._iconIds.push({ pack, id });
       this._iconPacks.add(pack);
     }
-    if (save) this.plugin.saveCustomIcons();
+    if (save) return this.plugin.saveCustomIcons();
   }
   constructor(public plugin: IconSC, toset?: IdIconMap) {
     super(toset ? toEntries(toset) : void 0);
@@ -97,7 +97,7 @@ export default class IconPacks extends Map<string, IconInfo> {
     }
     this.refresh(false);
   }
-  addFromFiles(pack: string, icons: { name: string; svg: string }[]) {
+  async addFromFiles(pack: string, icons: { name: string; svg: string }[]) {
     if (builtInPacks.includes(pack)) {
       console.error("failed to add pack: pack name %s reserved", pack);
       return;
@@ -114,24 +114,26 @@ export default class IconPacks extends Map<string, IconInfo> {
       super.set(id, { pack, svg });
       addedIds.push(id);
     }
-    this.refresh();
+    await this.refresh();
     return addedIds;
   }
-  setMultiple(toset: IdIconMap | EntriesFromRecord<IdIconMap>) {
+  async setMultiple(toset: IdIconMap | EntriesFromRecord<IdIconMap>) {
     const entries = Array.isArray(toset) ? toset : toEntries(toset);
     for (const entry of entries) {
       super.set(...entry);
     }
-    this.refresh();
+    await this.refresh();
     return this;
   }
-  deleteMultiple(...ids: string[]) {
+  async deleteMultiple(...ids: string[]) {
     for (const id of ids) {
       super.delete(id);
     }
-    this.refresh();
+    await this.refresh();
   }
-  filter(predicate: (key: string, value: IconInfo) => boolean): void {
+  async filter(
+    predicate: (key: string, value: IconInfo) => boolean,
+  ): Promise<void> {
     let changed = false;
     for (const [key, value] of this.entries()) {
       if (!predicate(key, value)) {
@@ -139,9 +141,9 @@ export default class IconPacks extends Map<string, IconInfo> {
         changed || (changed = true);
       }
     }
-    if (changed) this.refresh();
+    if (changed) return this.refresh();
   }
-  rename(id: string, newId: string): string | null {
+  async rename(id: string, newId: string): Promise<string | null> {
     if (this.has(newId)) {
       console.log("failed to rename icon: id %s already exists", newId);
       return null;
@@ -158,22 +160,48 @@ export default class IconPacks extends Map<string, IconInfo> {
     }
     super.set(renameTo, info);
     super.delete(id);
-    this.refresh();
+    await this.refresh();
     return newId;
   }
-  set(id: string, info: IconInfo) {
+  async star(id: string): Promise<string | null> {
+    const targetId = id.replace(/_\d?$/, "");
+    if (targetId === id) {
+      console.log("failed to star icon: no suffix found for id %s", id);
+      return null;
+    }
+    const info = this.get(id);
+    if (!info) {
+      console.log("failed to star icon: id %s not found", id);
+      return null;
+    }
+    if (this.has(targetId)) {
+      const temp = this.get(targetId) as IconInfo;
+      super.set(targetId, info);
+      super.set(id, temp);
+    } else {
+      super.set(targetId, info);
+      super.delete(id);
+    }
+    await this.refresh();
+    return targetId;
+  }
+
+  // @ts-expect-error
+  async set(id: string, info: IconInfo): Promise<this> {
     const result = super.set(id, info);
-    this.refresh();
+    await this.refresh();
     return result;
   }
-  delete(id: string) {
+
+  // @ts-expect-error
+  async delete(id: string): Promise<boolean> {
     const result = super.delete(id);
-    this.refresh();
+    await this.refresh();
     return result;
   }
-  clear() {
+  async clear() {
     super.clear();
-    this.refresh();
+    await this.refresh();
   }
 }
 

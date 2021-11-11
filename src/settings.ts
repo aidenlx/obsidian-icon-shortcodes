@@ -138,7 +138,7 @@ export class IconSCSettingTab extends PluginSettingTab {
       this.addNewCustomIconEntry(pack, containerEl),
     );
   }
-  addNewCustomIconEntry(pack: string, containerEl: HTMLElement) {
+  async addNewCustomIconEntry(pack: string, containerEl: HTMLElement) {
     const handleInputFiles = async (files: FileList) => {
       const icons = await getSVGIconFromFileList(files);
       if (!icons) {
@@ -146,8 +146,9 @@ export class IconSCSettingTab extends PluginSettingTab {
         return;
       }
       new Notice(
-        this.plugin.iconPacks.addFromFiles(pack, icons)?.length.toString() +
-          " icons added",
+        (
+          await this.plugin.iconPacks.addFromFiles(pack, icons)
+        )?.length.toString() + " icons added",
       );
     };
     const setting = new Setting(containerEl)
