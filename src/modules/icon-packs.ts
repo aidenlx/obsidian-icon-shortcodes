@@ -203,12 +203,7 @@ export const getIconInfoFromId = (id: string, svg: string): IconInfo | null => {
   const result = getPacknNameFromId(id);
   if (!result) return null;
   svg = svg.trim();
-  if (svg.startsWith("<svg")) {
-    return { pack: result.pack, svg };
-  } else {
-    console.error("invalild svg given in icon %s: %o", id, svg);
-    return null;
-  }
+  return { pack: result.pack, svg };
 };
 export const getPacknNameFromId = (
   id: string,
