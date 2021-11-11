@@ -1,3 +1,10 @@
+## [0.1.1](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.1.0...0.1.1) (2021-11-11)
+
+
+### Bug Fixes
+
+* **icon-pack:** remove unnecessary svg checks ([94f5e55](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/94f5e5571b53689f7a628a488a27a0e954dcdfed))
+
 # 0.1.0 (2021-11-09)
 
 
