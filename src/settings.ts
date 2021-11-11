@@ -146,8 +146,8 @@ export class IconSCSettingTab extends PluginSettingTab {
         return;
       }
       new Notice(
-        "icons added: " +
-          this.plugin.iconPacks.addFromFiles(pack, icons)?.join(", "),
+        this.plugin.iconPacks.addFromFiles(pack, icons)?.length.toString() +
+          " icons added",
       );
     };
     const setting = new Setting(containerEl)

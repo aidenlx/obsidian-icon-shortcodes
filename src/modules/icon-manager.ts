@@ -27,7 +27,7 @@ export default class IconManager extends Modal {
   onOpen() {
     this.contentEl.empty();
     this.contentEl.addClass("icons");
-    this.ids.forEach((id) => {
+    this.ids.sort().forEach((id) => {
       const icon = this.plugin.iconPacks.getIcon(id);
       if (!(icon instanceof HTMLElement)) return;
       const iconEl = this.contentEl.createDiv({ cls: "item" }, (container) => {
