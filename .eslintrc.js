@@ -5,7 +5,12 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: "module",
   },
-  extends: ["prettier", "plugin:prettier/recommended"],
+  extends: [
+    "prettier",
+    "plugin:prettier/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+  ],
   env: {
     browser: true,
     node: true,

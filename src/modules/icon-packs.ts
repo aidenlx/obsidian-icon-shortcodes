@@ -1,3 +1,4 @@
+import md5 from "md5";
 import svg2uri from "mini-svg-data-uri";
 import emoji from "node-emoji";
 import emojiByName from "node-emoji/lib/emoji.json";
@@ -5,8 +6,13 @@ import emojiByName from "node-emoji/lib/emoji.json";
 type EntriesFromRecord<T> = [key: keyof T, value: T[keyof T]][];
 
 type IdIconMap = Record<string, IconInfo>;
-export type IconId = { id: string; pack: string };
-type IconInfo = { pack: string; svg: string };
+export type IconId = { id: string; pack: "emoji" } | SVGIconId;
+export type SVGIconId = {
+  id: string;
+  pack: string;
+  md5: string;
+};
+type IconInfo = { pack: string; svg: string; md5: string };
 
 import * as iconsets from "../icons/index";
 export type BuiltInPacks = keyof typeof iconsets;
@@ -40,15 +46,23 @@ export default class IconPacks extends Map<string, IconInfo> {
   hasIcon(id: string): boolean {
     return emoji.hasEmoji(id) || this.has(id);
   }
-  getIcon(id: string): string | HTMLImageElement | null {
+
+  /**
+   * @param raw if given, return svg data uri instead of img element
+   */
+  getIcon(id: string, raw: true): string | null;
+  getIcon(id: string, raw?: false): string | HTMLImageElement | null;
+  getIcon(id: string, raw = false): string | HTMLImageElement | null {
     let info;
     if (emoji.hasEmoji(id)) return emoji.get(id);
     else if ((info = this.get(id))) {
       const { svg } = info;
-      return createEl("img", {
-        cls: "isc-icon",
-        attr: { src: svg2uri(svg) },
-      });
+      return raw
+        ? svg2uri(svg)
+        : createEl("img", {
+            cls: "isc-icon",
+            attr: { src: svg2uri(svg) },
+          });
     } else return null;
   }
   getNameFromId(id: string): string | null {
@@ -79,11 +93,11 @@ export default class IconPacks extends Map<string, IconInfo> {
   private async refresh(save = true): Promise<void> {
     this._iconIds.length = 0;
     this._iconPacks.clear();
-    for (const id of Object.keys(emojiByName)) {
+    for (const id of Object.entries(emojiByName)) {
       this._iconIds.push({ pack: "emoji", id });
     }
-    for (const [id, { pack }] of this) {
-      this._iconIds.push({ pack, id });
+    for (const [id, { pack, md5 }] of this) {
+      this._iconIds.push({ pack, id, md5 });
       this._iconPacks.add(pack);
     }
     if (save) return this.plugin.saveCustomIcons();
@@ -92,7 +106,7 @@ export default class IconPacks extends Map<string, IconInfo> {
     super(toset ? toEntries(toset) : void 0);
     for (const [pack, icons] of toEntries(iconsets)) {
       for (const [id, svg] of toEntries(icons)) {
-        super.set(id, { pack, svg });
+        super.set(id, { pack, svg, md5: md5(svg) });
       }
     }
     this.refresh(false);
@@ -111,7 +125,7 @@ export default class IconPacks extends Map<string, IconInfo> {
       }
       if (this.has(id))
         console.warn("icon id %s already exists, overriding...", id);
-      super.set(id, { pack, svg });
+      super.set(id, { pack, svg, md5: md5(svg) });
       addedIds.push(id);
     }
     await this.refresh();
@@ -231,7 +245,7 @@ export const getIconInfoFromId = (id: string, svg: string): IconInfo | null => {
   const result = getPacknNameFromId(id);
   if (!result) return null;
   svg = svg.trim();
-  return { pack: result.pack, svg };
+  return { pack: result.pack, svg, md5: md5(svg) };
 };
 export const getPacknNameFromId = (
   id: string,

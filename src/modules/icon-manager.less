@@ -1,4 +1,3 @@
-
 .isc-icon-manager .modal-content.icons {
   display: grid;
   grid-auto-rows: auto;
@@ -29,10 +28,18 @@
       }
     }
     .name {
-      margin-top: 0.5rem;
-      font-size: 0.7em;
-      overflow: hidden;
+      height: 49px;
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      flex-direction: column;
+      span {
+        font-size: 0.7em;
+        overflow: hidden;
+        word-wrap: break-word;
+      }
       textarea {
+        margin-top: 5px;
         width: 100%;
         padding: 0 0.5em;
         font-size: 14px;

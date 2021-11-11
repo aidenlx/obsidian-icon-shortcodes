@@ -12,6 +12,7 @@
     "importHelpers": true,
     "strict": true,
     "allowSyntheticDefaultImports": true,
+    "jsx": "react",
     "lib": ["dom", "es5", "scripthost", "es2015"]
   },
   "include": ["src/**/*.ts"]
