@@ -4,8 +4,9 @@ import { Modal, setIcon } from "obsidian";
 import React, { createContext, useContext, useState } from "react";
 import ReactDOM from "react-dom";
 
+import PackManager from "../icon-packs/pack-manager";
+import { IconId, SVGIconId } from "../icon-packs/types";
 import IconSC from "../isc-main";
-import IconPacks, { IconId, SVGIconId } from "./icon-packs";
 import IconPreview from "./icon-preview";
 
 type icons = Record<"trash" | "pencil" | "star" | "checkmark", string>;
@@ -20,7 +21,7 @@ const getIcons = (): icons => {
   return returns as icons;
 };
 
-export const Context = createContext<{ packs: IconPacks; icons: icons }>(
+export const Context = createContext<{ packs: PackManager; icons: icons }>(
   null as any,
 );
 
@@ -32,7 +33,7 @@ export default class IconManager extends Modal {
   }
 
   get ids() {
-    return this.plugin.iconPacks.iconIds
+    return this.plugin.packManager.iconIds
       .filter(({ pack }) => pack === this.pack)
       .map(({ id }) => id);
   }
@@ -41,7 +42,7 @@ export default class IconManager extends Modal {
     this.contentEl.empty();
     ReactDOM.render(
       <Context.Provider
-        value={{ packs: this.plugin.iconPacks, icons: getIcons() }}
+        value={{ packs: this.plugin.packManager, icons: getIcons() }}
       >
         <Icons pack={this.pack} />
       </Context.Provider>,

@@ -8,8 +8,8 @@ import React, {
   useState,
 } from "react";
 
+import { SVGIconId } from "../icon-packs/types";
 import { Context } from "./icon-manager";
-import { getPacknNameFromId, SVGIconId } from "./icon-packs";
 
 interface IconPreviewProps {
   iconId: SVGIconId;
@@ -20,7 +20,7 @@ const IconPreview = ({ iconId, onIdChange }: IconPreviewProps) => {
   const { packs, icons } = useContext(Context),
     { trash, pencil, star, checkmark } = icons;
 
-  const [input, setInput] = useState(getPacknNameFromId(iconId.id)?.name ?? ""),
+  const [input, setInput] = useState(packs.getNameFromId(iconId.id) ?? ""),
     [isEditing, setIsEditing] = useState(false);
 
   const inputId = `${iconId.pack}_${input}`,

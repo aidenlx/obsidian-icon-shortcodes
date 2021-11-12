@@ -10,8 +10,8 @@ import {
   sortSearchResults,
 } from "obsidian";
 
+import { IconId } from "../icon-packs/types";
 import IconSC from "../isc-main";
-import { IconId } from "./icon-packs";
 
 const CLASS_ID = "isc";
 
@@ -22,7 +22,7 @@ export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconId>> {
   }
 
   get iconPacks() {
-    return this.plugin.iconPacks;
+    return this.plugin.packManager;
   }
 
   onTrigger(

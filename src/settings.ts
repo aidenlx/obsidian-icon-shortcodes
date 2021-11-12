@@ -4,13 +4,13 @@ import { fileDialog } from "file-select-dialog";
 import IconSC from "isc-main";
 import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 
-import IconManager from "./modules/icon-manager";
-import { BuiltInPacks, builtInPacks } from "./modules/icon-packs";
+import IconManager from "./component/icon-manager";
+import { IconPacknames, SVGPacknames } from "./icon-packs/built-ins";
 
 export interface IconSCSettings {
   code2emoji: boolean;
   suggester: boolean;
-  iconpack: Record<BuiltInPacks, boolean> & Record<string, boolean>;
+  iconpack: Record<SVGPacknames, boolean> & Record<string, boolean>;
 }
 
 export const DEFAULT_SETTINGS: IconSCSettings = {
@@ -127,7 +127,7 @@ export class IconSCSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Add new icon pack")
-      .setDesc("Reserved names: " + builtInPacks.join(", "))
+      .setDesc("Reserved names: " + IconPacknames.join(", "))
       .then((s) => {
         s.addText((txt) => {
           txt.setPlaceholder("Enter name");
@@ -135,7 +135,7 @@ export class IconSCSettingTab extends PluginSettingTab {
           const apply = () => {
             const packName = txt.getValue();
             if (!packName) return;
-            if (builtInPacks.includes(packName)) {
+            if (IconPacknames.includes(packName)) {
               new Notice("This name is reserved.");
               return;
             }
@@ -148,23 +148,11 @@ export class IconSCSettingTab extends PluginSettingTab {
         });
       });
 
-    this.plugin.iconPacks.customPacks.forEach((pack) =>
+    this.plugin.packManager.customPacks.forEach((pack) =>
       this.addNewCustomIconEntry(pack, containerEl),
     );
   }
   async addNewCustomIconEntry(pack: string, containerEl: HTMLElement) {
-    const handleInputFiles = async (files: FileList) => {
-      const icons = await getSVGIconFromFileList(files);
-      if (!icons) {
-        new Notice("No SVG file found in dropped items");
-        return;
-      }
-      new Notice(
-        (
-          await this.plugin.iconPacks.addFromFiles(pack, icons)
-        )?.length.toString() + " icons added",
-      );
-    };
     const setting = new Setting(containerEl)
       .setName(pack)
       .setDesc("Drag svg files in to add custom icon")
@@ -173,7 +161,8 @@ export class IconSCSettingTab extends PluginSettingTab {
           .setIcon("go-to-file")
           .setTooltip("select files to import")
           .onClick(async () =>
-            handleInputFiles(
+            this.plugin.packManager.addFromFiles(
+              pack,
               await fileDialog({ multiple: true, accept: ".svg" }),
             ),
           ),
@@ -184,7 +173,7 @@ export class IconSCSettingTab extends PluginSettingTab {
           .setTooltip("delete")
           .setWarning()
           .onClick(() => {
-            this.plugin.iconPacks.filter((k, v) => v.pack !== pack);
+            this.plugin.packManager.filter((k, v) => v.pack !== pack);
             containerEl.removeChild(setting.settingEl);
           }),
       )
@@ -201,31 +190,11 @@ export class IconSCSettingTab extends PluginSettingTab {
             new Notice("Failed to get dropped items");
             return;
           }
-          handleInputFiles(evt.dataTransfer.files);
+          this.plugin.packManager.addFromFiles(pack, evt.dataTransfer.files);
         }),
       );
   }
 }
-
-const svgMime = "image/svg+xml";
-const getSVGIconFromFileList = async (
-  list: FileList | null | undefined,
-): Promise<{ name: string; svg: string }[] | null> => {
-  if (!list || list.length <= 0) return null;
-  const getIcon = async (file: File) => ({
-    name: file.name.replace(/\.svg$/, ""),
-    svg: await file.text(),
-  });
-  let promises = [] as ReturnType<typeof getIcon>[];
-  for (let i = 0; i < list.length; i++) {
-    const file = list[i];
-    if (file.type === svgMime) {
-      promises.push(getIcon(file));
-    }
-  }
-  const result = await Promise.all(promises);
-  return result.length > 0 ? result : null;
-};
 
 const setupDnd = (el: HTMLElement, droppedHandler: (evt: DragEvent) => any) => {
   const dragoverClass = "dragover";

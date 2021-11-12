@@ -1,7 +1,7 @@
 import { MarkdownPostProcessor } from "obsidian";
 
+import { stripColons } from "../icon-packs/utils";
 import IconSC from "../isc-main";
-import { stripColons } from "./icon-packs";
 
 const RE_SHORTCODE = /:\+1:|:-1:|:[\w-]+:/g;
 
@@ -33,7 +33,7 @@ const getShortcodeProcessor = (plugin: IconSC): MarkdownPostProcessor => {
   const insertElToText = (text: Text, pattern: string) => {
     const index = text.wholeText.indexOf(pattern);
     if (index < 0) return text;
-    const icon = plugin.iconPacks.getIcon(stripColons(pattern));
+    const icon = plugin.packManager.getIcon(stripColons(pattern));
     if (!icon) return text;
     if (typeof icon === "string") {
       text.textContent &&
