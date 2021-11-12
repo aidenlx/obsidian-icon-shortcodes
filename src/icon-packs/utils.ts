@@ -1,7 +1,7 @@
 import md5 from "md5";
 import emoji from "node-emoji";
 
-import { IconInfo } from "./types";
+import { SVGIconInfo } from "./types";
 
 export type EntriesFromRecord<T> = [key: keyof T, value: T[keyof T]][];
 
@@ -33,11 +33,15 @@ export const stripColons = (str: string): string => {
 
 export const PackPrefixPattern = /^([A-Za-z0-9]+?)_/;
 
-export const getIconInfoFromId = (id: string, svg: string): IconInfo | null => {
+export const getIconInfoFromId = (
+  id: string,
+  svg: string,
+): SVGIconInfo | null => {
   const result = getPacknNameFromId(id);
   if (!result) return null;
+  const { name, pack } = result;
   svg = svg.trim();
-  return { pack: result.pack, svg, md5: md5(svg) };
+  return { pack, name, svg, md5: md5(svg) };
 };
 export const getPacknNameFromId = (
   id: string,

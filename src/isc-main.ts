@@ -1,6 +1,5 @@
 import "./main.less";
 
-import Fuse from "fuse.js";
 import { Plugin } from "obsidian";
 import { DEFAULT_SETTINGS, IconSCSettings, IconSCSettingTab } from "settings";
 
@@ -12,14 +11,6 @@ export default class IconSC extends Plugin {
   settings: IconSCSettings = DEFAULT_SETTINGS;
 
   packManager = new PackManager(this);
-
-  fuse = Fuse;
-  get ids() {
-    return this.packManager.iconIds.map(({ id, pack }) => ({
-      name: pack === "emoji" ? id : id.substring(pack.length + 1),
-      pack,
-    }));
-  }
 
   async onload() {
     console.log("loading Icon Shortcodes");

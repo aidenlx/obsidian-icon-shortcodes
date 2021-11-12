@@ -4,13 +4,9 @@ import {
   EditorSuggest,
   EditorSuggestContext,
   EditorSuggestTriggerInfo,
-  FuzzyMatch,
-  fuzzySearch,
-  prepareQuery,
-  sortSearchResults,
 } from "obsidian";
 
-import { IconId } from "../icon-packs/types";
+import { FuzzyMatch, IconId } from "../icon-packs/types";
 import IconSC from "../isc-main";
 
 const CLASS_ID = "isc";
@@ -21,7 +17,7 @@ export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconId>> {
     this.suggestEl.addClass(CLASS_ID);
   }
 
-  get iconPacks() {
+  get packManager() {
     return this.plugin.packManager;
   }
 
@@ -47,27 +43,18 @@ export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconId>> {
   }
 
   getSuggestions(context: EditorSuggestContext) {
-    const query = prepareQuery(context.query);
-    let searchResults = this.iconPacks.iconIds.reduce((results, rec) => {
-      if (this.iconPacks.isEnabled(rec)) {
-        const match = fuzzySearch(query, rec.id);
-        match && results.push({ item: rec, match });
-      }
-      return results;
-    }, [] as FuzzyMatch<IconId>[]);
-    sortSearchResults(searchResults);
-    return searchResults;
+    return this.packManager
+      .search(context.query.replace(/^\+|\+$/g, "").split(/[+]/g))
+      .slice(0, 20);
   }
 
   renderSuggestion(suggestion: FuzzyMatch<IconId>, el: HTMLElement): void {
-    const { id } = suggestion.item,
-      result = this.iconPacks.getIcon(id);
+    const { id, name } = suggestion.item,
+      result = this.packManager.getIcon(id);
     if (!result) throw new TypeError("Failed to get icon for key: " + id);
 
     const icon = result;
-    el.createDiv({ cls: `shortcode` }).setText(
-      this.iconPacks.getNameFromId(id) as string,
-    );
+    el.createDiv({ cls: `shortcode` }).setText(name.replace(/[_-]/g, " "));
     el.createDiv({ cls: `icon` }, (el) =>
       typeof icon === "string" ? (el.textContent = icon) : el.appendChild(icon),
     );
@@ -78,7 +65,7 @@ export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconId>> {
     const { id, pack } = suggestion.item;
     this.context.editor.replaceRange(
       this.plugin.settings.code2emoji && pack === "emoji"
-        ? (this.iconPacks.getIcon(id) as string)
+        ? (this.packManager.getIcon(id) as string)
         : `:${id}:`,
       this.context.start,
       this.context.end,

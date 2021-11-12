@@ -160,7 +160,7 @@ export class IconSCSettingTab extends PluginSettingTab {
               .onClick(() => {
                 const packName = input?.getValue();
                 if (!packName) return;
-                if (!isPacknameInvalid(packName)) {
+                if (isPacknameInvalid(packName)) {
                   new Notice("This name is invalid.");
                   return;
                 }

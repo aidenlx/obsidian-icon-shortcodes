@@ -43,6 +43,7 @@
     "fast-glob": "^3.2.7",
     "file-select-dialog": "^1.5.4",
     "fs-extra": "^10.0.0",
+    "fuse.js": "^6.4.6",
     "json": "^11.0.0",
     "md5": "^2.3.0",
     "node-emoji": "github:rhysd/node-emoji#fix-gh-short-codes",

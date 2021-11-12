@@ -1,11 +1,17 @@
 import "./icon-manager.less";
 
 import { Modal, setIcon } from "obsidian";
-import React, { createContext, useContext, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import ReactDOM from "react-dom";
 
 import PackManager from "../icon-packs/pack-manager";
-import { IconId, SVGIconId } from "../icon-packs/types";
+import { FuzzyMatch, IconId, SVGIconId } from "../icon-packs/types";
 import IconSC from "../isc-main";
 import IconPreview from "./icon-preview";
 
@@ -48,35 +54,28 @@ export default class IconManager extends Modal {
   }
 }
 
-const compareIconId = (a: IconId, b: IconId): number =>
-  a.id.localeCompare(b.id);
+const compareIconId = (a: FuzzyMatch<IconId>, b: FuzzyMatch<IconId>): number =>
+  a.item.name.localeCompare(b.item.name);
 const Icons = ({ pack }: { pack: string }) => {
   if (pack === "emoji") throw new TypeError("Emoji not supported");
 
   const { packs } = useContext(Context);
   const [filter, setFilter] = useState("");
-  const [ids, setIds] = useState(
-    packs.iconIds
-      .filter(({ pack: p }) => p === pack)
-      .sort(compareIconId) as SVGIconId[],
+  const [changed, setChanged] = useState(0);
+  const ids = useMemo(
+    () => {
+      const arr = packs.search(filter ? filter.trim().split(" ") : [], [pack]);
+      if (filter) return arr;
+      else return arr.sort(compareIconId);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [filter, pack, changed],
   );
-
-  const handleIdChange = (...changes: { from: string; to: string | null }[]) =>
-    setIds((prev: SVGIconId[]) => {
-      for (const { from, to } of changes) {
-        const i = prev.findIndex((val) => val.id === from);
-        if (i < 0) {
-          console.error("%s icon not found", from, from);
-          continue;
-        }
-        if (to) {
-          prev[i].id = to;
-        } else {
-          prev.splice(i, 1);
-        }
-      }
-      return prev.concat().sort(compareIconId);
-    });
+  useEffect(() => {
+    packs.on("changed", () => setChanged(changed + 1));
+    return () => packs.off("changed", () => setChanged(changed + 1));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [packs]);
 
   return (
     <>
@@ -85,18 +84,12 @@ const Icons = ({ pack }: { pack: string }) => {
           type="text"
           placeholder="Filter"
           value={filter}
-          onChange={(evt) => {
-            setFilter(evt.target.value);
-          }}
+          onChange={(evt) => setFilter(evt.target.value)}
         />
       </div>
       <div className="icons">
-        {ids.map((iconId) => (
-          <IconPreview
-            iconId={iconId}
-            onIdChange={handleIdChange}
-            key={iconId.id}
-          />
+        {ids.map((fuzzy) => (
+          <IconPreview iconId={fuzzy.item as SVGIconId} key={fuzzy.item.id} />
         ))}
       </div>
     </>

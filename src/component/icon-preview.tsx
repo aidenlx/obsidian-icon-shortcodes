@@ -16,14 +16,13 @@ import { Context } from "./icon-manager";
 
 interface IconPreviewProps {
   iconId: SVGIconId;
-  onIdChange: (...changes: { from: string; to: string | null }[]) => void;
 }
 
-const IconPreview = ({ iconId, onIdChange }: IconPreviewProps) => {
+const IconPreview = ({ iconId }: IconPreviewProps) => {
   const { packs, icons } = useContext(Context),
     { trash, pencil, star, checkmark } = icons;
 
-  const [input, setInput] = useState(packs.getNameFromId(iconId.id) ?? ""),
+  const [input, setInput] = useState(iconId.name.replace(/[-_]/g, " ")),
     [isEditing, setIsEditing] = useState(false);
 
   const inputId = `${iconId.pack}_${sanitizeName(input)}`,
@@ -38,7 +37,6 @@ const IconPreview = ({ iconId, onIdChange }: IconPreviewProps) => {
     else {
       new Notice(`The icon is renamed to ${newName}`);
       setIsEditing(false);
-      onIdChange({ from: iconId.id, to: newName });
     }
   };
 
@@ -66,14 +64,6 @@ const IconPreview = ({ iconId, onIdChange }: IconPreviewProps) => {
             let newName;
             if ((newName = await packs.star(iconId.id))) {
               new Notice(`${iconId.id} is now ${newName}`);
-              if (packs.hasIcon(iconId.id)) {
-                onIdChange(
-                  { from: iconId.id, to: newName },
-                  { from: newName, to: iconId.id },
-                );
-              } else {
-                onIdChange({ from: iconId.id, to: newName });
-              }
             }
           }}
         />
@@ -102,7 +92,6 @@ const IconPreview = ({ iconId, onIdChange }: IconPreviewProps) => {
           onClick={async () => {
             if (await packs.delete(iconId.id)) {
               new Notice(`${iconId.id} is removed from the pack`);
-              onIdChange({ from: iconId.id, to: null });
             }
           }}
         />
