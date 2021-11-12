@@ -1,3 +1,16 @@
+# [0.2.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.1.1...0.2.0) (2021-11-12)
+
+
+### Bug Fixes
+
+* **icon-packs:** fix iconIds return invalid ids ([dce5aa2](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/dce5aa2443d143f563f13076b6bc8be53720c671))
+
+
+### Features
+
+* **icon-manager:** add stat btn ([67c195f](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/67c195ffa88256a440fcb0f1fbcd9f4d0d1499cc))
+* **settings:** pack series can now be enabled separately ([6957b83](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/6957b83f4eabd49917cb2f4891cb91dd694a2150))
+
 ## [0.1.1](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.1.0...0.1.1) (2021-11-11)
 
 
