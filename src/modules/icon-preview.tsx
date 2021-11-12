@@ -18,7 +18,7 @@ interface IconPreviewProps {
 
 const IconPreview = ({ iconId, onIdChange }: IconPreviewProps) => {
   const { packs, icons } = useContext(Context),
-    { trash, pencil, star } = icons;
+    { trash, pencil, star, checkmark } = icons;
 
   const [input, setInput] = useState(getPacknNameFromId(iconId.id)?.name ?? ""),
     [isEditing, setIsEditing] = useState(false);
@@ -57,18 +57,26 @@ const IconPreview = ({ iconId, onIdChange }: IconPreviewProps) => {
       </div>
       <div className="buttons">
         <ObButton
-          btnType="warning"
-          icon={trash}
+          btnType="cta"
+          icon={star}
           onClick={async () => {
-            if (await packs.delete(iconId.id)) {
-              new Notice(`${iconId.id} is removed from the pack`);
-              onIdChange({ from: iconId.id, to: null });
+            let newName;
+            if ((newName = await packs.star(iconId.id))) {
+              new Notice(`${iconId.id} is now ${newName}`);
+              if (packs.hasIcon(iconId.id)) {
+                onIdChange(
+                  { from: iconId.id, to: newName },
+                  { from: newName, to: iconId.id },
+                );
+              } else {
+                onIdChange({ from: iconId.id, to: newName });
+              }
             }
           }}
         />
         <ObButton
           btnType="cta"
-          icon={pencil}
+          icon={isEditing ? checkmark : pencil}
           onClick={async () => {
             if (isEditing) {
               if (isInputVaild) {
@@ -86,20 +94,12 @@ const IconPreview = ({ iconId, onIdChange }: IconPreviewProps) => {
           }}
         />
         <ObButton
-          btnType="cta"
-          icon={star}
+          btnType="warning"
+          icon={trash}
           onClick={async () => {
-            let newName;
-            if ((newName = await packs.star(iconId.id))) {
-              new Notice(`${iconId.id} is now ${newName}`);
-              if (packs.hasIcon(iconId.id)) {
-                onIdChange(
-                  { from: iconId.id, to: newName },
-                  { from: newName, to: iconId.id },
-                );
-              } else {
-                onIdChange({ from: iconId.id, to: newName });
-              }
+            if (await packs.delete(iconId.id)) {
+              new Notice(`${iconId.id} is removed from the pack`);
+              onIdChange({ from: iconId.id, to: null });
             }
           }}
         />
