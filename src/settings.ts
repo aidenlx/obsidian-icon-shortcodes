@@ -1,8 +1,16 @@
 import "settings.less";
+import "invalid.less";
 
 import { fileDialog } from "file-select-dialog";
 import IconSC from "isc-main";
-import { App, Notice, PluginSettingTab, Setting } from "obsidian";
+import {
+  App,
+  ButtonComponent,
+  Notice,
+  PluginSettingTab,
+  Setting,
+  TextComponent,
+} from "obsidian";
 
 import IconManager from "./component/icon-manager";
 import { IconPacknames, SVGPacknames } from "./icon-packs/built-ins";
@@ -125,30 +133,46 @@ export class IconSCSettingTab extends PluginSettingTab {
       cls: "isc-settings-custom-icon",
     });
 
+    const isPacknameInvalid = (name: string) =>
+      !/^[A-Za-z0-9]+$/.test(name) ||
+      this.plugin.packManager.isPacknameExists(name);
     new Setting(containerEl)
       .setName("Add new icon pack")
       .setDesc("Reserved names: " + IconPacknames.join(", "))
       .then((s) => {
+        let button: ButtonComponent | null = null,
+          input: TextComponent | null = null;
         s.addText((txt) => {
-          txt.setPlaceholder("Enter name");
-          txt.inputEl.addClass("isc-add-pack-input");
-          const apply = () => {
-            const packName = txt.getValue();
-            if (!packName) return;
-            if (IconPacknames.includes(packName)) {
-              new Notice("This name is reserved.");
-              return;
-            }
-            txt.setValue("");
-            this.addNewCustomIconEntry(packName, containerEl);
-          };
-          s.addButton((btn) =>
-            btn.setCta().setIcon("plus-with-circle").onClick(apply),
-          );
-        });
+          txt
+            .setPlaceholder("Enter name")
+            .onChange((name) => {
+              const isInvalid = isPacknameInvalid(name);
+              txt.inputEl.toggleClass("invalid", !!name && isInvalid);
+              button?.setDisabled(isInvalid);
+            })
+            .then((txt) => txt.inputEl.addClass("isc-add-pack-input")),
+            (input = txt);
+        }).addButton(
+          (btn) => (
+            btn
+              .setCta()
+              .setIcon("plus-with-circle")
+              .onClick(() => {
+                const packName = input?.getValue();
+                if (!packName) return;
+                if (!isPacknameInvalid(packName)) {
+                  new Notice("This name is invalid.");
+                  return;
+                }
+                this.addNewCustomIconEntry(packName, containerEl);
+                input?.setValue("");
+              }),
+            (button = btn)
+          ),
+        );
       });
 
-    this.plugin.packManager.customPacks.forEach((pack) =>
+    this.plugin.packManager.customPacknames.forEach((pack) =>
       this.addNewCustomIconEntry(pack, containerEl),
     );
   }

@@ -33,11 +33,17 @@ export default class PackManager {
     );
     return icons.length > 0 ? Object.fromEntries(icons) : null;
   }
-  get customPacks(): string[] {
+  get customPacknames(): string[] {
     return [...this._cutomsIconPacknames];
   }
   get customIconsFilePath() {
     return normalizePath(this.plugin.manifest.dir + CUSTOM_ICON_PATH);
+  }
+  isPacknameExists(packname: string) {
+    return (
+      IconPacknames.includes(packname) ||
+      this._cutomsIconPacknames.has(packname)
+    );
   }
 
   hasIcon(id: string): boolean {
@@ -68,15 +74,16 @@ export default class PackManager {
           });
     } else return null;
   }
+
+  /**
+   * @returns name with _ replaced by space
+   */
   getNameFromId(id: string): string | null {
     if (!this.hasIcon(id)) return null;
     if (emoji.hasEmoji(id)) return id;
     return id
       .replace(PackPrefixPattern, (str, packname) => {
-        if (
-          IconPacknames.includes(packname) ||
-          this._cutomsIconPacknames.has(packname)
-        ) {
+        if (this.isPacknameExists(packname)) {
           return "";
         } else return str;
       })
@@ -154,7 +161,7 @@ export default class PackManager {
         console.warn("failed to add icon: id %s invalid, skipping...", id);
         continue;
       }
-      if (this.hasIcon(id))
+      if (this._customIcons.has(id))
         console.warn("icon id %s already exists, overriding...", id);
       this._customIcons.set(id, { pack, svg, md5: getMd5(svg) });
       addedIds.push(id);

@@ -32,12 +32,6 @@ export default class IconManager extends Modal {
     this.modalEl.addClasses(["isc-icon-manager", "mod-community-theme"]);
   }
 
-  get ids() {
-    return this.plugin.packManager.iconIds
-      .filter(({ pack }) => pack === this.pack)
-      .map(({ id }) => id);
-  }
-
   async onOpen() {
     this.contentEl.empty();
     ReactDOM.render(

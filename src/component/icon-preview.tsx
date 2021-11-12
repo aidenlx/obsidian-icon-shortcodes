@@ -1,3 +1,5 @@
+import "../invalid.less";
+
 import cls from "classnames";
 import { Notice } from "obsidian";
 import React, {
@@ -9,6 +11,7 @@ import React, {
 } from "react";
 
 import { SVGIconId } from "../icon-packs/types";
+import { sanitizeName } from "../icon-packs/utils";
 import { Context } from "./icon-manager";
 
 interface IconPreviewProps {
@@ -23,7 +26,7 @@ const IconPreview = ({ iconId, onIdChange }: IconPreviewProps) => {
   const [input, setInput] = useState(packs.getNameFromId(iconId.id) ?? ""),
     [isEditing, setIsEditing] = useState(false);
 
-  const inputId = `${iconId.pack}_${input}`,
+  const inputId = `${iconId.pack}_${sanitizeName(input)}`,
     isInputVaild = inputId === iconId.id || !packs.hasIcon(inputId);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,7 +50,7 @@ const IconPreview = ({ iconId, onIdChange }: IconPreviewProps) => {
       <div className="name">
         {isEditing ? (
           <Text
-            className={cls({ invaild: isInputVaild })}
+            className={cls({ invalid: !isInputVaild })}
             onChange={(evt) => setInput(evt.target.value)}
             value={input}
           />
@@ -113,7 +116,7 @@ export default IconPreview;
 const ObButton = (
   props: HTMLAttributes<HTMLButtonElement> & {
     btnType?: "warning" | "cta";
-    invaild?: boolean;
+    invalid?: boolean;
     icon: string;
   },
 ) => {

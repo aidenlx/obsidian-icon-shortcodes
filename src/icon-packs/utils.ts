@@ -58,8 +58,7 @@ export const sanitizeId = (id: string): string | null => {
     console.log("failed to rename icon: id %s invalid", id);
     return null;
   }
-  return `${result.pack}_${result.name
-    .trim()
-    .replace(/[ -]+/g, "_")
-    .replace(/\s+/g, "")}`;
+  return `${result.pack}_${sanitizeName(result.name)}`;
 };
+export const sanitizeName = (name: string): string =>
+  name.trim().replace(/[ -]+/g, "_").replace(/\s+/g, "");
