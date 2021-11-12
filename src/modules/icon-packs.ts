@@ -1,3 +1,4 @@
+import cls from "classnames";
 import md5 from "md5";
 import svg2uri from "mini-svg-data-uri";
 import emoji from "node-emoji";
@@ -56,11 +57,11 @@ export default class IconPacks extends Map<string, IconInfo> {
     let info;
     if (emoji.hasEmoji(id)) return emoji.get(id);
     else if ((info = this.get(id))) {
-      const { svg } = info;
+      const { svg, pack } = info;
       return raw
         ? svg2uri(svg)
         : createEl("img", {
-            cls: "isc-icon",
+            cls: cls(["isc-icon", `isc-${pack}`]),
             attr: { src: svg2uri(svg) },
           });
     } else return null;
