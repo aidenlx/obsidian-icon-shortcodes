@@ -17,8 +17,11 @@ export const DEFAULT_SETTINGS: IconSCSettings = {
   code2emoji: true,
   suggester: true,
   iconpack: {
-    fa: true,
-    ri: true,
+    fab: false,
+    far: true,
+    fas: false,
+    rif: false,
+    ril: true,
   },
 };
 
@@ -66,43 +69,54 @@ export class IconSCSettingTab extends PluginSettingTab {
   skipIconPack(): void {
     const { containerEl } = this;
 
+    const getSetting = (
+      id: keyof IconSCSettings["iconpack"],
+      name: string,
+      getDesc: (el: DocumentFragment) => void,
+    ) =>
+      new Setting(containerEl)
+        .setName(name)
+        .setDesc(createFragment(getDesc))
+        .addToggle((cb) => {
+          cb.setValue(this.plugin.settings.iconpack[id]).onChange(
+            async (value) => {
+              this.plugin.settings.iconpack[id] = value;
+              await this.plugin.saveSettings();
+            },
+          );
+        });
     containerEl.createEl("h2", { text: "Icon Packs" });
-    new Setting(containerEl)
-      .setName("Font Awesome")
-      .setDesc(
-        createFragment((el) =>
-          el.createEl("a", {
-            href: "https://fontawesome.com/",
-            text: "official website",
-          }),
-        ),
-      )
-      .addToggle((cb) => {
-        cb.setValue(this.plugin.settings.iconpack.fa).onChange(
-          async (value) => {
-            this.plugin.settings.iconpack.fa = value;
-            await this.plugin.saveSettings();
-          },
-        );
-      });
-    new Setting(containerEl)
-      .setName("Remixicon")
-      .setDesc(
-        createFragment((el) =>
-          el.createEl("a", {
-            href: "https://remixicon.com",
-            text: "official website",
-          }),
-        ),
-      )
-      .addToggle((cb) => {
-        cb.setValue(this.plugin.settings.iconpack.ri).onChange(
-          async (value) => {
-            this.plugin.settings.iconpack.ri = value;
-            await this.plugin.saveSettings();
-          },
-        );
-      });
+
+    getSetting("far", "Font Awesome (Line)", (el) =>
+      el.createEl("a", {
+        href: "https://fontawesome.com/",
+        text: "official website",
+      }),
+    );
+    getSetting("fab", "Font Awesome (Brand)", (el) =>
+      el.createEl("a", {
+        href: "https://fontawesome.com/",
+        text: "official website",
+      }),
+    );
+    getSetting("fas", "Font Awesome (Solid)", (el) =>
+      el.createEl("a", {
+        href: "https://fontawesome.com/",
+        text: "official website",
+      }),
+    );
+    getSetting("ril", "Remixicon (Line)", (el) =>
+      el.createEl("a", {
+        href: "https://remixicon.com",
+        text: "official website",
+      }),
+    );
+    getSetting("ris", "Remixicon (Solid)", (el) =>
+      el.createEl("a", {
+        href: "https://remixicon.com",
+        text: "official website",
+      }),
+    );
   }
 
   manageCustomIcons(): void {

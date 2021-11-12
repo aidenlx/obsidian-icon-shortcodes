@@ -1,4 +1,4 @@
-const { writeFile } = require("fs-extra");
+const { writeFile, mkdir } = require("fs-extra");
 const { basename, dirname, join } = require("path");
 
 const fg = require("fast-glob");
@@ -15,15 +15,31 @@ const iconsDir = "src/icons";
  */
 const importFontAwesome = async (faPath) => {
   const bundleName = "fa";
-  let lines = (await fg([join(faPath, "**/*.svg")])).map((path) => {
-    const varName = basename(path).slice(0, -4).replace(/-/g, "_"),
-      type = basename(dirname(path)),
-      prefix = `fa_${type === "regular" ? "" : type + "_"}`,
-      importPath = path.replace(/^node_modules\//, "");
-    return `export { default as ${prefix}${varName} } from "${importPath}";`;
-  });
-  await writeFile(join(iconsDir, bundleName + ".ts"), formatLines(lines));
-  return bundleName;
+  const series = (await fg([join(faPath, "*")], { onlyDirectories: true })).map(
+    (path) => basename(path),
+  );
+
+  const files = series.map((s) => ({
+    series: s,
+    prefix: bundleName + s[0],
+    lines: [],
+  }));
+  for (const { series, lines, prefix } of files) {
+    for (const path of await fg([join(faPath, series, "**/*.svg")])) {
+      let varName = basename(path).slice(0, -4).replace(/-/g, "_"),
+        importPath = path.replace(/^node_modules\//, "");
+      lines.push(
+        `export ` +
+          `{ default as ${prefix}_${varName} }` +
+          ` from "${importPath}";`,
+      );
+    }
+  }
+
+  for (const { prefix, lines } of files) {
+    await writeFile(join(iconsDir, prefix + ".ts"), formatLines(lines));
+  }
+  return files.map(({ prefix }) => prefix);
 };
 
 /**
@@ -31,20 +47,67 @@ const importFontAwesome = async (faPath) => {
  */
 const importRemixicon = async (faPath) => {
   const bundleName = "ri";
-  let lines = (await fg([join(faPath, "**/*.svg")])).map((path) => {
-    const varName = basename(path).slice(0, -4).replace(/-/g, "_"),
+  const series = ["fill", "line"];
+
+  const files = series.map((s) => ({
+    series: s,
+    prefix: bundleName + s[0],
+    suffix: "_" + s,
+    lines: [],
+  }));
+  for (const path of await fg([join(faPath, "**/*.svg")])) {
+    let varName = basename(path).slice(0, -4).replace(/-/g, "_"),
       importPath = path.replace(/^node_modules\//, "");
-    return `export { default as ri_${varName} } from "${importPath}";`;
-  });
-  await writeFile(join(iconsDir, bundleName + ".ts"), formatLines(lines));
-  return bundleName;
+
+    let matched = false;
+    for ({ prefix, suffix, lines } of files) {
+      if (varName.endsWith(suffix)) {
+        matched = true;
+        lines.push(
+          `export ` +
+            `{ default as ${prefix}_${varName.slice(0, -suffix.length)} }` +
+            ` from "${importPath}";`,
+        );
+        break;
+      }
+    }
+    if (!matched) {
+      let file;
+      if (
+        importPath.includes("Editor/") &&
+        (file = files.find((f) => f.series === "line"))
+      ) {
+        const { prefix, lines } = file;
+        lines.push(
+          `export ` +
+            `{ default as ${prefix}_${varName} }` +
+            ` from "${importPath}";`,
+        );
+      } else
+        console.error(
+          "unexpected suffix in %s, skipping...",
+          "node_modules/" + importPath,
+        );
+    }
+  }
+
+  for (const { prefix, lines } of files) {
+    await writeFile(join(iconsDir, prefix + ".ts"), formatLines(lines));
+  }
+  return files.map(({ prefix }) => prefix);
 };
 
 (async (writeTo) => {
+  try {
+    await mkdir(iconsDir);
+  } catch (err) {
+    if (err && err.code !== "EEXIST") throw err;
+  }
+
   const all = await Promise.all([
     importFontAwesome("node_modules/@fortawesome/fontawesome-free/svgs"),
     importRemixicon("node_modules/remixicon/icons"),
   ]);
-  let lines = all.map((name) => `export * as ${name} from "./${name}";`);
+  let lines = all.flat().map((name) => `export * as ${name} from "./${name}";`);
   await writeFile(writeTo, formatLines(lines));
 })("src/icons/index.ts");
