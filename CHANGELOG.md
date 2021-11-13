@@ -1,3 +1,18 @@
+# [0.3.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.2.0...0.3.0) (2021-11-13)
+
+
+### Bug Fixes
+
+* **icon-manager:** fix ui can only be updated once ([5473747](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/5473747ad3f41b88d0b0dcd4b80d82712eafffc9))
+
+
+### Features
+
+* **icon-manager:** adjust button and interface; add filter box (not functional) ([32fa009](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/32fa00944a42025109e242c6d12efef42e388d8e))
+* **icon-packs:** add class for every icon pack ([4c16a11](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/4c16a11a68ae9e1a6693a3d6c2a4edd816178a7e))
+* implement fuzzy search; searchbox in icon-manager is now functional ([bcb6470](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/bcb64702a0589e0176ee47541306e66f98946075)), closes [#7](https://github.com/aidenlx/obsidian-icon-shortcodes/issues/7)
+* validation on adding packname and renaming icons ([a33c33c](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/a33c33ca019ed0580f2301907d5f50b84b999c33))
+
 # [0.2.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.1.1...0.2.0) (2021-11-12)
 
 
