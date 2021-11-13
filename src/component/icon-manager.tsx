@@ -72,8 +72,9 @@ const Icons = ({ pack }: { pack: string }) => {
     [filter, pack, changed],
   );
   useEffect(() => {
-    packs.on("changed", () => setChanged(changed + 1));
-    return () => packs.off("changed", () => setChanged(changed + 1));
+    const handler = () => setChanged((prev) => prev + 1);
+    packs.on("changed", handler);
+    return () => packs.off("changed", handler);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [packs]);
 
@@ -89,7 +90,10 @@ const Icons = ({ pack }: { pack: string }) => {
       </div>
       <div className="icons">
         {ids.map((fuzzy) => (
-          <IconPreview iconId={fuzzy.item as SVGIconId} key={fuzzy.item.id} />
+          <IconPreview
+            iconId={fuzzy.item as SVGIconId}
+            key={fuzzy.item.id + (fuzzy.item.md5 ?? "")}
+          />
         ))}
       </div>
     </>
