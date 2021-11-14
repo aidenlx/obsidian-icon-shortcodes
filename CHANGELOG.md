@@ -1,3 +1,10 @@
+# [0.4.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.3.3...0.4.0) (2021-11-14)
+
+
+### Features
+
+* add initial api support ([e9f5b29](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/e9f5b29afd705e6d15822b33e50ca388d32a5206))
+
 ## [0.3.3](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.3.2...0.3.3) (2021-11-14)
 
 

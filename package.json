@@ -1,6 +1,6 @@
 {
   "name": "@aidenlx/obsidian-icon-shortcodes",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "API utils for obsidian-icon-shortcodes",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -12,7 +12,7 @@
     "dev": "cross-env BUILD=dev node esbuild.js",
     "check": "tsc --noEmit",
     "lib": "rm -rf lib && cross-env BUILD=production node esbuild-lib.js && tsc --project tsconfig-lib.json --emitDeclarationOnly",
-    "build": "npm run lib && cross-env BUILD=production node esbuild.js",    
+    "build": "npm run lib && cross-env BUILD=production node esbuild.js",
     "prettier": "prettier --write 'src/**/*.+(ts|tsx|json|html|css)'",
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "release": "release-it"
