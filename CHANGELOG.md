@@ -1,3 +1,11 @@
+## [0.3.1](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.3.0...0.3.1) (2021-11-14)
+
+
+### Bug Fixes
+
+* **pack-manager:** fix disabled icon pack appears in search results ([0ebfe04](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/0ebfe04308a1e9d9cf7d4eeaa6eb6e1140e4078c))
+* **suggester:** fix suggester triggered after shortcode being inserted ([efb9db1](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/efb9db17b0a751cf6750b7138b6a9f0ef79b6a56))
+
 # [0.3.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.2.0...0.3.0) (2021-11-13)
 
 
