@@ -13,11 +13,14 @@
     width: var(--font-normal);
   }
 }
-.markdown-preview-view {
-  img@{id}-icon {
-    display: inline;
+
+img@{id}-icon {
+  display: inline;
+  height: 1em;
+  width: 1em;
+  vertical-align: text-top;
+  .markdown-preview-view & {
     height: var(--preview-font-size);
     width: var(--preview-font-size);
-    vertical-align: text-top;
   }
 }
