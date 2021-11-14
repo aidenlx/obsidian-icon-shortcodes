@@ -8,11 +8,27 @@ Add support for [emoji shortcodes](https://github.com/ikatyang/emoji-cheat-sheet
 
 Inspired by [obsidian-emoji-shortcodes](https://github.com/phibr0/obsidian-emoji-shortcodes), [obsidian-icons](https://github.com/visini/obsidian-icons-plugin) and [remark-emoji](https://github.com/rhysd/remark-emoji).
 
-## Intro
+Note: this plugin may conflicts with [obsidian-emoji-shortcodes](https://github.com/phibr0/obsidian-emoji-shortcodes), disable it before using this plugin
 
 ## How to use
 
-- [emoji cheatsheet](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md)
+### Insert Icon
+
+This plugins support GitHub favored emoji shortcodes, the full list of which can be found here: [Emoji Cheat Sheet](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md)
+
+- To insert icon in editor, type in `:`/`：：` followed by the search query to get suggester, for example `:book`
+  - for multiple keywords, add `+` between words, for example `:open+book`
+  - You can disable suggester in the setting tab
+- The emoji, by default, is inserted in character in favor of shortcodes, which is visible in both editor and preview, you can change this behavior in the setting tab
+
+## Add Custom Icons
+
+1. Go to setting tab
+2. At the `Custom Icons` section, type in a name for new icon pack and click add button (better be short, it's acting as the id of icon pack and prefix of all icon shortcodes in this pack)
+3. Add the new icon pack entry, drag SVG file in or select them by click on `select file to import` button to import custom icons
+4. You can access icon manager by clicking `manage` icon. each icon has the following button
+   - `star`: remove `_1` suffix, useful when there are multiple alternative icons
+   - `delete`, `rename`
 
 ## Bulti-in Icon Packs and Licenses
 
