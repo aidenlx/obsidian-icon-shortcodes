@@ -25,21 +25,22 @@ export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconId>> {
     cursor: EditorPosition,
     editor: Editor,
   ): EditorSuggestTriggerInfo | null {
-    if (this.plugin.settings.suggester) {
-      const sub = editor.getLine(cursor.line).substring(0, cursor.ch);
-      const match = sub.match(/(?::|：：)(\S+$)/);
-      if (match) {
-        return {
-          end: cursor,
-          start: {
-            ch: match.index as number,
-            line: cursor.line,
-          },
-          query: match[1],
-        };
-      }
-    }
-    return null;
+    if (!this.plugin.settings.suggester) return null;
+    const sub = editor.getLine(cursor.line).substring(0, cursor.ch);
+    const match = sub.match(/(?::|：：)([^:\s]+$)/);
+    if (!match) return null;
+    const prevSC = (match.input as string)
+      .substring(0, match.index)
+      .match(/:([^\s:]+$)/);
+    if (prevSC && this.packManager.hasIcon(prevSC[1])) return null;
+    return {
+      end: cursor,
+      start: {
+        ch: match.index as number,
+        line: cursor.line,
+      },
+      query: match[1],
+    };
   }
 
   getSuggestions(context: EditorSuggestContext) {
