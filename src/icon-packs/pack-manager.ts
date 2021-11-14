@@ -266,7 +266,7 @@ export default class PackManager extends Events {
   search(query: string[], packs?: string[]) {
     let exp = query.map<Fuse.Expression>((s) => ({ name: s }));
     packs = packs ?? this.enabledPacknames;
-    exp.push({ $or: packs.map((p) => ({ pack: "=" + p })) });
+    exp.push({ $or: packs.map((p) => ({ pack: `="${p}"` })) });
     return this._fuse.search({ $and: exp });
   }
 
