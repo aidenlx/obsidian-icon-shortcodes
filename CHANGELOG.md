@@ -1,3 +1,10 @@
+## [0.3.3](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.3.2...0.3.3) (2021-11-14)
+
+
+### Bug Fixes
+
+* update manifest to support mobile ([361872a](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/361872a6aebb7cc705a917c530cfd46858a6e9df))
+
 ## [0.3.2](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.3.1...0.3.2) (2021-11-14)
 
 

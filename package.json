@@ -1,6 +1,6 @@
 {
   "name": "obsidian-icon-shortcodes",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "myplugindesc",
   "main": "main.js",
   "scripts": {
