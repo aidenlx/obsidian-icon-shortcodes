@@ -3,8 +3,8 @@
   "name": "Icon Shortcodes",
   "version": "0.3.2",
   "minAppVersion": "0.12.17",
-  "description": "myplugindesc",
+  "description": "Insert emoji and custom icons with shortcodes",
   "author": "AidenLx",
   "authorUrl": "https://github.com/aidenlx",
-  "isDesktopOnly": true
+  "isDesktopOnly": false
 }

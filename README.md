@@ -2,7 +2,7 @@
 
 ![demo](https://user-images.githubusercontent.com/31102694/141667129-a6bd215d-cd12-4663-bb95-364c3f3c80c9.gif)
 
-Add support for [emoji shortcodes](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md) and custom icons shortcodes
+Insert emoji and custom icons with shortcodes
 
 - Built-in Unicode 13.1 Emoji, [Font Awesome](https://fontawesome.com/), and [Remixicon](https://github.com/Remix-Design/RemixIcon) support
 - Fuzzy search: type in `:book` to find 📖(`:open_book:`) and 📗(`:green_book:`)
