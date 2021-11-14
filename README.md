@@ -25,7 +25,7 @@ This plugins support GitHub favored emoji shortcodes, the full list of which can
 
 ## Add Custom Icons
 
-https://user-images.githubusercontent.com/31102694/141667026-cbb0e668-ecbd-493e-9648-27ca7dfaa118.mp4
+<https://user-images.githubusercontent.com/31102694/141667026-cbb0e668-ecbd-493e-9648-27ca7dfaa118.mp4>
 
 1. Go to setting tab
 2. At the `Custom Icons` section, type in a name for new icon pack and click add button (better be short, it's acting as the id of icon pack and prefix of all icon shortcodes in this pack)
@@ -33,6 +33,29 @@ https://user-images.githubusercontent.com/31102694/141667026-cbb0e668-ecbd-493e-
 4. You can access icon manager by clicking `manage` icon. each icon has the following button
    - `star`: remove `_1` suffix, useful when there are multiple alternative icons
    - `delete`, `rename`
+
+## Styling Icons
+
+In order to customize the icons in order to change their color, size, etc, you should make a CSS snippet.
+
+1. Go to Settings -> Appearance -> CSS Snippets
+2. Turn on the CSS Snippets option and then click the folder to navigate to it's folder.
+3. Make a new file called icons.css
+4. Open icons.css in your preferred text editor
+5. Add the following:
+   ```css
+   .isc-icon {
+     /** changes for all icons (except emoji). */
+   }
+   .isc-icon.isc-{ICON_PACK_NAME} {
+     /** changes for icons in the specific icon pack */
+   }
+   ```
+6. Go Back to Settings -> Appearance -> CSS Snippets
+7. Click the reload button
+8. A button with the title "icons" should appear, turn it on.
+
+Your changes will now be applied and you can edit the file when you want.
 
 ## Bulti-in Icon Packs and Licenses
 
