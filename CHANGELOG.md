@@ -1,3 +1,10 @@
+## [0.3.2](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.3.1...0.3.2) (2021-11-14)
+
+
+### Bug Fixes
+
+* **pack-manager:** fix filter() empty cached ids ([6e24f5d](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/6e24f5d3dde45dbd57a76570aaa3612c410536e2))
+
 ## [0.3.1](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.3.0...0.3.1) (2021-11-14)
 
 
