@@ -57,6 +57,18 @@ In order to customize the icons in order to change their color, size, etc, you s
 
 Your changes will now be applied and you can edit the file when you want.
 
+## For Developer
+
+### Use API
+
+1. run `npm i -D @aidenlx/obsidian-icon-shortcodes` in your plugin dir
+2. import the api (add `import { getApi, isPluginEnabled } from "@aidenlx/obsidian-icon-shortcodes"`)
+3. use api
+   1. check if enabled: `isPluginEnabled(YourPluginInstance)`
+   2. access api: `getApi()` / `getApi(YourPluginInstance)`
+
+For all exposed API method, [check api.ts](src/typings/api.ts)
+
 ## Bulti-in Icon Packs and Licenses
 
 | Icon Pack                                              | License                                                           | Version |
