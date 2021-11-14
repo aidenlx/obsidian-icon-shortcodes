@@ -171,7 +171,7 @@ export default class PackManager extends Events {
         changed || (changed = true);
       }
     }
-    this._fuse.remove((icon) => predicate(icon.id, icon));
+    this._fuse.remove((icon) => !predicate(icon.id, icon));
     if (changed) {
       await this.refresh();
       this.trigger("changed", this);
