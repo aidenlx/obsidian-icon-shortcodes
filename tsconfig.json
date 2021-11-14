@@ -15,5 +15,6 @@
     "jsx": "react",
     "lib": ["dom", "es5", "scripthost", "es2015"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["lib/**/*.ts"]
 }

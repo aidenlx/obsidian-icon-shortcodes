@@ -1,12 +1,18 @@
 {
-  "name": "obsidian-icon-shortcodes",
+  "name": "@aidenlx/obsidian-icon-shortcodes",
   "version": "0.3.3",
-  "description": "myplugindesc",
-  "main": "main.js",
+  "description": "API utils for obsidian-icon-shortcodes",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
     "prepare": "node ./scripts/generate-icon.js",
     "dev": "cross-env BUILD=dev node esbuild.js",
-    "build": "cross-env BUILD=production node esbuild.js",
+    "check": "tsc --noEmit",
+    "lib": "rm -rf lib && cross-env BUILD=production node esbuild-lib.js && tsc --project tsconfig-lib.json --emitDeclarationOnly",
+    "build": "npm run lib && cross-env BUILD=production node esbuild.js",    
     "prettier": "prettier --write 'src/**/*.+(ts|tsx|json|html|css)'",
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "release": "release-it"
@@ -57,6 +63,9 @@
     "tslib": "^2.3.1",
     "typescript": "^4.4.4"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "release-it": {
     "hooks": {
       "before:init": [
@@ -78,7 +87,7 @@
       "tagAnnotation": "Release v${version}"
     },
     "npm": {
-      "publish": false
+      "publish": true
     },
     "github": {
       "release": true,
