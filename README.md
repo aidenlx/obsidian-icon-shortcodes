@@ -1,5 +1,7 @@
 # Icon Shortcodes
 
+![demo](https://user-images.githubusercontent.com/31102694/141667129-a6bd215d-cd12-4663-bb95-364c3f3c80c9.gif)
+
 Add support for [emoji shortcodes](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md) and custom icons shortcodes
 
 - Built-in Unicode 13.1 Emoji, [Font Awesome](https://fontawesome.com/), and [Remixicon](https://github.com/Remix-Design/RemixIcon) support
@@ -22,6 +24,8 @@ This plugins support GitHub favored emoji shortcodes, the full list of which can
 - The emoji, by default, is inserted in character in favor of shortcodes, which is visible in both editor and preview, you can change this behavior in the setting tab
 
 ## Add Custom Icons
+
+https://user-images.githubusercontent.com/31102694/141667026-cbb0e668-ecbd-493e-9648-27ca7dfaa118.mp4
 
 1. Go to setting tab
 2. At the `Custom Icons` section, type in a name for new icon pack and click add button (better be short, it's acting as the id of icon pack and prefix of all icon shortcodes in this pack)
