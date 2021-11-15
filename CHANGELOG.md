@@ -1,3 +1,10 @@
+## [0.4.2](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.4.1...0.4.2) (2021-11-15)
+
+
+### Bug Fixes
+
+* fix icon size setting not working ([d833df8](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/d833df8cfd772b56bc52a754899e9dd5cbb8abf5)), closes [#12](https://github.com/aidenlx/obsidian-icon-shortcodes/issues/12)
+
 ## [0.4.1](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.4.0...0.4.1) (2021-11-15)
 
 

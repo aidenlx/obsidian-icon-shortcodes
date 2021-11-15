@@ -1,7 +1,7 @@
 {
   "id": "obsidian-icon-shortcodes",
   "name": "Icon Shortcodes",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "minAppVersion": "0.12.17",
   "description": "Insert emoji and custom icons with shortcodes",
   "author": "AidenLx",
