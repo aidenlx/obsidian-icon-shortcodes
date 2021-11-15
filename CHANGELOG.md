@@ -1,3 +1,11 @@
+## [0.4.1](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.4.0...0.4.1) (2021-11-15)
+
+
+### Bug Fixes
+
+* **api:** fix api not being exposed to global ([7dfbd60](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/7dfbd60e777358ada60b4709c7d564e63012fbad))
+* fix .isc-icon style only set in markdown preview view ([aa88eeb](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/aa88eebabef6813654e7be05883c97328971aeda))
+
 # [0.4.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.3.3...0.4.0) (2021-11-14)
 
 
