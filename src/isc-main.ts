@@ -30,6 +30,9 @@ export default class IconSC extends Plugin {
     await this.loadSettings();
     await this.packManager.loadCustomIcons();
 
+    (window[API_NAME] = this.api) &&
+      this.register(() => (window[API_NAME] = undefined));
+
     this.registerEditorSuggest(new EmojiSuggester(this));
     this.registerMarkdownPostProcessor(this.postProcessor);
 
