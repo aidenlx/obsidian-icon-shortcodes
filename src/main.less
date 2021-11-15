@@ -19,8 +19,9 @@ img@{id}-icon {
   height: 1em;
   width: 1em;
   vertical-align: text-top;
-  .markdown-preview-view & {
-    height: var(--preview-font-size);
-    width: var(--preview-font-size);
+  .markdown-preview-view &,
+  .markdown-source-view & {
+    height: var(--editor-font-size);
+    width: var(--editor-font-size);
   }
 }
