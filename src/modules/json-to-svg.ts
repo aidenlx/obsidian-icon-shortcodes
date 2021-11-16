@@ -37,7 +37,8 @@ const tryUpdateIcons = async (plugin: IconSC) => {
         plugin.settings.isMigrated = true;
         await plugin.saveSettings();
         new Notice(
-          "Icon update complete, you can now find icon files in .obsidian/themes/icons",
+          "Icon update complete, you can now find icon files in " +
+            plugin.packManager.customIconsDir,
         );
       } catch (error) {
         new Notice("Failed to update icons, check console for more details");

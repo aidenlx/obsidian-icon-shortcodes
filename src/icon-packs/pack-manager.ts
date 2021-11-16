@@ -25,7 +25,7 @@ import {
 } from "./utils";
 
 const CUSTOM_ICON_PATH = "/icons.json";
-const CUSTOM_ICON_DIR = "themes/icons";
+const CUSTOM_ICON_DIR = "icons";
 
 export default class PackManager extends Events {
   private _customIcons = new Map<string, FileIconInfo>();
@@ -130,6 +130,10 @@ export default class PackManager extends Events {
   private _loaded = false;
   async loadCustomIcons(): Promise<void> {
     if (this._loaded) return;
+    if (!(await this.vault.adapter.exists(this.customIconsDir))) {
+      await this.vault.adapter.mkdir(this.customIconsDir);
+      return;
+    }
     const iconlist = await this.vault.adapter.list(this.customIconsDir);
 
     let info;
