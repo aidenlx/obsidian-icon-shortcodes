@@ -23,11 +23,19 @@ type EmojiIconId = IconBasicInfo &
   };
 
 interface FileIconData extends IconBasicData {
-  path: string;
   data?: undefined;
 }
-export type FileIconId = IconBasicInfo & hasMd5 & { id: string };
-export type FileIconInfo = IconBasicInfo & hasMd5 & FileIconData;
+
+export type FileBasicInfo = IconBasicInfo &
+  hasMd5 & {
+    path: string;
+    /** with dot */
+    ext: string;
+  };
+export type FileIconId = FileBasicInfo & { id: string };
+export type FileIconInfo = FileBasicInfo & FileIconData;
+export const isFileIconId = (id: IconId): id is FileIconId =>
+  !!(id as FileIconId).ext;
 
 interface EmbedIconData extends IconBasicData {
   path?: undefined;

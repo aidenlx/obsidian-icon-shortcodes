@@ -14,6 +14,7 @@ import {
 
 import IconManager from "./component/icon-manager";
 import { BuiltInIconPacknames, SVGPacknames } from "./icon-packs/built-ins";
+import { SupportedIconExt } from "./icon-packs/utils";
 
 export interface IconSCSettings {
   code2emoji: boolean;
@@ -200,7 +201,10 @@ export class IconSCSettingTab extends PluginSettingTab {
           .onClick(async () =>
             this.plugin.packManager.addFromFiles(
               pack,
-              await fileDialog({ multiple: true, accept: ".svg" }),
+              await fileDialog({
+                multiple: true,
+                accept: SupportedIconExt as any,
+              }),
             ),
           ),
       )

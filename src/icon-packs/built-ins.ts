@@ -1,5 +1,5 @@
-import getMd5 from "md5";
 import emojiByName from "node-emoji/lib/emoji.json";
+import { hash } from "spark-md5";
 
 import * as iconsets from "../icons/index";
 import { EmbedIconInfo, IconId } from "./types";
@@ -19,7 +19,7 @@ const getBuiltIns = (): {
   for (const [pack, icons] of ObjtoEntries(iconsets)) {
     packnames.push(pack);
     for (const [id, svg] of ObjtoEntries(icons as Record<string, string>)) {
-      const md5 = getMd5(svg),
+      const md5 = hash(svg),
         name = id.substring(pack.length + 1);
       packs.set(id, { pack, data: svg, md5, name });
       ids.push({ id, pack, md5, name });

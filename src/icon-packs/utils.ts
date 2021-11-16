@@ -1,5 +1,7 @@
-import md5 from "md5";
+import { extension, lookup } from "mime-types";
 import emoji from "node-emoji";
+import { extname } from "path";
+import { ArrayBuffer as AB } from "spark-md5";
 
 import { FileIconInfo } from "./types";
 
@@ -35,13 +37,20 @@ export const PackPrefixPattern = /^([A-Za-z0-9]+?)_/;
 
 export const getIconInfoFromId = (
   id: string,
-  svg: string,
+  path: string,
+  data: ArrayBuffer,
 ): FileIconInfo | null => {
   const result = getPacknNameFromId(id);
   if (!result) return null;
   const { name, pack } = result;
-  svg = svg.trim();
-  return { pack, name, path: svg, md5: md5(svg) };
+  path = path.trim();
+  return {
+    pack,
+    name,
+    path,
+    ext: extname(path),
+    md5: AB.hash(data),
+  };
 };
 export const getPacknNameFromId = (
   id: string,
@@ -66,3 +75,34 @@ export const sanitizeId = (id: string): string | null => {
 };
 export const sanitizeName = (name: string): string =>
   name.trim().replace(/[ -]+/g, "_").replace(/\s+/g, "").toLocaleLowerCase();
+
+export const SupportedIconExt = [
+  ".bmp",
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".gif",
+  ".svg",
+  ".webp",
+] as const;
+export const extPattern = /\.(?:bmp|png|jpg|jpeg|gif|svg|webp)$/;
+const mimes = SupportedIconExt.map((ext) => lookup(ext));
+export const getIconsFromFileList = async (
+  list: FileList | null | undefined,
+): Promise<{ name: string; ext: string; data: ArrayBuffer }[] | null> => {
+  if (!list || list.length <= 0) return null;
+  const getIcon = async (file: File) => ({
+    name: file.name.replace(extPattern, ""),
+    ext: "." + (extension(file.type) as string),
+    data: await file.arrayBuffer(),
+  });
+  let promises = [] as ReturnType<typeof getIcon>[];
+  for (let i = 0; i < list.length; i++) {
+    const file = list[i];
+    if (mimes.includes(file.type)) {
+      promises.push(getIcon(file));
+    }
+  }
+  const result = await Promise.all(promises);
+  return result.length > 0 ? result : null;
+};

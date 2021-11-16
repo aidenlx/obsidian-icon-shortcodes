@@ -2,11 +2,11 @@ import "./icon.less";
 
 import cls from "classnames";
 import Fuse from "fuse.js";
-import getMd5 from "md5";
 import svg2uri from "mini-svg-data-uri";
 import emoji from "node-emoji";
 import { EventRef, Events, normalizePath, Notice } from "obsidian";
-import { basename, extname, join } from "path";
+import { basename, join } from "path";
+import { ArrayBuffer as AB } from "spark-md5";
 
 import IconSC from "../isc-main";
 import {
@@ -14,8 +14,13 @@ import {
   BuiltInIconPacknames,
   BuiltInSVGIconPacks,
 } from "./built-ins";
-import { FileIconInfo, IconId } from "./types";
-import { getIconInfoFromId, sanitizeId } from "./utils";
+import { FileIconId, FileIconInfo, IconId, isFileIconId } from "./types";
+import {
+  extPattern,
+  getIconInfoFromId,
+  getIconsFromFileList,
+  sanitizeId,
+} from "./utils";
 
 const CUSTOM_ICON_PATH = "/icons.json";
 const CUSTOM_ICON_DIR = "themes/icons";
@@ -27,19 +32,24 @@ export default class PackManager extends Events {
     return this.plugin.app.vault;
   }
   renameId(id: string, newId: string) {
+    const idInfo = this._customIcons.get(id);
+    if (!idInfo) throw new Error("No such icon " + id);
+    const { ext, path } = idInfo;
     return Promise.reject(void 0);
     // Not working yet
     return this.vault.adapter.rename(
-      join(this.customIconsDir, `${id}.svg`),
-      join(this.customIconsDir, `${newId}.svg`),
+      join(path),
+      join(this.customIconsDir, newId + ext),
     );
   }
   removeId(id: string) {
-    return this.vault.adapter.remove(join(this.customIconsDir, `${id}.svg`));
+    const idInfo = this._customIcons.get(id);
+    if (!idInfo) throw new Error("No such icon " + id);
+    return this.vault.adapter.remove(idInfo.path);
   }
-  async addIcon(id: string, svg: string) {
-    const path = join(this.customIconsDir, `${id}.svg`);
-    await this.vault.adapter.write(path, svg);
+  async addIcon(id: string, ext: string, data: ArrayBuffer) {
+    const path = join(this.customIconsDir, id + ext);
+    await this.vault.adapter.writeBinary(path, data);
     return path;
   }
   get customPacknames(): string[] {
@@ -119,25 +129,29 @@ export default class PackManager extends Events {
   private _loaded = false;
   async loadCustomIcons(): Promise<void> {
     if (this._loaded) return;
-    const { vault } = this.plugin.app,
-      iconlist = await vault.adapter.list(this.customIconsDir);
+    const iconlist = await this.vault.adapter.list(this.customIconsDir);
 
     let info;
-    for (const path of iconlist.files) {
-      if (extname(path) !== ".svg") continue;
-      const svg = path,
-        id = basename(path, ".svg");
-      if ((info = getIconInfoFromId(id, svg))) {
+    const queue = iconlist.files.map(async (path) => {
+      if (!extPattern.test(path)) return;
+      const id = basename(path).replace(extPattern, ""),
+        data = await this.vault.adapter.readBinary(path);
+      if ((info = getIconInfoFromId(id, path, data))) {
         this._customIcons.set(id, info);
-        const { md5, name, pack } = info;
-        this._fuse.add({ id, md5, name, pack });
+        const { md5, name, pack, ext, path } = info,
+          iconId: FileIconId = { id, md5, name, pack, ext, path };
+        this._fuse.add(iconId);
       } else {
         console.warn(
           "Failed to load icon data (raw value: %o) for id %s, skipping...",
-          svg,
+          path,
           id,
         );
       }
+    });
+    for (const result of await Promise.allSettled(queue)) {
+      if (result.status === "rejected")
+        console.error("Failed to load icon", result.reason);
     }
     this._loaded = true;
     this.refresh();
@@ -145,7 +159,7 @@ export default class PackManager extends Events {
   }
 
   async addFromFiles(pack: string, files: FileList) {
-    const icons = await getSVGIconFromFileList(files);
+    const icons = await getIconsFromFileList(files);
     if (!icons) {
       new Notice("No SVG file found in dropped items");
       return;
@@ -155,7 +169,7 @@ export default class PackManager extends Events {
       console.error("failed to add pack: pack name %s reserved", pack);
       return;
     }
-    const writeQueue = icons.reduce((arr, { name, svg }) => {
+    const writeQueue = icons.reduce((arr, { name, ext, data }) => {
       const id = sanitizeId(`${pack}_${name}`);
       if (!id) {
         console.warn("failed to add icon: id %s invalid, skipping...", id);
@@ -166,16 +180,14 @@ export default class PackManager extends Events {
       arr.push(
         (async () => {
           try {
-            this.set(
-              id,
-              {
-                pack,
-                name,
-                path: await this.addIcon(id, svg),
-                md5: getMd5(svg),
-              },
-              false,
-            );
+            const info = {
+              pack,
+              name,
+              ext,
+              path: await this.addIcon(id, ext, data),
+              md5: AB.hash(data),
+            };
+            this.set(id, info, false);
           } catch (error) {
             throw new IconFileOpError("add", id, error);
           }
@@ -198,9 +210,9 @@ export default class PackManager extends Events {
     new Notice(addedIds.length.toString() + " icons added");
   }
   async deleteMultiple(...ids: string[]): Promise<void> {
+    this._fuse.remove((icon) => isFileIconId(icon) && ids.includes(icon.id));
     const queue = ids.map(async (id) => {
       this._customIcons.delete(id);
-      this._fuse.remove((icon) => ids.includes(icon.id));
       try {
         await this.removeId(id);
       } catch (error) {
@@ -221,7 +233,7 @@ export default class PackManager extends Events {
     }
   }
   async filter(
-    predicate: (key: string, value: Omit<IconId, "id">) => boolean,
+    predicate: (key: string, value: Omit<FileIconId, "id">) => boolean,
   ): Promise<void> {
     let toDelete = new Set<string>();
     for (const [key, value] of this._customIcons) {
@@ -231,20 +243,18 @@ export default class PackManager extends Events {
       }
     }
     this._fuse.remove((icon) => {
-      const result = !predicate(icon.id, icon);
-      if (result) {
-        toDelete.add(icon.id);
-      }
+      const result = isFileIconId(icon) && !predicate(icon.id, icon);
+      if (result) toDelete.add(icon.path);
       return result;
     });
     if (toDelete.size === 0) return;
     this.refresh();
     this.trigger("changed", this);
-    const queue = [...toDelete].map(async (id) => {
+    const queue = [...toDelete].map(async (path) => {
       try {
-        await this.vault.adapter.remove(join(this.customIconsDir, `${id}.svg`));
+        await this.vault.adapter.remove(path);
       } catch (error) {
-        throw new IconFileOpError("delete", id, error);
+        throw new IconFileOpError("delete", basename(path), error);
       }
     });
     for (const result of await Promise.allSettled(queue)) {
@@ -324,8 +334,16 @@ export default class PackManager extends Events {
   set(id: string, info: FileIconInfo, refresh = true): void {
     this._customIcons.set(id, info);
     this._fuse.remove((icon) => icon.id === id);
-    const { md5, pack } = info;
-    this._fuse.add({ id, md5, name: id.substring(pack.length + 1), pack });
+    const { md5, pack, path, ext } = info,
+      iconId: FileIconId = {
+        id,
+        md5,
+        name: id.substring(pack.length + 1),
+        pack,
+        path,
+        ext,
+      };
+    this._fuse.add(iconId);
     if (refresh) {
       this.refresh();
       this.trigger("changed", this);
@@ -401,26 +419,6 @@ type OnArgs<T> = T extends [infer A, ...infer B]
 type PMEvents =
   | [name: "changed", manager: PackManager]
   | [name: "initialized", manager: PackManager];
-
-const svgMime = "image/svg+xml";
-const getSVGIconFromFileList = async (
-  list: FileList | null | undefined,
-): Promise<{ name: string; svg: string }[] | null> => {
-  if (!list || list.length <= 0) return null;
-  const getIcon = async (file: File) => ({
-    name: file.name.replace(/\.svg$/, ""),
-    svg: await file.text(),
-  });
-  let promises = [] as ReturnType<typeof getIcon>[];
-  for (let i = 0; i < list.length; i++) {
-    const file = list[i];
-    if (file.type === svgMime) {
-      promises.push(getIcon(file));
-    }
-  }
-  const result = await Promise.all(promises);
-  return result.length > 0 ? result : null;
-};
 
 class IconFileOpError extends Error {
   constructor(op: string, id: string, srcErr: any, newId?: string) {
