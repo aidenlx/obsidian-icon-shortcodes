@@ -22,6 +22,7 @@ export interface IconSCSettings {
   suggester: boolean;
   iconpack: Record<SVGPacknames, boolean> & Record<string, boolean>;
   spaceAfterSC: boolean;
+  isMigrated: boolean;
 }
 
 export const DEFAULT_SETTINGS: IconSCSettings = {
@@ -35,6 +36,7 @@ export const DEFAULT_SETTINGS: IconSCSettings = {
     ril: true,
   },
   spaceAfterSC: false,
+  isMigrated: false,
 };
 
 export class IconSCSettingTab extends PluginSettingTab {

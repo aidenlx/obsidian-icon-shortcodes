@@ -1,7 +1,8 @@
-import { TFile } from "obsidian";
+import { Notice, TFile } from "obsidian";
 import { join } from "path";
 
 import IconSC from "../isc-main";
+import { confirm } from "./dialog";
 
 const jsonToSvg = async (plugin: IconSC) => {
   const { vault } = plugin.app;
@@ -20,4 +21,30 @@ const jsonToSvg = async (plugin: IconSC) => {
     }, [] as Promise<TFile>[]),
   );
 };
-export default jsonToSvg;
+
+const tryUpdateIcons = async (plugin: IconSC) => {
+  if (
+    (await plugin.app.vault.adapter.exists(
+      plugin.packManager.customIconsFilePath,
+    )) &&
+    !plugin.settings.isMigrated
+  ) {
+    const message =
+      "Found custom icons that have not been upgraded, update icons now?";
+    if (await confirm(message, plugin.app)) {
+      try {
+        await jsonToSvg(plugin);
+        plugin.settings.isMigrated = true;
+        await plugin.saveSettings();
+        new Notice(
+          "Icon update complete, you can now find icon files in .obsidian/themes/icons",
+        );
+      } catch (error) {
+        new Notice("Failed to update icons, check console for more details");
+        console.error(error);
+      }
+    }
+  }
+};
+
+export default tryUpdateIcons;

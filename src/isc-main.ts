@@ -2,6 +2,7 @@ import { Plugin } from "obsidian";
 import { DEFAULT_SETTINGS, IconSCSettings, IconSCSettingTab } from "settings";
 
 import PackManager from "./icon-packs/pack-manager";
+import tryUpdateIcons from "./modules/json-to-svg";
 import getShortcodeProcessor from "./modules/post-ps";
 import EmojiSuggester from "./modules/suggester";
 import API, { API_NAME } from "./typings/api";
@@ -26,6 +27,7 @@ export default class IconSC extends Plugin {
     console.log("loading Icon Shortcodes");
 
     await this.loadSettings();
+    await tryUpdateIcons(this);
     await this.packManager.loadCustomIcons();
 
     (window[API_NAME] = this.api) &&
