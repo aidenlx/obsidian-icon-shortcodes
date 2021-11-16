@@ -174,7 +174,8 @@ export default class PackManager extends Events {
       await zip.generateAsync({ type: "arraybuffer" }),
     );
     if (Platform.isDesktopApp) {
-      this.plugin.app.openWithDefaultApp(bakFilePath);
+      // open vault dir in explorer
+      this.plugin.app.openWithDefaultApp("");
     } else {
       new Notice(
         `icons have been saved to ${bakFilePath}, ` +
