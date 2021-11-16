@@ -1,3 +1,5 @@
+import "./suggester.less";
+
 import {
   Editor,
   EditorPosition,

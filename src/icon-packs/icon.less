@@ -1,0 +1,20 @@
+img.isc-icon {
+  display: inline;
+  height: 1em;
+  width: 1em;
+  vertical-align: text-top;
+  .markdown-preview-view &,
+  .markdown-source-view & {
+    height: var(--editor-font-size);
+    width: var(--editor-font-size);
+  }
+  .theme-dark & {
+    &.isc-fab,
+    &.isc-far,
+    &.isc-fas,
+    &.isc-rif,
+    &.isc-ril {
+      filter: invert(1);
+    }
+  }
+}

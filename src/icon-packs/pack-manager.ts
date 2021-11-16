@@ -1,3 +1,5 @@
+import "./icon.less";
+
 import cls from "classnames";
 import Fuse from "fuse.js";
 import getMd5 from "md5";

@@ -1,5 +1,3 @@
-import "./main.less";
-
 import { Plugin } from "obsidian";
 import { DEFAULT_SETTINGS, IconSCSettings, IconSCSettingTab } from "settings";
 
