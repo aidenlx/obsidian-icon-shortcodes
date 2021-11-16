@@ -33,16 +33,15 @@ export default class PackManager extends Events {
   get vault() {
     return this.plugin.app.vault;
   }
-  renameId(id: string, newId: string) {
+  async renameId(id: string, newId: string): Promise<string> {
     const idInfo = this._customIcons.get(id);
     if (!idInfo) throw new Error("No such icon " + id);
     const { ext, path } = idInfo;
-    return Promise.reject(void 0);
+    const newPath = join(this.customIconsDir, newId + ext);
+    return Promise.reject();
     // Not working yet
-    return this.vault.adapter.rename(
-      join(path),
-      join(this.customIconsDir, newId + ext),
-    );
+    await this.vault.adapter.rename(path, newPath);
+    return newPath;
   }
   removeId(id: string) {
     const idInfo = this._customIcons.get(id);
@@ -278,7 +277,7 @@ export default class PackManager extends Events {
       console.log("failed to rename icon: id %s already exists", newId);
       return null;
     }
-    const info = this._customIcons.get(id);
+    let info = this._customIcons.get(id);
     if (!info) {
       console.log("failed to rename icon: id %s not found in custom icons", id);
       return null;
@@ -289,7 +288,7 @@ export default class PackManager extends Events {
       return null;
     }
     try {
-      await this.renameId(id, newId);
+      info.path = await this.renameId(id, newId);
     } catch (error) {
       throw new IconFileOpError("rename", id, error, newId);
     }
@@ -321,15 +320,15 @@ export default class PackManager extends Events {
     try {
       if (this._customIcons.has(targetId)) {
         const temp = this._customIcons.get(targetId) as FileIconInfo;
-        this.set(targetId, info, false);
-        this.set(id, temp, false);
         await this.renameId(targetId, targetId + "_temp");
-        await this.renameId(id, targetId);
-        await this.renameId(targetId + "_temp", id);
+        info.path = await this.renameId(id, targetId);
+        this.set(targetId, info, false);
+        temp.path = await this.renameId(targetId + "_temp", id);
+        this.set(id, temp, false);
       } else {
+        info.path = await this.renameId(id, targetId);
         this.set(targetId, info, false);
         this.delete(id, false, false);
-        await this.renameId(id, targetId);
       }
     } catch (error) {
       new IconFileOpError("rename", id, error, targetId);
