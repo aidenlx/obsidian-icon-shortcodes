@@ -12,6 +12,7 @@ declare module "obsidian" {
     configDir: string;
   }
   interface App {
+    openWithDefaultApp(path: string): Promise<void>;
     plugins: {
       enabledPlugins: Set<string>;
       plugins: {

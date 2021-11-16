@@ -7,6 +7,7 @@ import {
   App,
   ButtonComponent,
   Notice,
+  Platform,
   PluginSettingTab,
   Setting,
   TextComponent,
@@ -107,7 +108,7 @@ export class IconSCSettingTab extends PluginSettingTab {
             },
           );
         });
-    containerEl.createEl("h2", { text: "Icon Packs" });
+    new Setting(this.containerEl).setHeading().setName("Built-in Icon Packs");
 
     getSetting("far", "Font Awesome (Line)", (el) =>
       el.createEl("a", {
@@ -142,9 +143,26 @@ export class IconSCSettingTab extends PluginSettingTab {
   }
 
   manageCustomIcons(): void {
-    this.containerEl.createEl("h2", { text: "Custom Icons" });
+    new Setting(this.containerEl)
+      .setHeading()
+      .setName("Custom Icons")
+      .then(
+        (s) =>
+          Platform.isDesktopApp &&
+          s.addExtraButton((btn) =>
+            btn
+              .setIcon("folder")
+              .setTooltip("Open Icons Folder")
+              .onClick(() =>
+                this.app.openWithDefaultApp(
+                  this.plugin.packManager.customIconsDir,
+                ),
+              ),
+          ),
+      );
+
     const containerEl = this.containerEl.createDiv({
-      cls: "isc-settings-custom-icon",
+      cls: ["isc-settings-custom-icon", "installed-plugins-container"],
     });
 
     const isPacknameInvalid = (name: string) =>
