@@ -2,19 +2,40 @@ import Fuse from "fuse.js";
 
 interface IconBasicInfo {
   pack: string;
-  md5?: string;
   name: string;
+  md5?: string;
 }
 
-export type IconId = SVGIconId | EmojiIconId;
-type EmojiIconId = IconBasicInfo & {
-  id: string;
-  pack: "emoji";
-  md5?: undefined;
-};
-export type SVGIconId = Required<IconBasicInfo> & { id: string };
-export type SVGIconInfo = Required<IconBasicInfo> & { svg: string };
+export type IconId = FileIconId | EmojiIconId | EmbedIconId;
 
-export type IdIconMap = Record<string, SVGIconInfo>;
+type hasMd5 = { md5: string };
+type noMd5 = { md5?: undefined };
+
+interface IconBasicData {
+  path?: string;
+  data?: string;
+}
+
+type EmojiIconId = IconBasicInfo &
+  noMd5 & {
+    id: string;
+    pack: "emoji";
+  };
+
+interface FileIconData extends IconBasicData {
+  path: string;
+  data?: undefined;
+}
+export type FileIconId = IconBasicInfo & hasMd5 & { id: string };
+export type FileIconInfo = IconBasicInfo & hasMd5 & FileIconData;
+
+interface EmbedIconData extends IconBasicData {
+  path?: undefined;
+  data: string;
+}
+export type EmbedIconId = IconBasicInfo & hasMd5 & { id: string };
+export type EmbedIconInfo = IconBasicInfo & hasMd5 & EmbedIconData;
+
+export type IdIconMap = Record<string, FileIconInfo | EmbedIconInfo>;
 
 export type FuzzyMatch<T> = Fuse.FuseResult<T>;

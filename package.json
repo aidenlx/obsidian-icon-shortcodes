@@ -35,6 +35,7 @@
     "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
     "esbuild": "^0.13.13",
+    "esbuild-plugin-inline-worker": "^0.1.1",
     "esbuild-plugin-less": "^1.1.5",
     "eslint": "^8.2.0",
     "eslint-config-prettier": "^8.3.0",
@@ -54,6 +55,7 @@
     "md5": "^2.3.0",
     "node-emoji": "github:rhysd/node-emoji#fix-gh-short-codes",
     "obsidian": "^0.12.17",
+    "path-browserify": "^1.0.1",
     "preact": "^10.5.15",
     "prettier": "^2.4.1",
     "react": "npm:@preact/compat@^17.0.2",
@@ -65,6 +67,9 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "browser": {
+    "path": "path-browserify"
   },
   "release-it": {
     "hooks": {

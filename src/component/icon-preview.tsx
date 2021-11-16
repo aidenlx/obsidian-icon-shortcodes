@@ -10,12 +10,12 @@ import React, {
   useState,
 } from "react";
 
-import { SVGIconId } from "../icon-packs/types";
+import { FileIconId } from "../icon-packs/types";
 import { sanitizeName } from "../icon-packs/utils";
 import { Context } from "./icon-manager";
 
 interface IconPreviewProps {
-  iconId: SVGIconId;
+  iconId: FileIconId;
 }
 
 const IconPreview = ({ iconId }: IconPreviewProps) => {

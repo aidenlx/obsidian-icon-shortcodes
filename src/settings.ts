@@ -13,7 +13,7 @@ import {
 } from "obsidian";
 
 import IconManager from "./component/icon-manager";
-import { IconPacknames, SVGPacknames } from "./icon-packs/built-ins";
+import { BuiltInIconPacknames, SVGPacknames } from "./icon-packs/built-ins";
 
 export interface IconSCSettings {
   code2emoji: boolean;
@@ -151,7 +151,7 @@ export class IconSCSettingTab extends PluginSettingTab {
       this.plugin.packManager.isPacknameExists(name);
     new Setting(containerEl)
       .setName("Add new icon pack")
-      .setDesc("Reserved names: " + IconPacknames.join(", "))
+      .setDesc("Reserved names: " + BuiltInIconPacknames.join(", "))
       .then((s) => {
         let button: ButtonComponent | null = null,
           input: TextComponent | null = null;

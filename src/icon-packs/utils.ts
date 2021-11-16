@@ -1,7 +1,7 @@
 import md5 from "md5";
 import emoji from "node-emoji";
 
-import { SVGIconInfo } from "./types";
+import { FileIconInfo } from "./types";
 
 export type EntriesFromRecord<T> = [key: keyof T, value: T[keyof T]][];
 
@@ -36,12 +36,12 @@ export const PackPrefixPattern = /^([A-Za-z0-9]+?)_/;
 export const getIconInfoFromId = (
   id: string,
   svg: string,
-): SVGIconInfo | null => {
+): FileIconInfo | null => {
   const result = getPacknNameFromId(id);
   if (!result) return null;
   const { name, pack } = result;
   svg = svg.trim();
-  return { pack, name, svg, md5: md5(svg) };
+  return { pack, name, path: svg, md5: md5(svg) };
 };
 export const getPacknNameFromId = (
   id: string,

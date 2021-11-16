@@ -11,7 +11,7 @@ import React, {
 import ReactDOM from "react-dom";
 
 import PackManager from "../icon-packs/pack-manager";
-import { FuzzyMatch, IconId, SVGIconId } from "../icon-packs/types";
+import { FileIconId, FuzzyMatch, IconId } from "../icon-packs/types";
 import IconSC from "../isc-main";
 import IconPreview from "./icon-preview";
 
@@ -91,7 +91,7 @@ const Icons = ({ pack }: { pack: string }) => {
       <div className="icons">
         {ids.map((fuzzy) => (
           <IconPreview
-            iconId={fuzzy.item as SVGIconId}
+            iconId={fuzzy.item as FileIconId}
             key={fuzzy.item.id + (fuzzy.item.md5 ?? "")}
           />
         ))}
