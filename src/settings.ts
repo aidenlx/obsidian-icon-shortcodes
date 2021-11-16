@@ -154,6 +154,17 @@ export class IconSCSettingTab extends PluginSettingTab {
           .setTooltip("Backup icons")
           .onClick(() => this.plugin.packManager.backupCustomIcons()),
       )
+      .addExtraButton((btn) =>
+        btn
+          .setIcon("restore-file-glyph")
+          .setTooltip("Restore backup")
+          .onClick(async () =>
+            this.plugin.packManager.importCustomIcons(
+              await fileDialog({ multiple: false, accept: ".zip" }),
+              false,
+            ),
+          ),
+      )
       .then(
         (s) =>
           Platform.isDesktopApp &&

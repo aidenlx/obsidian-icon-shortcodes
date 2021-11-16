@@ -20,6 +20,7 @@ import {
   extPattern,
   getIconInfoFromId,
   getIconsFromFileList,
+  iconFilePattern,
   sanitizeId,
 } from "./utils";
 
@@ -179,6 +180,46 @@ export default class PackManager extends Events {
         `icons have been saved to ${bakFilePath}, ` +
           "enable 'Detect all file extension' in 'Files & Links' to visit it",
       );
+    }
+  }
+  async importCustomIcons(
+    files: FileList,
+    zipNameAsPack: boolean,
+  ): Promise<void> {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.type !== "application/zip") continue;
+      const packName = file.name.replace(/\.zip$/, ""),
+        zip = await JSZip.loadAsync(file);
+      const queue = zip.file(iconFilePattern).map(async (file) => {
+        let { name } = file;
+        if (zipNameAsPack && !name.startsWith(packName + "_"))
+          name = packName + "_" + name;
+        const writeTo = join(this.customIconsDir, name);
+        if (await this.vault.adapter.exists(writeTo)) {
+          console.warn("icon %s already exists, overriding...", name);
+        }
+        this.vault.adapter.writeBinary(
+          writeTo,
+          await file.async("arraybuffer"),
+        );
+        return name;
+      });
+      const addedIcons = (await Promise.allSettled(queue)).reduce(
+        (arr, result) => {
+          if (result.status === "rejected") {
+            console.error("Failed to import icon", result.reason);
+          } else {
+            arr.push(result.value);
+          }
+          return arr;
+        },
+        [] as string[],
+      );
+      new Notice(
+        addedIcons.length + " icons imported, restart obsidian to take effects",
+      );
+      return; // only import the first zip file
     }
   }
 

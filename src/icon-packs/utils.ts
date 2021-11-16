@@ -85,6 +85,7 @@ export const SupportedIconExt = [
   ".svg",
   ".webp",
 ] as const;
+export const iconFilePattern = /^[\w-]+\.(?:bmp|png|jpg|jpeg|gif|svg|webp)$/;
 export const extPattern = /\.(?:bmp|png|jpg|jpeg|gif|svg|webp)$/;
 const mimes = SupportedIconExt.map((ext) => lookup(ext));
 export const getIconsFromFileList = async (
