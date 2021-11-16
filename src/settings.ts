@@ -219,7 +219,17 @@ export class IconSCSettingTab extends PluginSettingTab {
   async addNewCustomIconEntry(pack: string, containerEl: HTMLElement) {
     const setting = new Setting(containerEl)
       .setName(pack)
-      .setDesc("Drag svg files in to add custom icon")
+      .setDesc(
+        createFragment((el) => {
+          el.appendText("Drag files in to import custom icons");
+          el.createEl("br");
+          el.appendText("Supported format: ");
+          SupportedIconExt.forEach((ext, index, arr) => {
+            el.createEl("code", { text: ext });
+            if (arr.length - 1 !== index) el.appendText(", ");
+          });
+        }),
+      )
       .addButton((btn) =>
         btn
           .setIcon("go-to-file")
