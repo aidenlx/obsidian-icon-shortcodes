@@ -1,12 +1,11 @@
 import "./icon.less";
 
 import cls from "classnames";
-import { saveAs } from "file-saver";
 import Fuse from "fuse.js";
 import JSZip from "jszip";
 import svg2uri from "mini-svg-data-uri";
 import emoji from "node-emoji";
-import { EventRef, Events, normalizePath, Notice } from "obsidian";
+import { EventRef, Events, normalizePath, Notice, Platform } from "obsidian";
 import { basename, join } from "path";
 import { ArrayBuffer as AB } from "spark-md5";
 
@@ -168,7 +167,19 @@ export default class PackManager extends Events {
     for (const filepath of iconlist.files) {
       zip.file(basename(filepath), this.vault.adapter.readBinary(filepath));
     }
-    saveAs(await zip.generateAsync({ type: "blob" }), "custom-icons.zip");
+    const bakFilePath = "custom-icons.zip";
+    await this.vault.createBinary(
+      bakFilePath,
+      await zip.generateAsync({ type: "arraybuffer" }),
+    );
+    if (Platform.isDesktopApp) {
+      this.plugin.app.openWithDefaultApp(bakFilePath);
+    } else {
+      new Notice(
+        `icons have been saved to ${bakFilePath}, ` +
+          "enable 'Detect all file extension' in 'Files & Links' to visit it",
+      );
+    }
   }
 
   async addFromFiles(pack: string, files: FileList) {
