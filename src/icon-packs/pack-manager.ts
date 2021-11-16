@@ -162,13 +162,15 @@ export default class PackManager extends Events {
     this.refresh();
     this.trigger("initialized", this);
   }
-  async backupCustomIcons(): Promise<void> {
+  async backupCustomIcons(pack?: string): Promise<void> {
     let zip = new JSZip();
     const iconlist = await this.vault.adapter.list(this.customIconsDir);
     for (const filepath of iconlist.files) {
-      zip.file(basename(filepath), this.vault.adapter.readBinary(filepath));
+      if (!pack || basename(filepath).startsWith(pack + "_")) {
+        zip.file(basename(filepath), this.vault.adapter.readBinary(filepath));
+      }
     }
-    const bakFilePath = "custom-icons.zip";
+    const bakFilePath = `${pack ?? "custom-icons"}.zip`;
     await this.vault.createBinary(
       bakFilePath,
       await zip.generateAsync({ type: "arraybuffer" }),

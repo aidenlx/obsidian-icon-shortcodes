@@ -243,6 +243,12 @@ export class IconSCSettingTab extends PluginSettingTab {
       )
       .addButton((btn) =>
         btn
+          .setIcon("sheets-in-box")
+          .setTooltip("Backup icons")
+          .onClick(() => this.plugin.packManager.backupCustomIcons(pack)),
+      )
+      .addButton((btn) =>
+        btn
           .setIcon("go-to-file")
           .setTooltip("select files to import")
           .onClick(async () =>
