@@ -1,7 +1,9 @@
 import "./icon.less";
 
 import cls from "classnames";
+import { saveAs } from "file-saver";
 import Fuse from "fuse.js";
+import JSZip from "jszip";
 import svg2uri from "mini-svg-data-uri";
 import emoji from "node-emoji";
 import { EventRef, Events, normalizePath, Notice } from "obsidian";
@@ -156,6 +158,14 @@ export default class PackManager extends Events {
     this._loaded = true;
     this.refresh();
     this.trigger("initialized", this);
+  }
+  async backupCustomIcons(): Promise<void> {
+    let zip = new JSZip();
+    const iconlist = await this.vault.adapter.list(this.customIconsDir);
+    for (const filepath of iconlist.files) {
+      zip.file(basename(filepath), this.vault.adapter.readBinary(filepath));
+    }
+    saveAs(await zip.generateAsync({ type: "blob" }), "custom-icons.zip");
   }
 
   async addFromFiles(pack: string, files: FileList) {

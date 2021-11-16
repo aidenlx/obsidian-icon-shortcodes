@@ -146,6 +146,12 @@ export class IconSCSettingTab extends PluginSettingTab {
     new Setting(this.containerEl)
       .setHeading()
       .setName("Custom Icons")
+      .addExtraButton((btn) =>
+        btn
+          .setIcon("sheets-in-box")
+          .setTooltip("Backup icons")
+          .onClick(() => this.plugin.packManager.backupCustomIcons()),
+      )
       .then(
         (s) =>
           Platform.isDesktopApp &&
