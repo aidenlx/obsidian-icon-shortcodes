@@ -1,3 +1,16 @@
+## [0.4.3](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.4.2...0.4.3) (2021-11-17)
+
+
+### Bug Fixes
+
+* bulti-in icons now display properly in dark mode ([5f631ab](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/5f631ab17e2157e180f94ba8e7b6d5225e8c4616))
+* **settings:** fix unable to toggle remixicon filled icons ([55b898c](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/55b898c89baca2b938a24b5865bb3c8ed0005b54)), closes [#15](https://github.com/aidenlx/obsidian-icon-shortcodes/issues/15)
+
+
+### Features
+
+* **suggester:** add highlight for matched text ([7c5e122](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/7c5e1220a8fddf4a42132d80f40ef59c59b241f1))
+
 ## [0.4.2](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.4.1...0.4.2) (2021-11-15)
 
 
