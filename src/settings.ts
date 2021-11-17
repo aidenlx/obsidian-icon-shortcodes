@@ -78,7 +78,7 @@ export class IconSCSettingTab extends PluginSettingTab {
     const { containerEl } = this;
 
     const getSetting = (
-      id: keyof IconSCSettings["iconpack"],
+      id: SVGPacknames,
       name: string,
       getDesc: (el: DocumentFragment) => void,
     ) =>
@@ -119,7 +119,7 @@ export class IconSCSettingTab extends PluginSettingTab {
         text: "official website",
       }),
     );
-    getSetting("ris", "Remixicon (Solid)", (el) =>
+    getSetting("rif", "Remixicon (Solid)", (el) =>
       el.createEl("a", {
         href: "https://remixicon.com",
         text: "official website",
