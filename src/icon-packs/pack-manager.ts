@@ -197,15 +197,16 @@ export default class PackManager extends Events {
         let { name } = file;
         if (zipNameAsPack && !name.startsWith(packName + "_"))
           name = packName + "_" + name;
-        const writeTo = join(this.customIconsDir, name);
+        const id = this.getAvailableId(name);
+        const writeTo = join(this.customIconsDir, id);
         if (await this.vault.adapter.exists(writeTo)) {
-          console.warn("icon %s already exists, overriding...", name);
+          return Promise.reject(`icon ${id} already exists, skipping..`);
         }
         this.vault.adapter.writeBinary(
           writeTo,
           await file.async("arraybuffer"),
         );
-        return name;
+        return id;
       });
       const addedIcons = (await Promise.allSettled(queue)).reduce(
         (arr, result) => {
@@ -237,13 +238,16 @@ export default class PackManager extends Events {
       return;
     }
     const writeQueue = icons.reduce((arr, { name, ext, data }) => {
-      const id = sanitizeId(`${pack}_${name}`);
+      let id = sanitizeId(`${pack}_${name}`);
       if (!id) {
         console.warn("failed to add icon: id %s invalid, skipping...", id);
         return arr;
       }
-      if (this._customIcons.has(id))
-        console.warn("icon id %s already exists, overriding...", id);
+      id = this.getAvailableId(id);
+      if (this._customIcons.has(id)) {
+        arr.push(Promise.reject(`icon ${id} already exists, skipping..`));
+        return arr;
+      }
       arr.push(
         (async () => {
           try {
@@ -258,7 +262,6 @@ export default class PackManager extends Events {
           } catch (error) {
             throw new IconFileOpError("add", id, error);
           }
-
           return id;
         })(),
       );
@@ -395,6 +398,16 @@ export default class PackManager extends Events {
     this.refresh();
     this.trigger("changed", this);
     return targetId;
+  }
+
+  getAvailableId(id: string): string {
+    if (!this.hasIcon(id)) return id;
+    let i = 1,
+      newId = `${id}_${i}`;
+    while (this.hasIcon(newId)) {
+      newId = `${id}_${++i}`;
+    }
+    return `${id}_${i}`;
   }
 
   /** set info in database, no file changes */
