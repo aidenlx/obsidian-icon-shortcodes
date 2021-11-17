@@ -33,20 +33,21 @@ export default class PackManager extends Events {
   get vault() {
     return this.plugin.app.vault;
   }
-  async renameId(id: string, newId: string): Promise<string> {
-    const idInfo = this._customIcons.get(id);
-    if (!idInfo) throw new Error("No such icon " + id);
-    const { ext, path } = idInfo;
-    const newPath = join(this.customIconsDir, newId + ext);
+  async renameIconFile(
+    id: string,
+    ext: string,
+    newId: string,
+  ): Promise<string> {
+    const newPath = join(this.customIconsDir, newId + ext),
+      path = join(this.customIconsDir, id + ext);
     return Promise.reject();
     // Not working yet
     await this.vault.adapter.rename(path, newPath);
     return newPath;
   }
-  removeId(id: string) {
-    const idInfo = this._customIcons.get(id);
-    if (!idInfo) throw new Error("No such icon " + id);
-    return this.vault.adapter.remove(idInfo.path);
+  removeIconFile(id: string, ext: string) {
+    const path = join(this.customIconsDir, id + ext);
+    return this.vault.adapter.remove(path);
   }
   async addIcon(id: string, ext: string, data: ArrayBuffer) {
     const path = join(this.customIconsDir, id + ext);
@@ -282,9 +283,16 @@ export default class PackManager extends Events {
   async deleteMultiple(...ids: string[]): Promise<void> {
     this._fuse.remove((icon) => isFileIconId(icon) && ids.includes(icon.id));
     const queue = ids.map(async (id) => {
+      const info = this._customIcons.get(id);
+      if (!info)
+        throw new IconFileOpError(
+          "delete",
+          id,
+          "No icon found in _customIcons",
+        );
       this._customIcons.delete(id);
       try {
-        await this.removeId(id);
+        await this.removeIconFile(id, info.ext);
       } catch (error) {
         throw new IconFileOpError("delete", id, error);
       }
@@ -349,7 +357,7 @@ export default class PackManager extends Events {
       return null;
     }
     try {
-      info.path = await this.renameId(id, newId);
+      info.path = await this.renameIconFile(id, info.ext, newId);
     } catch (error) {
       throw new IconFileOpError("rename", id, error, newId);
     }
@@ -379,15 +387,21 @@ export default class PackManager extends Events {
     }
 
     try {
+      const { ext } = info;
       if (this._customIcons.has(targetId)) {
-        const temp = this._customIcons.get(targetId) as FileIconInfo;
-        await this.renameId(targetId, targetId + "_temp");
-        info.path = await this.renameId(id, targetId);
+        const temp = this._customIcons.get(targetId) as FileIconInfo,
+          { ext: targetExt } = temp;
+        await this.renameIconFile(targetId, targetExt, targetId + "_temp");
+        info.path = await this.renameIconFile(id, ext, targetId);
         this.set(targetId, info, false);
-        temp.path = await this.renameId(targetId + "_temp", id);
+        temp.path = await this.renameIconFile(
+          targetId + "_temp",
+          targetExt,
+          id,
+        );
         this.set(id, temp, false);
       } else {
-        info.path = await this.renameId(id, targetId);
+        info.path = await this.renameIconFile(id, ext, targetId);
         this.set(targetId, info, false);
         this.delete(id, false, false);
       }
@@ -435,9 +449,11 @@ export default class PackManager extends Events {
     refresh = true,
     deleteFile = true,
   ): Promise<boolean> {
+    const info = this._customIcons.get(id);
+    if (!info) return false;
     if (deleteFile) {
       try {
-        await this.removeId(id);
+        await this.removeIconFile(id, info.ext);
       } catch (error) {
         throw new IconFileOpError("delete", id, error);
       }
