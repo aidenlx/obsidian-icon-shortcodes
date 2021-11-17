@@ -215,7 +215,10 @@ export class IconSCSettingTab extends PluginSettingTab {
                   new Notice("This name is invalid.");
                   return;
                 }
-                this.addNewCustomIconEntry(packName, containerEl);
+                this.addNewCustomIconEntry(
+                  packName,
+                  containerEl,
+                ).settingEl.scrollIntoView();
                 input?.setValue("");
               }),
             (button = btn)
@@ -227,7 +230,7 @@ export class IconSCSettingTab extends PluginSettingTab {
       this.addNewCustomIconEntry(pack, containerEl),
     );
   }
-  async addNewCustomIconEntry(pack: string, containerEl: HTMLElement) {
+  addNewCustomIconEntry(pack: string, containerEl: HTMLElement) {
     const setting = new Setting(containerEl)
       .setName(pack)
       .setDesc(
@@ -287,6 +290,8 @@ export class IconSCSettingTab extends PluginSettingTab {
           this.plugin.packManager.addFromFiles(pack, evt.dataTransfer.files);
         }),
       );
+
+    return setting;
   }
 }
 
