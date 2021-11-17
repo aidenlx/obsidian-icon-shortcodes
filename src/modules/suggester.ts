@@ -76,7 +76,7 @@ export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconId>> {
     this.context.editor.replaceRange(
       this.plugin.settings.code2emoji && pack === "emoji"
         ? (this.packManager.getIcon(id) as string)
-        : `:${id}:`,
+        : `:${id}:` + (this.plugin.settings.spaceAfterSC ? " " : ""),
       this.context.start,
       this.context.end,
     );

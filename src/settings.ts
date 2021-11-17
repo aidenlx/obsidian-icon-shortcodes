@@ -19,6 +19,7 @@ export interface IconSCSettings {
   code2emoji: boolean;
   suggester: boolean;
   iconpack: Record<SVGPacknames, boolean> & Record<string, boolean>;
+  spaceAfterSC: boolean;
 }
 
 export const DEFAULT_SETTINGS: IconSCSettings = {
@@ -31,6 +32,7 @@ export const DEFAULT_SETTINGS: IconSCSettings = {
     rif: false,
     ril: true,
   },
+  spaceAfterSC: false,
 };
 
 export class IconSCSettingTab extends PluginSettingTab {
@@ -70,6 +72,17 @@ export class IconSCSettingTab extends PluginSettingTab {
           await this.plugin.saveSettings();
         });
       });
+    new Setting(containerEl)
+      .setName("Suggester: Add space after inserted shortcode")
+      .addToggle((cb) => {
+        cb.setValue(this.plugin.settings.spaceAfterSC).onChange(
+          async (value) => {
+            this.plugin.settings.spaceAfterSC = value;
+            await this.plugin.saveSettings();
+          },
+        );
+      });
+
     this.skipIconPack();
     this.manageCustomIcons();
   }
