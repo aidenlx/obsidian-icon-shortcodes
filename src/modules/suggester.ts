@@ -1,5 +1,6 @@
 import "./suggester.less";
 
+import Fuse from "fuse.js";
 import {
   Editor,
   EditorPosition,
@@ -53,11 +54,17 @@ export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconId>> {
 
   renderSuggestion(suggestion: FuzzyMatch<IconId>, el: HTMLElement): void {
     const { id, name } = suggestion.item,
+      { matches } = suggestion,
       result = this.packManager.getIcon(id);
     if (!result) throw new TypeError("Failed to get icon for key: " + id);
 
     const icon = result;
-    el.createDiv({ cls: `shortcode` }).setText(name.replace(/[_-]/g, " "));
+    const shortcode = el.createDiv({ cls: `shortcode` });
+    if (matches && matches[0]) {
+      renderMatches(shortcode, name.replace(/[_-]/g, " "), matches[0].indices);
+    } else {
+      shortcode.setText(name.replace(/[_-]/g, " "));
+    }
     el.createDiv({ cls: `icon` }, (el) =>
       typeof icon === "string" ? (el.textContent = icon) : el.appendChild(icon),
     );
@@ -75,3 +82,36 @@ export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconId>> {
     );
   }
 }
+
+const renderMatches = (
+  el: HTMLElement,
+  text: string,
+  indices?: readonly Fuse.RangeTuple[],
+  offset?: number,
+) => {
+  if (indices) {
+    if (offset === undefined) offset = 0;
+    let textIndex = 0;
+    for (
+      let rangeIndex = 0;
+      rangeIndex < indices.length && textIndex < text.length;
+      rangeIndex++
+    ) {
+      let range = indices[rangeIndex],
+        start = range[0] + offset,
+        end = range[1] + offset + 1; // patch for Fuse.RangeTuple
+      if (!(end <= 0)) {
+        if (start >= text.length) break;
+        if (start < 0) start = 0;
+        if (start !== textIndex)
+          el.appendText(text.substring(textIndex, start));
+        el.createSpan({
+          cls: "suggestion-highlight",
+          text: text.substring(start, end),
+        });
+        textIndex = end;
+      }
+    }
+    textIndex < text.length && el.appendText(text.substring(textIndex));
+  } else el.appendText(text);
+};
