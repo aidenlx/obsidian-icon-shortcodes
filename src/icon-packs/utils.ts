@@ -65,4 +65,4 @@ export const sanitizeId = (id: string): string | null => {
   return `${result.pack}_${sanitizeName(result.name)}`;
 };
 export const sanitizeName = (name: string): string =>
-  name.trim().replace(/[ -]+/g, "_").replace(/\s+/g, "");
+  name.trim().replace(/[ -]+/g, "_").replace(/\s+/g, "").toLocaleLowerCase();
