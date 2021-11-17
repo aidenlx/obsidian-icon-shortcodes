@@ -75,11 +75,10 @@ export default class PackManager extends Events {
   }
 
   hasIcon(id: string): boolean {
-    return (
-      emoji.hasEmoji(id) ||
-      BuiltInSVGIconPacks.has(id) ||
-      this._customIcons.has(id)
-    );
+    return this._isBuiltIn(id) || this._customIcons.has(id);
+  }
+  private _isBuiltIn(id: string): boolean {
+    return emoji.hasEmoji(id) || BuiltInSVGIconPacks.has(id);
   }
 
   /**
@@ -368,7 +367,7 @@ export default class PackManager extends Events {
       console.log("failed to star icon: id %s not found in custom icons", id);
       return null;
     }
-    if (this.hasIcon(targetId)) {
+    if (this._isBuiltIn(targetId)) {
       console.log(
         "failed to star icon: new id %s exists in built-in icons",
         targetId,
@@ -492,11 +491,10 @@ class IconFileOpError extends Error {
   constructor(op: string, id: string, srcErr: any, newId?: string) {
     super(
       `Error while ${op} on ${id}${newId ? "=>" + newId : ""}: ${
-        srcErr instanceof Error
-          ? `${srcErr.name}: ${srcErr.message}`
-          : srcErr.toString()
+        srcErr instanceof Error ? `${srcErr.name}: ${srcErr.message}` : srcErr
       }`,
     );
+    console.error(`${op} on ${id}${newId ? "=>" + newId : ""}`, srcErr);
     this.name = "SaveIconError";
   }
 }
