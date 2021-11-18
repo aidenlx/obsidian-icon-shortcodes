@@ -1,3 +1,16 @@
+# [0.5.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.4.3...0.5.0) (2021-11-18)
+
+
+### Bug Fixes
+
+* now imported name should be convert to lower case id ([88c71e5](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/88c71e5a95c0c24d3184ae82d1a8147663a7c3d0))
+
+
+### Features
+
+* **api:** expose iconsc:changed and iconsc:initialized evt in app.vault ([6e86c8b](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/6e86c8b6ce833146f8bd71ff0eb54a2540addc70))
+* **suggester:** option to set if space is inserted next to shortcode ([44075fb](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/44075fbe09b6624b0ba48398124ef537cdbf6a75))
+
 ## [0.4.3](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.4.2...0.4.3) (2021-11-17)
 
 

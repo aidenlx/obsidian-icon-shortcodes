@@ -3,6 +3,9 @@ import emoji from "node-emoji";
 import { extname } from "path";
 import { ArrayBuffer as AB } from "spark-md5";
 
+import IconSC from "../isc-main";
+import IconSCAPI from "../typings/api";
+import PackManager from "./pack-manager";
 import { FileIconInfo } from "./types";
 
 export type EntriesFromRecord<T> = [key: keyof T, value: T[keyof T]][];
@@ -107,3 +110,11 @@ export const getIconsFromFileList = async (
   const result = await Promise.all(promises);
   return result.length > 0 ? result : null;
 };
+export const getApi = (
+  packManager: PackManager,
+  plugin: IconSC,
+): IconSCAPI => ({
+  hasIcon: packManager.hasIcon.bind(packManager),
+  getIcon: packManager.getIcon.bind(packManager),
+  postProcessor: plugin.postProcessor,
+});

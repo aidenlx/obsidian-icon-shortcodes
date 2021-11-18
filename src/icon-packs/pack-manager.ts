@@ -10,6 +10,7 @@ import { basename, join } from "path";
 import { ArrayBuffer as AB } from "spark-md5";
 
 import IconSC from "../isc-main";
+import { evtPrefix, PMEvents } from "../typings/api";
 import {
   BuiltInIconIds,
   BuiltInIconPacknames,
@@ -18,6 +19,7 @@ import {
 import { FileIconId, FileIconInfo, IconId, isFileIconId } from "./types";
 import {
   extPattern,
+  getApi,
   getIconInfoFromId,
   getIconsFromFileList,
   iconFilePattern,
@@ -160,7 +162,7 @@ export default class PackManager extends Events {
     }
     this._loaded = true;
     this.refresh();
-    this.trigger("initialized", this);
+    this.trigger("initialized", getApi(this, this.plugin));
   }
   async backupCustomIcons(pack?: string): Promise<void> {
     let zip = new JSZip();
@@ -277,7 +279,7 @@ export default class PackManager extends Events {
       }
     }
     this.refresh();
-    this.trigger("changed", this);
+    this.trigger("changed", getApi(this, this.plugin));
     new Notice(addedIds.length.toString() + " icons added");
   }
   async deleteMultiple(...ids: string[]): Promise<void> {
@@ -307,7 +309,7 @@ export default class PackManager extends Events {
     }
     if (changed) {
       this.refresh();
-      this.trigger("changed", this);
+      this.trigger("changed", getApi(this, this.plugin));
     }
   }
   async filter(
@@ -327,7 +329,7 @@ export default class PackManager extends Events {
     });
     if (toDelete.size === 0) return;
     this.refresh();
-    this.trigger("changed", this);
+    this.trigger("changed", getApi(this, this.plugin));
     const queue = [...toDelete].map(async (path) => {
       try {
         await this.vault.adapter.remove(path);
@@ -364,7 +366,7 @@ export default class PackManager extends Events {
     this.set(renameTo, info, false);
     this.delete(id, false, false);
     this.refresh();
-    this.trigger("changed", this);
+    this.trigger("changed", getApi(this, this.plugin));
     return newId;
   }
   async star(id: string): Promise<string | null> {
@@ -410,7 +412,7 @@ export default class PackManager extends Events {
     }
 
     this.refresh();
-    this.trigger("changed", this);
+    this.trigger("changed", getApi(this, this.plugin));
     return targetId;
   }
 
@@ -440,7 +442,7 @@ export default class PackManager extends Events {
     this._fuse.add(iconId);
     if (refresh) {
       this.refresh();
-      this.trigger("changed", this);
+      this.trigger("changed", getApi(this, this.plugin));
     }
   }
 
@@ -462,7 +464,7 @@ export default class PackManager extends Events {
     this._fuse.remove((icon) => icon.id === id);
     if (refresh) {
       this.refresh();
-      this.trigger("changed", this);
+      this.trigger("changed", getApi(this, this.plugin));
     }
     return result;
   }
@@ -478,7 +480,7 @@ export default class PackManager extends Events {
     this._customIcons.clear();
     this._fuse.remove((id) => !BuiltInIconIds.includes(id));
     this.refresh();
-    this.trigger("changed", this);
+    this.trigger("changed", getApi(this, this.plugin));
   }
 
   private _fuse = new Fuse<IconId>(BuiltInIconIds, {
@@ -498,8 +500,9 @@ export default class PackManager extends Events {
   }
 
   trigger(...args: PMEvents): void {
-    // @ts-expect-error
-    super.trigger(...args);
+    const [name, ...rest] = args;
+    super.trigger(name, ...rest);
+    this.plugin.app.vault.trigger(evtPrefix + name, ...rest);
   }
   on(...args: OnArgs<PMEvents>): EventRef {
     // @ts-expect-error
@@ -512,9 +515,6 @@ type OnArgs<T> = T extends [infer A, ...infer B]
     ? [name: A, callback: (...args: B) => any]
     : never
   : never;
-type PMEvents =
-  | [name: "changed", manager: PackManager]
-  | [name: "initialized", manager: PackManager];
 
 class IconFileOpError extends Error {
   constructor(op: string, id: string, srcErr: any, newId?: string) {
