@@ -8,9 +8,10 @@ import emoji from "node-emoji";
 import { EventRef, Events, normalizePath, Notice } from "obsidian";
 
 import IconSC from "../isc-main";
+import { evtPrefix, PMEvents } from "../typings/api";
 import { IconIds, IconPacknames, SVGIconPacks } from "./built-ins";
 import { IconId, SVGIconInfo } from "./types";
-import { getIconInfoFromId, sanitizeId } from "./utils";
+import { getApi, getIconInfoFromId, sanitizeId } from "./utils";
 
 type ExportedIcons = {
   [key: Parameters<typeof getIconInfoFromId>[0]]: Parameters<
@@ -117,7 +118,7 @@ export default class PackManager extends Events {
     }
     this._loaded = true;
     await this.refresh(false);
-    this.trigger("initialized", this);
+    this.trigger("initialized", getApi(this, this.plugin));
   }
   async saveCustomIcons() {
     const { vault } = this.plugin.app,
@@ -149,7 +150,7 @@ export default class PackManager extends Events {
       addedIds.push(id);
     }
     await this.refresh();
-    this.trigger("changed", this);
+    this.trigger("changed", getApi(this, this.plugin));
     new Notice(addedIds.length.toString() + " icons added");
   }
   async deleteMultiple(...ids: string[]) {
@@ -158,7 +159,7 @@ export default class PackManager extends Events {
     }
     this._fuse.remove((icon) => ids.includes(icon.id));
     await this.refresh();
-    this.trigger("changed", this);
+    this.trigger("changed", getApi(this, this.plugin));
   }
   async filter(
     predicate: (
@@ -176,7 +177,7 @@ export default class PackManager extends Events {
     this._fuse.remove((icon) => !predicate(icon.id, icon));
     if (changed) {
       await this.refresh();
-      this.trigger("changed", this);
+      this.trigger("changed", getApi(this, this.plugin));
     }
   }
   async rename(id: string, newId: string): Promise<string | null> {
@@ -197,7 +198,7 @@ export default class PackManager extends Events {
     this.set(renameTo, info, false);
     this.delete(id, false);
     await this.refresh();
-    this.trigger("changed", this);
+    this.trigger("changed", getApi(this, this.plugin));
     return newId;
   }
   async star(id: string): Promise<string | null> {
@@ -225,7 +226,7 @@ export default class PackManager extends Events {
       this.delete(id, false);
     }
     await this.refresh();
-    this.trigger("changed", this);
+    this.trigger("changed", getApi(this, this.plugin));
     return targetId;
   }
 
@@ -236,7 +237,7 @@ export default class PackManager extends Events {
     this._fuse.add({ id, md5, name: id.substring(pack.length + 1), pack });
     if (refresh) {
       await this.refresh();
-      this.trigger("changed", this);
+      this.trigger("changed", getApi(this, this.plugin));
     }
   }
 
@@ -245,7 +246,7 @@ export default class PackManager extends Events {
     this._fuse.remove((icon) => icon.id === id);
     if (refresh) {
       await this.refresh();
-      this.trigger("changed", this);
+      this.trigger("changed", getApi(this, this.plugin));
     }
     return result;
   }
@@ -253,7 +254,7 @@ export default class PackManager extends Events {
     this._customIcons.clear();
     this._fuse.remove((id) => !IconIds.includes(id));
     await this.refresh();
-    this.trigger("changed", this);
+    this.trigger("changed", getApi(this, this.plugin));
   }
 
   private _fuse = new Fuse<IconId>(IconIds, {
@@ -273,8 +274,9 @@ export default class PackManager extends Events {
   }
 
   trigger(...args: PMEvents): void {
-    // @ts-expect-error
-    super.trigger(...args);
+    const [name, ...rest] = args;
+    super.trigger(name, ...rest);
+    this.plugin.app.vault.trigger(evtPrefix + name, ...rest);
   }
   on(...args: OnArgs<PMEvents>): EventRef {
     // @ts-expect-error
@@ -287,9 +289,6 @@ type OnArgs<T> = T extends [infer A, ...infer B]
     ? [name: A, callback: (...args: B) => any]
     : never
   : never;
-type PMEvents =
-  | [name: "changed", manager: PackManager]
-  | [name: "initialized", manager: PackManager];
 
 const svgMime = "image/svg+xml";
 const getSVGIconFromFileList = async (

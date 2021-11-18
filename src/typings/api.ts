@@ -11,6 +11,11 @@ export default interface IconSCAPI {
   postProcessor: ReturnType<typeof getShortcodeProcessor>;
 }
 
+export const evtPrefix = "iconsc:" as const;
+export type PMEvents =
+  | [name: "changed", api: IconSCAPI]
+  | [name: "initialized", api: IconSCAPI];
+
 declare global {
   // Must use var, no const/let
   var IconSCAPIv0: IconSCAPI | undefined;

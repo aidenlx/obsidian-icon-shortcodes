@@ -1,6 +1,9 @@
 import md5 from "md5";
 import emoji from "node-emoji";
 
+import IconSC from "../isc-main";
+import IconSCAPI from "../typings/api";
+import PackManager from "./pack-manager";
 import { SVGIconInfo } from "./types";
 
 export type EntriesFromRecord<T> = [key: keyof T, value: T[keyof T]][];
@@ -66,3 +69,12 @@ export const sanitizeId = (id: string): string | null => {
 };
 export const sanitizeName = (name: string): string =>
   name.trim().replace(/[ -]+/g, "_").replace(/\s+/g, "").toLocaleLowerCase();
+
+export const getApi = (
+  packManager: PackManager,
+  plugin: IconSC,
+): IconSCAPI => ({
+  hasIcon: packManager.hasIcon.bind(packManager),
+  getIcon: packManager.getIcon.bind(packManager),
+  postProcessor: plugin.postProcessor,
+});

@@ -2,22 +2,20 @@ import "obsidian";
 
 import { Plugin } from "obsidian";
 
-import IconSCAPI from "./typings/api";
+import IconSCAPI, { evtPrefix, PMEvents } from "./typings/api";
 
 // EVENTS
 
-// type OnArgs<T> = T extends [infer A, ...infer B]
-//   ? A extends string
-//     ? [name: A, callback: (...args: B) => any]
-//     : never
-//   : never;
-// type EventsOnArgs = OnArgs<FNCEvents>;
-
-// declare module "obsidian" {
-//   interface Vault {
-//     on(...args: EventsOnArgs): EventRef;
-//   }
-// }
+type OnArgs<T> = T extends [infer A, ...infer B]
+  ? A extends string
+    ? [name: `${typeof evtPrefix}${A}`, callback: (...args: B) => any]
+    : never
+  : never;
+declare module "obsidian" {
+  interface Vault {
+    on(...args: OnArgs<PMEvents>): EventRef;
+  }
+}
 
 // UTIL FUNCTIONS
 
