@@ -1,3 +1,10 @@
+## [0.5.1](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.5.0...0.5.1) (2021-11-18)
+
+
+### Features
+
+* **api:** expose isEmoji() method; hasIcon() now accept shortcode with colons ([d63bbdb](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/d63bbdb4d5aa56979b6a34c666478cd148daa455))
+
 # [0.5.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.4.3...0.5.0) (2021-11-18)
 
 
