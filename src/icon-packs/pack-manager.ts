@@ -24,7 +24,14 @@ import {
   getIconsFromFileList,
   iconFilePattern,
   sanitizeId,
+  stripColons,
 } from "./utils";
+
+type ExportedIcons = {
+  [key: Parameters<typeof getIconInfoFromId>[0]]: Parameters<
+    typeof getIconInfoFromId
+  >[1];
+};
 
 const CUSTOM_ICON_PATH = "/icons.json";
 const CUSTOM_ICON_DIR = "icons";
@@ -85,11 +92,13 @@ export default class PackManager extends Events {
   }
 
   /**
+   * @param id accept shortcode with colons
    * @param raw if given, return resource path to icon file instead of img element
    */
   getIcon(id: string, raw: true): string | null;
   getIcon(id: string, raw?: false): string | HTMLImageElement | null;
   getIcon(id: string, raw = false): string | HTMLImageElement | null {
+    id = stripColons(id);
     let info;
     if (emoji.hasEmoji(id)) return emoji.get(id);
     else if ((info = BuiltInSVGIconPacks.get(id))) {
@@ -162,7 +171,7 @@ export default class PackManager extends Events {
     }
     this._loaded = true;
     this.refresh();
-    this.trigger("initialized", getApi(this, this.plugin));
+    this.trigger("initialized", this.plugin.api);
   }
   async backupCustomIcons(pack?: string): Promise<void> {
     let zip = new JSZip();
@@ -279,7 +288,7 @@ export default class PackManager extends Events {
       }
     }
     this.refresh();
-    this.trigger("changed", getApi(this, this.plugin));
+    this.trigger("changed", this.plugin.api);
     new Notice(addedIds.length.toString() + " icons added");
   }
   async deleteMultiple(...ids: string[]): Promise<void> {
@@ -309,7 +318,7 @@ export default class PackManager extends Events {
     }
     if (changed) {
       this.refresh();
-      this.trigger("changed", getApi(this, this.plugin));
+      this.trigger("changed", this.plugin.api);
     }
   }
   async filter(
@@ -329,7 +338,7 @@ export default class PackManager extends Events {
     });
     if (toDelete.size === 0) return;
     this.refresh();
-    this.trigger("changed", getApi(this, this.plugin));
+    this.trigger("changed", this.plugin.api);
     const queue = [...toDelete].map(async (path) => {
       try {
         await this.vault.adapter.remove(path);
@@ -366,7 +375,7 @@ export default class PackManager extends Events {
     this.set(renameTo, info, false);
     this.delete(id, false, false);
     this.refresh();
-    this.trigger("changed", getApi(this, this.plugin));
+    this.trigger("changed", this.plugin.api);
     return newId;
   }
   async star(id: string): Promise<string | null> {
@@ -412,7 +421,7 @@ export default class PackManager extends Events {
     }
 
     this.refresh();
-    this.trigger("changed", getApi(this, this.plugin));
+    this.trigger("changed", this.plugin.api);
     return targetId;
   }
 
@@ -442,7 +451,7 @@ export default class PackManager extends Events {
     this._fuse.add(iconId);
     if (refresh) {
       this.refresh();
-      this.trigger("changed", getApi(this, this.plugin));
+      this.trigger("changed", this.plugin.api);
     }
   }
 
@@ -464,7 +473,7 @@ export default class PackManager extends Events {
     this._fuse.remove((icon) => icon.id === id);
     if (refresh) {
       this.refresh();
-      this.trigger("changed", getApi(this, this.plugin));
+      this.trigger("changed", this.plugin.api);
     }
     return result;
   }
@@ -480,7 +489,7 @@ export default class PackManager extends Events {
     this._customIcons.clear();
     this._fuse.remove((id) => !BuiltInIconIds.includes(id));
     this.refresh();
-    this.trigger("changed", getApi(this, this.plugin));
+    this.trigger("changed", this.plugin.api);
   }
 
   private _fuse = new Fuse<IconId>(BuiltInIconIds, {

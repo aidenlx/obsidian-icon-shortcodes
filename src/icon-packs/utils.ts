@@ -116,5 +116,6 @@ export const getApi = (
 ): IconSCAPI => ({
   hasIcon: packManager.hasIcon.bind(packManager),
   getIcon: packManager.getIcon.bind(packManager),
+  isEmoji: emoji.hasEmoji.bind(emoji),
   postProcessor: plugin.postProcessor,
 });
