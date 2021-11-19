@@ -4,11 +4,12 @@
 
 Insert emoji and custom icons with shortcodes
 
+- Easily import and manage custom icons (support `.bmp`, `.png`, `.jpg`, `.jpeg`, `.gif`, and `.svg`, `.webp`)
+- Render custom icons in both editor (Desktop only) and preview with [Codemirror Options](https://github.com/nothingislost/obsidian-codemirror-options)
 - Built-in Unicode 13.1 Emoji, [Font Awesome](https://fontawesome.com/), and [Remixicon](https://github.com/Remix-Design/RemixIcon) support
 - Fuzzy search: type in `:book` to find 📖(`:open_book:`) and 📗(`:green_book:`)
-- Easily import and manage custom SVG icons
 
-Inspired by [obsidian-emoji-shortcodes](https://github.com/phibr0/obsidian-emoji-shortcodes), [obsidian-icons](https://github.com/visini/obsidian-icons-plugin) and [remark-emoji](https://github.com/rhysd/remark-emoji).
+Inspired by [obsidian-emoji-shortcodes](https://github.com/phibr0/obsidian-emoji-shortcodes), [obsidian-icon-folder](https://github.com/FlorianWoelki/obsidian-icon-folder), [obsidian-icons](https://github.com/visini/obsidian-icons-plugin) and [remark-emoji](https://github.com/rhysd/remark-emoji).
 
 Note: this plugin may conflicts with [obsidian-emoji-shortcodes](https://github.com/phibr0/obsidian-emoji-shortcodes), disable it before using this plugin
 
