@@ -49,8 +49,6 @@ export default class PackManager extends Events {
   ): Promise<string> {
     const newPath = join(this.customIconsDir, newId + ext),
       path = join(this.customIconsDir, id + ext);
-    return Promise.reject();
-    // Not working yet
     await this.vault.adapter.rename(path, newPath);
     return newPath;
   }
