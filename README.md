@@ -85,7 +85,7 @@ Your changes will now be applied and you can edit the file when you want.
    1. check if enabled: `isPluginEnabled(YourPluginInstance)`
    2. access api: `getApi()` / `getApi(YourPluginInstance)`
 
-For all exposed API method, [check api.ts](src/typings/api.ts)
+For all exposed API method, check [api.ts](src/typings/api.ts)
 
 ## Bulti-in Icon Packs and Licenses
 
@@ -99,6 +99,10 @@ For all exposed API method, [check api.ts](src/typings/api.ts)
 The required API feature is only available for Obsidian v0.13.4+.
 
 ## Installation
+
+### From BRAT
+
+To install a pre-release, download and enable the [Obsidian42 BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin, add the beta repository `aidenlx/obsidian-icon-shortcodes`, and then have BRAT check for updates.
 
 ### From GitHub
 
