@@ -4,9 +4,10 @@
 
 Insert emoji and custom icons with shortcodes
 
-- Easily import and manage custom icons (support `.bmp`, `.png`, `.jpg`, `.jpeg`, `.gif`, and `.svg`, `.webp`)
-- Render custom icons in both editor (Desktop only) and preview with [Codemirror Options](https://github.com/nothingislost/obsidian-codemirror-options)
+- Easily import and manage custom icons (support `.bmp`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.svg`, and `.webp`)
+- Render custom icons in editor with [Codemirror Options](https://github.com/nothingislost/obsidian-codemirror-options) (Desktop, non-live preview only)
 - Built-in Unicode 13.1 Emoji, [Font Awesome](https://fontawesome.com/), and [Remixicon](https://github.com/Remix-Design/RemixIcon) support
+- [API](#for-developer) ready to be intergated by other plugins
 - Fuzzy search: type in `:book` to find 📖(`:open_book:`) and 📗(`:green_book:`)
 
 Inspired by [obsidian-emoji-shortcodes](https://github.com/phibr0/obsidian-emoji-shortcodes), [obsidian-icon-folder](https://github.com/FlorianWoelki/obsidian-icon-folder), [obsidian-icons](https://github.com/visini/obsidian-icons-plugin) and [remark-emoji](https://github.com/rhysd/remark-emoji).
@@ -28,12 +29,28 @@ This plugins support GitHub favored emoji shortcodes, the full list of which can
 
 <https://user-images.githubusercontent.com/31102694/141667026-cbb0e668-ecbd-493e-9648-27ca7dfaa118.mp4>
 
+> support icon format: `.bmp`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.svg`, `.webp`
+
 1. Go to setting tab
 2. At the `Custom Icons` section, type in a name for new icon pack and click add button (better be short, it's acting as the id of icon pack and prefix of all icon shortcodes in this pack)
-3. Add the new icon pack entry, drag SVG file in or select them by click on `select file to import` button to import custom icons
+3. Add the new icon pack entry, drag supported file in or select them by click on `select file to import` button to import custom icons
 4. You can access icon manager by clicking `manage` icon. each icon has the following button
    - `star`: remove `_1` suffix, useful when there are multiple alternative icons
    - `delete`, `rename`
+
+## Backup & Restore Custom Icons
+
+> v0.6.0+ required
+
+Since v0.6.0, all custom icons are stored in `icons` folder under config directory (`.obsidian/icons` normally), you can:
+
+- open folder (Desktop only)
+- Backup all icons / selected icon pack to zip file (will be stored in the root vault directory)
+- Restore icons from zip file
+
+![custom-icon-buttons](https://user-images.githubusercontent.com/31102694/143665662-76ed8478-2e81-4006-a8a9-696258a268ce.png)
+
+![custom-icon-backup-pack-button](https://user-images.githubusercontent.com/31102694/143665678-2ff7bf4c-3f21-41b1-87f9-b22e41895d59.png)
 
 ## Styling Icons
 
