@@ -19,7 +19,6 @@ import {
 import { FileIconId, FileIconInfo, IconId, isFileIconId } from "./types";
 import {
   extPattern,
-  getApi,
   getIconInfoFromId,
   getIconsFromFileList,
   iconFilePattern,

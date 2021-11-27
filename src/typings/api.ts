@@ -1,16 +1,59 @@
+import compareVersions, { compare, satisfies } from "compare-versions";
+import emoji from "node-emoji";
+import { MarkdownPostProcessor, PluginManifest } from "obsidian";
+
 import PackManager from "../icon-packs/pack-manager";
-import getShortcodeProcessor from "../modules/post-ps";
+import IconSC from "../isc-main";
 
 export default interface IconSCAPI {
-  hasIcon: PackManager["hasIcon"];
+  hasIcon: (id: string) => boolean;
   /**
    * @param id accept shortcode with colons
    * @param raw if true, return svg data uri instead of img element
    * @returns emoji character if given emoji shortcode; svg data uri or img element if given svg shortcode; null if given id is not found
    */
-  getIcon: PackManager["getIcon"];
+  getIcon: {
+    (id: string, raw: true): string | null;
+    (id: string, raw?: false | undefined): string | HTMLImageElement | null;
+  };
   isEmoji: (str: string) => boolean;
-  postProcessor: ReturnType<typeof getShortcodeProcessor>;
+  postProcessor: MarkdownPostProcessor;
+  version: {
+    current: string;
+    /**
+     * Compare [semver](https://semver.org/) version strings using the specified operator.
+     *
+     * @param verToCompare version to compare
+     * @param operator Allowed arithmetic operator to use
+     * @returns `true` if the comparison between the verToCompare and the current version satisfies the operator, `false` otherwise.
+     *
+     * @example
+     * ```
+     * currVer = '10.1.1';
+     * compare('<', '10.2.2'); // return true
+     * compare('<=', '10.2.2'); // return true
+     * compare('>=' '10.2.2'); // return false
+     * ```
+     */
+    compare(
+      operator: compareVersions.CompareOperator,
+      verToCompare: string,
+    ): boolean;
+    /**
+     * Match [npm semver](https://docs.npmjs.com/cli/v6/using-npm/semver) version range.
+     *
+     * @param range Range pattern for version
+     * @returns `true` if the current version number is within the range, `false` otherwise.
+     *
+     * @example
+     * ```
+     * currVer = '1.1.0';
+     * satisfies('^1.0.0'); // return true
+     * satisfies('~1.0.0'); // return false
+     * ```
+     */
+    satisfies(range: string): boolean;
+  };
 }
 
 export const evtPrefix = "iconsc:" as const;
@@ -23,3 +66,20 @@ declare global {
   var IconSCAPIv0: IconSCAPI | undefined;
 }
 export type API_NAME = "IconSCAPIv0";
+
+export const getApi = (
+  packManager: PackManager,
+  plugin: IconSC,
+): IconSCAPI => ({
+  hasIcon: packManager.hasIcon.bind(packManager),
+  getIcon: packManager.getIcon.bind(packManager),
+  isEmoji: emoji.hasEmoji.bind(emoji),
+  postProcessor: plugin.postProcessor,
+  version: {
+    get current() {
+      return plugin.manifest.version;
+    },
+    compare: (op, ver) => compare(plugin.manifest.version, ver, op),
+    satisfies: (range) => satisfies(plugin.manifest.version, range),
+  },
+});

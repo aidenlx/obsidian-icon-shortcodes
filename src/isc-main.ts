@@ -2,10 +2,10 @@ import { Plugin } from "obsidian";
 import { DEFAULT_SETTINGS, IconSCSettings, IconSCSettingTab } from "settings";
 
 import PackManager from "./icon-packs/pack-manager";
-import { getApi } from "./icon-packs/utils";
 import tryUpdateIcons from "./modules/json-to-svg";
 import getShortcodeProcessor from "./modules/post-ps";
 import EmojiSuggester from "./modules/suggester";
+import { getApi } from "./typings/api";
 import API, { API_NAME } from "./typings/api";
 
 const API_NAME: API_NAME extends keyof typeof window ? API_NAME : never =
