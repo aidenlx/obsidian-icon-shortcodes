@@ -1,3 +1,30 @@
+# [0.6.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.5.1...0.6.0) (2021-11-27)
+
+
+### Bug Fixes
+
+* **pack-manager:** backupCustomIcons() no longer opens backup zip when finished ([b0afde7](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/b0afde70f801f1a7c70b994a06582c2e701c4063))
+* **pack-manager:** change icon dir to .obsidian/icons to avoid sync conflict; fix failed to load when customIconsDir not exist ([76c93ff](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/76c93ffff6b9899c35f1e02f4383551a1c0f4210))
+* **pack-manager:** fix backup icon not working ([e6bc2dc](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/e6bc2dcc7ed9fc87dcfbb865fd36fed1ef291184))
+* **pack-manager:** fix broken rename() and star() method ([ff82174](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/ff821745c4870aac66c1c16a1cc2b33769eaa8d6))
+* **pack-manager:** fix failed to star icon ([b1cf68b](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/b1cf68b40c760ab0f27bedae31fb241170679a66))
+* **pack-manager:** fix filepath not updated when rename/star icon ([da7b956](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/da7b9568033321d1e0e583894d9964675d1e5483))
+* **pack-manager:** renameIconFile() is now working ([d016e9e](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/d016e9ed66edbf0b8afcfa9d4c37edd5d5d10bbc))
+
+
+### Features
+
+* add icon update prompt on load ([b459fbe](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/b459fbee4b5dcf73c7c038dbdc5e851f024bf131))
+* add support for bitmap icons (png, jpg, webp...) ([50c0914](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/50c09144d4a1ded79b236e82be08a89a6899d524)), closes [#9](https://github.com/aidenlx/obsidian-icon-shortcodes/issues/9)
+* **api:** expose version and utils: compare, satisfies ([cb3cc01](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/cb3cc01163f46c35c9bab87e294d56d0697055a5))
+* **pack-manager:** backup custom icons in a zipped file ([8938309](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/89383090663bc284686cf03f37c93eece3c0255c)), closes [#10](https://github.com/aidenlx/obsidian-icon-shortcodes/issues/10)
+* **pack-manager:** backupCustomIcons() now support backup one icon pack ([1668306](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/166830635fc39d636f509d0268d5f9208c3d6346))
+* **pack-manager:** icons now stores as dedicated files ([c77256a](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/c77256a5062400c54172d4051633c88a7642065e)), closes [/github.com/obsidianmd/obsidian-releases/pull/640#issuecomment-969926491](https://github.com//github.com/obsidianmd/obsidian-releases/pull/640/issues/issuecomment-969926491)
+* **pack-manager:** import file with existing id no longer override existing icon ([2ba067a](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/2ba067ae5a39a673c4dc0e22b64d350f4ba066dc))
+* **pack-manager:** restore from backup zip file ([fde5b7f](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/fde5b7ff469f8e238d0a8108eac41a669ee3c1e4))
+* **settings:** add button to open custom icon folder; adjust interface ([ad8764f](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/ad8764fd0f421b5c9519da08a050b5d577a94b20))
+* **settings:** new custom icon entry now automatically scroll into view ([92a58fe](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/92a58fe9cb3eb09101393e86098795770631f004))
+
 ## [0.5.1](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.5.0...0.5.1) (2021-11-18)
 
 
