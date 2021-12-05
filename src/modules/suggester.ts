@@ -11,6 +11,7 @@ import {
 
 import { FuzzyMatch, IconId } from "../icon-packs/types";
 import IconSC from "../isc-main";
+import UnionRanges from "./union";
 
 const CLASS_ID = "isc";
 
@@ -60,8 +61,14 @@ export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconId>> {
 
     const icon = result;
     const shortcode = el.createDiv({ cls: `shortcode` });
-    if (matches && matches[0]) {
-      renderMatches(shortcode, name.replace(/[_-]/g, " "), matches[0].indices);
+    if (matches) {
+      const indices =
+        matches.length === 1
+          ? matches[0].indices
+          : UnionRanges(
+              matches.flatMap((m) => (m.key === "name" ? m.indices : [])),
+            );
+      renderMatches(shortcode, name.replace(/[_-]/g, " "), indices);
     } else {
       shortcode.setText(name.replace(/[_-]/g, " "));
     }
