@@ -1,8 +1,9 @@
 import compareVersions, { compare, satisfies } from "compare-versions";
 import emoji from "node-emoji";
-import { MarkdownPostProcessor, PluginManifest } from "obsidian";
+import { MarkdownPostProcessor } from "obsidian";
 
 import PackManager from "../icon-packs/pack-manager";
+import { IconId } from "../icon-packs/types";
 import IconSC from "../isc-main";
 import { EmojiSuggesterModal } from "../modules/suggester";
 
@@ -27,16 +28,9 @@ export default interface IconSCAPI {
 
   /**
    * Prompt user for icon, available since v0.6.1
-   * @param raw if true, return svg data uri instead of img element
-   * @returns emoji character if given emoji shortcode; svg data uri if given svg shortcode; null if nothing selected
+   * @returns icon info including id if user choose one; null if user cancel
    */
-  getIconFromUser(raw: true): Promise<string | null>;
-  /**
-   * Prompt user for icon, available since v0.6.1
-   * @param raw if true, return svg data uri instead of img element
-   * @returns emoji character if given emoji shortcode; img element if given svg shortcode; null if nothing selected
-   */
-  getIconFromUser(raw?: false): Promise<string | HTMLImageElement | null>;
+  getIconFromUser(): Promise<IconId | null>;
 
   isEmoji: (str: string) => boolean;
   postProcessor: MarkdownPostProcessor;
@@ -95,13 +89,7 @@ export const getApi = (
 ): IconSCAPI => ({
   hasIcon: packManager.hasIcon.bind(packManager),
   getIcon: packManager.getIcon.bind(packManager),
-  getIconFromUser: async (raw) => {
-    const id = await new EmojiSuggesterModal(plugin).open();
-    if (!id) return null;
-    else {
-      return plugin.packManager.getIcon(id.id, raw as any);
-    }
-  },
+  getIconFromUser: () => new EmojiSuggesterModal(plugin).open(),
   isEmoji: emoji.hasEmoji.bind(emoji),
   postProcessor: plugin.postProcessor,
   version: {

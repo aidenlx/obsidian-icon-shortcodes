@@ -56,7 +56,6 @@ function renderSuggestion(
   );
 }
 
-type ReturnVal = IconId | null;
 export class EmojiSuggesterModal
   extends SuggestModal<FuzzyMatch<IconId>>
   implements SuggesterBase
@@ -75,8 +74,8 @@ export class EmojiSuggesterModal
   renderSuggestion = renderSuggestion;
 
   // Promisify the modal
-  resolve: ((value: ReturnVal) => void) | null = null;
-  open(): Promise<ReturnVal> {
+  resolve: ((value: IconId | null) => void) | null = null;
+  open(): Promise<IconId | null> {
     super.open();
     return new Promise((resolve) => {
       this.resolve = resolve;
