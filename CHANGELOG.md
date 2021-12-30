@@ -1,3 +1,17 @@
+## [0.6.1](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.6.0...0.6.1) (2021-12-30)
+
+
+### Bug Fixes
+
+* **api:** mark isPluginEnabled deprecated; update desc for getIconFromUser ([0812f6b](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/0812f6beaed1a5c0557433621bc8289b08d42e4b))
+* **suggester:** fix matches partially rendered when using and operator ([900942d](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/900942d4b63c363cd2526edc27f51938d2118ef9))
+* **suggester:** fix svg icon sometimes rendered too large ([5847415](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/5847415535302425fb0ba1fff7a3948cf16fa529))
+
+
+### Features
+
+* **api:** add prompt for user to select icon ([3af00a5](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/3af00a56404d723e59ea63c00c3bc9b0155449b0)), closes [#20](https://github.com/aidenlx/obsidian-icon-shortcodes/issues/20)
+
 # [0.6.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.5.1...0.6.0) (2021-11-27)
 
 
