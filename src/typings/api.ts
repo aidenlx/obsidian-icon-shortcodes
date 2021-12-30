@@ -4,18 +4,38 @@ import { MarkdownPostProcessor, PluginManifest } from "obsidian";
 
 import PackManager from "../icon-packs/pack-manager";
 import IconSC from "../isc-main";
+import { EmojiSuggesterModal } from "../modules/suggester";
 
 export default interface IconSCAPI {
   hasIcon: (id: string) => boolean;
+
   /**
    * @param id accept shortcode with colons
    * @param raw if true, return svg data uri instead of img element
-   * @returns emoji character if given emoji shortcode; svg data uri or img element if given svg shortcode; null if given id is not found
+   * @returns emoji character if given emoji shortcode; svg data uri if given svg shortcode; null if given id is not found
    */
-  getIcon: {
-    (id: string, raw: true): string | null;
-    (id: string, raw?: false | undefined): string | HTMLImageElement | null;
-  };
+  getIcon(id: string, raw: true): string | null;
+  /**
+   * @param id accept shortcode with colons
+   * @param raw if true, return svg data uri instead of img element
+   * @returns emoji character if given emoji shortcode; img element if given svg shortcode; null if given id is not found
+   */
+  getIcon(
+    id: string,
+    raw?: false | undefined,
+  ): string | HTMLImageElement | null;
+
+  /**
+   * @param raw if true, return svg data uri instead of img element
+   * @returns emoji character if given emoji shortcode; svg data uri if given svg shortcode; null if no icon selected
+   */
+  getIconFromUser(raw: true): Promise<string | null>;
+  /**
+   * @param raw if true, return svg data uri instead of img element
+   * @returns emoji character if given emoji shortcode; img element if given svg shortcode; null if no icon selected
+   */
+  getIconFromUser(raw?: false): Promise<string | HTMLImageElement | null>;
+
   isEmoji: (str: string) => boolean;
   postProcessor: MarkdownPostProcessor;
   version: {
@@ -73,6 +93,13 @@ export const getApi = (
 ): IconSCAPI => ({
   hasIcon: packManager.hasIcon.bind(packManager),
   getIcon: packManager.getIcon.bind(packManager),
+  getIconFromUser: async (raw) => {
+    const id = await new EmojiSuggesterModal(plugin).open();
+    if (!id) return null;
+    else {
+      return plugin.packManager.getIcon(id.id, raw as any);
+    }
+  },
   isEmoji: emoji.hasEmoji.bind(emoji),
   postProcessor: plugin.postProcessor,
   version: {

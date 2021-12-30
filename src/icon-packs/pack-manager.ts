@@ -422,7 +422,7 @@ export default class PackManager extends Events {
     return targetId;
   }
 
-  getAvailableId(id: string): string {
+  private getAvailableId(id: string): string {
     if (!this.hasIcon(id)) return id;
     let i = 1,
       newId = `${id}_${i}`;

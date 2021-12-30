@@ -4,7 +4,7 @@ import { DEFAULT_SETTINGS, IconSCSettings, IconSCSettingTab } from "settings";
 import PackManager from "./icon-packs/pack-manager";
 import tryUpdateIcons from "./modules/json-to-svg";
 import getShortcodeProcessor from "./modules/post-ps";
-import EmojiSuggester from "./modules/suggester";
+import { EmojiSuggester } from "./modules/suggester";
 import { getApi } from "./typings/api";
 import API, { API_NAME } from "./typings/api";
 

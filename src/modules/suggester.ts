@@ -1,5 +1,3 @@
-import "./suggester.less";
-
 import Fuse from "fuse.js";
 import {
   Editor,
@@ -7,15 +5,107 @@ import {
   EditorSuggest,
   EditorSuggestContext,
   EditorSuggestTriggerInfo,
+  SuggestModal,
 } from "obsidian";
 
+import PackManager from "../icon-packs/pack-manager";
 import { FuzzyMatch, IconId } from "../icon-packs/types";
 import IconSC from "../isc-main";
 import UnionRanges from "./union";
 
 const CLASS_ID = "isc";
 
-export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconId>> {
+interface SuggesterBase {
+  packManager: PackManager;
+}
+const getSuggestions = (input: string, packManager: PackManager) =>
+  packManager.search(input.replace(/^\+|\+$/g, "").split(/[+]/g)).slice(0, 20);
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+function renderSuggestion(
+  this: SuggesterBase,
+  suggestion: FuzzyMatch<IconId>,
+  el: HTMLElement,
+): void {
+  const { id, name } = suggestion.item,
+    { matches } = suggestion,
+    result = this.packManager.getIcon(id);
+  if (!result) throw new TypeError("Failed to get icon for key: " + id);
+
+  const icon = result;
+  const shortcode = el;
+  if (matches) {
+    const indices =
+      matches.length === 1
+        ? matches[0].indices
+        : UnionRanges(
+            matches.flatMap((m) => (m.key === "name" ? m.indices : [])),
+          );
+    renderMatches(shortcode, name.replace(/[_-]/g, " "), indices);
+  } else {
+    shortcode.setText(name.replace(/[_-]/g, " "));
+  }
+  el.createSpan({ cls: `suggestion-flair` }, (el) =>
+    typeof icon === "string" ? (el.textContent = icon) : el.appendChild(icon),
+  );
+}
+
+type ReturnVal = IconId | null;
+export class EmojiSuggesterModal
+  extends SuggestModal<FuzzyMatch<IconId>>
+  implements SuggesterBase
+{
+  constructor(public plugin: IconSC) {
+    super(plugin.app);
+    this.modalEl.addClass(CLASS_ID);
+  }
+  get packManager() {
+    return this.plugin.packManager;
+  }
+
+  getSuggestions(input: string) {
+    return getSuggestions(input, this.packManager);
+  }
+  renderSuggestion = renderSuggestion;
+
+  // Promisify the modal
+  resolve: ((value: ReturnVal) => void) | null = null;
+  open(): Promise<ReturnVal> {
+    super.open();
+    return new Promise((resolve) => {
+      this.resolve = resolve;
+    });
+  }
+  onClose() {
+    if (this.resolve) {
+      this.resolve(null);
+      this.resolve = null;
+    }
+  }
+
+  onChooseSuggestion(suggestion: FuzzyMatch<IconId>): void {
+    // console.log(suggestion);
+  }
+  selectSuggestion(
+    value: FuzzyMatch<IconId> | null,
+    evt: MouseEvent | KeyboardEvent,
+  ): void {
+    if (this.resolve) {
+      if (value?.item) {
+        this.resolve(value.item);
+      } else {
+        this.resolve(null);
+      }
+      this.resolve = null;
+    }
+
+    super.selectSuggestion(value as any, evt);
+  }
+}
+
+export class EmojiSuggester
+  extends EditorSuggest<FuzzyMatch<IconId>>
+  implements SuggesterBase
+{
   constructor(public plugin: IconSC) {
     super(plugin.app);
     this.suggestEl.addClass(CLASS_ID);
@@ -48,35 +138,10 @@ export default class EmojiSuggester extends EditorSuggest<FuzzyMatch<IconId>> {
   }
 
   getSuggestions(context: EditorSuggestContext) {
-    return this.packManager
-      .search(context.query.replace(/^\+|\+$/g, "").split(/[+]/g))
-      .slice(0, 20);
+    return getSuggestions(context.query, this.packManager);
   }
 
-  renderSuggestion(suggestion: FuzzyMatch<IconId>, el: HTMLElement): void {
-    const { id, name } = suggestion.item,
-      { matches } = suggestion,
-      result = this.packManager.getIcon(id);
-    if (!result) throw new TypeError("Failed to get icon for key: " + id);
-
-    const icon = result;
-    const shortcode = el.createDiv({ cls: `shortcode` });
-    if (matches) {
-      const indices =
-        matches.length === 1
-          ? matches[0].indices
-          : UnionRanges(
-              matches.flatMap((m) => (m.key === "name" ? m.indices : [])),
-            );
-      renderMatches(shortcode, name.replace(/[_-]/g, " "), indices);
-    } else {
-      shortcode.setText(name.replace(/[_-]/g, " "));
-    }
-    el.createDiv({ cls: `icon` }, (el) =>
-      typeof icon === "string" ? (el.textContent = icon) : el.appendChild(icon),
-    );
-  }
-
+  renderSuggestion = renderSuggestion;
   selectSuggestion(suggestion: FuzzyMatch<IconId>): void {
     if (!this.context) return;
     const { id, pack } = suggestion.item;
