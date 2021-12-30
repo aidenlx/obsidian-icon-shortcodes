@@ -3,7 +3,7 @@ import emoji from "node-emoji";
 import { extname } from "path";
 import { ArrayBuffer as AB } from "spark-md5";
 
-import { FileIconInfo } from "./types";
+import { FileIconData } from "./types";
 
 export type EntriesFromRecord<T> = [key: keyof T, value: T[keyof T]][];
 
@@ -39,7 +39,7 @@ export const getIconInfoFromId = (
   id: string,
   path: string,
   data: ArrayBuffer,
-): FileIconInfo | null => {
+): FileIconData | null => {
   const result = getPacknNameFromId(id);
   if (!result) return null;
   const { name, pack } = result;

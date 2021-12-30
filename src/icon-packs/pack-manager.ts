@@ -16,7 +16,7 @@ import {
   BuiltInIconPacknames,
   BuiltInSVGIconPacks,
 } from "./built-ins";
-import { FileIconId, FileIconInfo, IconId, isFileIconId } from "./types";
+import { FileIconData, FileIconInfo, IconInfo, isFileIconInfo } from "./types";
 import {
   extPattern,
   getIconInfoFromId,
@@ -36,7 +36,7 @@ const CUSTOM_ICON_PATH = "/icons.json";
 const CUSTOM_ICON_DIR = "icons";
 
 export default class PackManager extends Events {
-  private _customIcons = new Map<string, FileIconInfo>();
+  private _customIcons = new Map<string, FileIconData>();
   private _cutomsIconPacknames: Set<string> = new Set();
   get vault() {
     return this.plugin.app.vault;
@@ -152,7 +152,7 @@ export default class PackManager extends Events {
       if ((info = getIconInfoFromId(id, path, data))) {
         this._customIcons.set(id, info);
         const { md5, name, pack, ext, path } = info,
-          iconId: FileIconId = { id, md5, name, pack, ext, path };
+          iconId: FileIconInfo = { id, md5, name, pack, ext, path };
         this._fuse.add(iconId);
       } else {
         console.warn(
@@ -289,7 +289,7 @@ export default class PackManager extends Events {
     new Notice(addedIds.length.toString() + " icons added");
   }
   async deleteMultiple(...ids: string[]): Promise<void> {
-    this._fuse.remove((icon) => isFileIconId(icon) && ids.includes(icon.id));
+    this._fuse.remove((icon) => isFileIconInfo(icon) && ids.includes(icon.id));
     const queue = ids.map(async (id) => {
       const info = this._customIcons.get(id);
       if (!info)
@@ -319,7 +319,7 @@ export default class PackManager extends Events {
     }
   }
   async filter(
-    predicate: (key: string, value: Omit<FileIconId, "id">) => boolean,
+    predicate: (key: string, value: Omit<FileIconInfo, "id">) => boolean,
   ): Promise<void> {
     let toDelete = new Set<string>();
     for (const [key, value] of this._customIcons) {
@@ -329,7 +329,7 @@ export default class PackManager extends Events {
       }
     }
     this._fuse.remove((icon) => {
-      const result = isFileIconId(icon) && !predicate(icon.id, icon);
+      const result = isFileIconInfo(icon) && !predicate(icon.id, icon);
       if (result) toDelete.add(icon.path);
       return result;
     });
@@ -397,7 +397,7 @@ export default class PackManager extends Events {
     try {
       const { ext } = info;
       if (this._customIcons.has(targetId)) {
-        const temp = this._customIcons.get(targetId) as FileIconInfo,
+        const temp = this._customIcons.get(targetId) as FileIconData,
           { ext: targetExt } = temp;
         await this.renameIconFile(targetId, targetExt, targetId + "_temp");
         info.path = await this.renameIconFile(id, ext, targetId);
@@ -433,11 +433,11 @@ export default class PackManager extends Events {
   }
 
   /** set info in database, no file changes */
-  set(id: string, info: FileIconInfo, refresh = true): void {
+  set(id: string, info: FileIconData, refresh = true): void {
     this._customIcons.set(id, info);
     this._fuse.remove((icon) => icon.id === id);
     const { md5, pack, path, ext } = info,
-      iconId: FileIconId = {
+      iconId: FileIconInfo = {
         id,
         md5,
         name: id.substring(pack.length + 1),
@@ -489,7 +489,7 @@ export default class PackManager extends Events {
     this.trigger("changed", this.plugin.api);
   }
 
-  private _fuse = new Fuse<IconId>(BuiltInIconIds, {
+  private _fuse = new Fuse<IconInfo>(BuiltInIconIds, {
     keys: ["name", "pack"],
     includeScore: true,
     // ignoreLocation: true,

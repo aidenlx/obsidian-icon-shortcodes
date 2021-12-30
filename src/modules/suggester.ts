@@ -9,7 +9,7 @@ import {
 } from "obsidian";
 
 import PackManager from "../icon-packs/pack-manager";
-import { FuzzyMatch, IconId } from "../icon-packs/types";
+import { FuzzyMatch, IconInfo } from "../icon-packs/types";
 import IconSC from "../isc-main";
 import UnionRanges from "./union";
 
@@ -28,7 +28,7 @@ const getSuggestions = (input: string, packManager: PackManager) => {
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function renderSuggestion(
   this: SuggesterBase,
-  suggestion: FuzzyMatch<IconId>,
+  suggestion: FuzzyMatch<IconInfo>,
   el: HTMLElement,
 ): void {
   const { id, name } = suggestion.item,
@@ -57,7 +57,7 @@ function renderSuggestion(
 }
 
 export class EmojiSuggesterModal
-  extends SuggestModal<FuzzyMatch<IconId>>
+  extends SuggestModal<FuzzyMatch<IconInfo>>
   implements SuggesterBase
 {
   constructor(public plugin: IconSC) {
@@ -74,8 +74,8 @@ export class EmojiSuggesterModal
   renderSuggestion = renderSuggestion;
 
   // Promisify the modal
-  resolve: ((value: IconId | null) => void) | null = null;
-  open(): Promise<IconId | null> {
+  resolve: ((value: IconInfo | null) => void) | null = null;
+  open(): Promise<IconInfo | null> {
     super.open();
     return new Promise((resolve) => {
       this.resolve = resolve;
@@ -88,11 +88,11 @@ export class EmojiSuggesterModal
     }
   }
 
-  onChooseSuggestion(suggestion: FuzzyMatch<IconId>): void {
+  onChooseSuggestion(suggestion: FuzzyMatch<IconInfo>): void {
     // console.log(suggestion);
   }
   selectSuggestion(
-    value: FuzzyMatch<IconId> | null,
+    value: FuzzyMatch<IconInfo> | null,
     evt: MouseEvent | KeyboardEvent,
   ): void {
     if (this.resolve) {
@@ -109,7 +109,7 @@ export class EmojiSuggesterModal
 }
 
 export class EmojiSuggester
-  extends EditorSuggest<FuzzyMatch<IconId>>
+  extends EditorSuggest<FuzzyMatch<IconInfo>>
   implements SuggesterBase
 {
   constructor(public plugin: IconSC) {
@@ -148,7 +148,7 @@ export class EmojiSuggester
   }
 
   renderSuggestion = renderSuggestion;
-  selectSuggestion(suggestion: FuzzyMatch<IconId>): void {
+  selectSuggestion(suggestion: FuzzyMatch<IconInfo>): void {
     if (!this.context) return;
     const { id, pack } = suggestion.item;
     this.context.editor.replaceRange(

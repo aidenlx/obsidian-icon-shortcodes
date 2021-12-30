@@ -3,7 +3,7 @@ import emoji from "node-emoji";
 import { MarkdownPostProcessor } from "obsidian";
 
 import PackManager from "../icon-packs/pack-manager";
-import { IconId } from "../icon-packs/types";
+import { IconInfo } from "../icon-packs/types";
 import IconSC from "../isc-main";
 import { EmojiSuggesterModal } from "../modules/suggester";
 
@@ -30,7 +30,7 @@ export default interface IconSCAPI {
    * Prompt user for icon, available since v0.6.1
    * @returns icon info including id if user choose one; null if user cancel
    */
-  getIconFromUser(): Promise<IconId | null>;
+  getIconFromUser(): Promise<IconInfo | null>;
 
   isEmoji: (str: string) => boolean;
   postProcessor: MarkdownPostProcessor;

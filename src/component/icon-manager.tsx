@@ -11,7 +11,7 @@ import React, {
 import ReactDOM from "react-dom";
 
 import PackManager from "../icon-packs/pack-manager";
-import { FileIconId, FuzzyMatch, IconId } from "../icon-packs/types";
+import { FileIconInfo, FuzzyMatch, IconInfo } from "../icon-packs/types";
 import IconSC from "../isc-main";
 import IconPreview from "./icon-preview";
 
@@ -54,8 +54,10 @@ export default class IconManager extends Modal {
   }
 }
 
-const compareIconId = (a: FuzzyMatch<IconId>, b: FuzzyMatch<IconId>): number =>
-  a.item.name.localeCompare(b.item.name);
+const compareIconId = (
+  a: FuzzyMatch<IconInfo>,
+  b: FuzzyMatch<IconInfo>,
+): number => a.item.name.localeCompare(b.item.name);
 const Icons = ({ pack }: { pack: string }) => {
   if (pack === "emoji") throw new TypeError("Emoji not supported");
 
@@ -91,7 +93,7 @@ const Icons = ({ pack }: { pack: string }) => {
       <div className="icons">
         {ids.map((fuzzy) => (
           <IconPreview
-            iconId={fuzzy.item as FileIconId}
+            iconId={fuzzy.item as FileIconInfo}
             key={fuzzy.item.id + (fuzzy.item.md5 ?? "")}
           />
         ))}

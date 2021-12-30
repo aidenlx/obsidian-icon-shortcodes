@@ -2,19 +2,19 @@ import emojiByName from "node-emoji/lib/emoji.json";
 import { hash } from "spark-md5";
 
 import * as iconsets from "../icons/index";
-import { EmbedIconInfo, IconId } from "./types";
+import { EmbedIconData, IconInfo } from "./types";
 import { ObjtoEntries } from "./utils";
 
 export type SVGPacknames = keyof typeof iconsets;
 
 const EMOJI_PACK_NAME = "emoji";
 const getBuiltIns = (): {
-  packs: ReadonlyMap<string, EmbedIconInfo>;
-  ids: ReadonlyArray<IconId>;
+  packs: ReadonlyMap<string, EmbedIconData>;
+  ids: ReadonlyArray<IconInfo>;
   packnames: ReadonlyArray<string>;
 } => {
-  let packs = new Map<string, EmbedIconInfo>(),
-    ids = [] as IconId[],
+  let packs = new Map<string, EmbedIconData>(),
+    ids = [] as IconInfo[],
     packnames = [] as string[];
   for (const [pack, icons] of ObjtoEntries(iconsets)) {
     packnames.push(pack);
