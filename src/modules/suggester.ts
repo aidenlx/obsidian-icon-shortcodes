@@ -18,8 +18,13 @@ const CLASS_ID = "isc";
 interface SuggesterBase {
   packManager: PackManager;
 }
-const getSuggestions = (input: string, packManager: PackManager) =>
-  packManager.search(input.replace(/^\+|\+$/g, "").split(/[+]/g)).slice(0, 20);
+const getSuggestions = (input: string, packManager: PackManager) => {
+  if (typeof input === "string" && input.trim().length > 0) {
+    return packManager.search(input.replace(/^\+|\+$/g, "").split(/[+]/g));
+  } else {
+    return packManager.getAllIds();
+  }
+};
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function renderSuggestion(
   this: SuggesterBase,
@@ -36,7 +41,9 @@ function renderSuggestion(
   if (matches) {
     const indices =
       matches.length === 1
-        ? matches[0].indices
+        ? matches[0].key === "name"
+          ? matches[0].indices
+          : []
         : UnionRanges(
             matches.flatMap((m) => (m.key === "name" ? m.indices : [])),
           );

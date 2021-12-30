@@ -502,7 +502,13 @@ export default class PackManager extends Events {
     let exp = query.map<Fuse.Expression>((s) => ({ name: s }));
     packs = packs ?? this.enabledPacknames;
     exp.push({ $or: packs.map((p) => ({ pack: `="${p}"` })) });
-    return this._fuse.search({ $and: exp });
+    return this._fuse.search({ $and: exp }, { limit: 20 });
+  }
+  getAllIds(packs?: string[]) {
+    let exp = (packs ?? this.enabledPacknames).map((p) => ({
+      pack: `="${p}"`,
+    }));
+    return this._fuse.search({ $or: exp }, { limit: 20 });
   }
 
   trigger(...args: PMEvents): void {
