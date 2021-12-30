@@ -25,5 +25,6 @@ export const getApi = (plugin?: Plugin): IconSCAPI | undefined => {
   else return window["IconSCAPIv0"];
 };
 
-export const isPluginEnabled = (plugin: Plugin) =>
-  plugin.app.plugins.enabledPlugins.has("obsidian-icon-shortcodes");
+/** @deprecated you can check if getApi return undefined directly */
+export const isPluginEnabled = (plugin?: Plugin) =>
+  getApi(plugin) !== undefined;

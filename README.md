@@ -80,9 +80,9 @@ Your changes will now be applied and you can edit the file when you want.
 ### Use API
 
 1. run `npm i -D @aidenlx/obsidian-icon-shortcodes` in your plugin dir
-2. import the api (add `import { getApi, isPluginEnabled } from "@aidenlx/obsidian-icon-shortcodes"`)
+2. import the api (add `import { getApi } from "@aidenlx/obsidian-icon-shortcodes"`)
 3. use api
-   1. check if enabled: `isPluginEnabled(YourPluginInstance)`
+   1. check if enabled: `getApi() !== undefined` or `getApi(YourPluginInstance) !== undefined`
    2. access api: `getApi()` / `getApi(YourPluginInstance)`
 
 For all exposed API method, check [api.ts](src/typings/api.ts)

@@ -26,13 +26,15 @@ export default interface IconSCAPI {
   ): string | HTMLImageElement | null;
 
   /**
+   * Prompt user for icon, available since v0.6.1
    * @param raw if true, return svg data uri instead of img element
-   * @returns emoji character if given emoji shortcode; svg data uri if given svg shortcode; null if no icon selected
+   * @returns emoji character if given emoji shortcode; svg data uri if given svg shortcode; null if nothing selected
    */
   getIconFromUser(raw: true): Promise<string | null>;
   /**
+   * Prompt user for icon, available since v0.6.1
    * @param raw if true, return svg data uri instead of img element
-   * @returns emoji character if given emoji shortcode; img element if given svg shortcode; null if no icon selected
+   * @returns emoji character if given emoji shortcode; img element if given svg shortcode; null if nothing selected
    */
   getIconFromUser(raw?: false): Promise<string | HTMLImageElement | null>;
 
