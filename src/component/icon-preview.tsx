@@ -15,10 +15,10 @@ import { sanitizeName } from "../icon-packs/utils";
 import { Context } from "./icon-manager";
 
 interface IconPreviewProps {
-  iconId: FileIconInfo;
+  iconInfo: FileIconInfo;
 }
 
-const IconPreview = ({ iconId }: IconPreviewProps) => {
+const IconPreview = ({ iconInfo: iconId }: IconPreviewProps) => {
   const { packs, icons } = useContext(Context),
     { trash, pencil, star, checkmark } = icons;
 
@@ -29,7 +29,11 @@ const IconPreview = ({ iconId }: IconPreviewProps) => {
     isInputVaild = inputId === iconId.id || !packs.hasIcon(inputId);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const iconSrc = useMemo(() => packs.getIcon(iconId.id, true), [iconId.md5]);
+  const iconSrc = useMemo(
+    () => packs.getIcon(iconId.id, true),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [iconId.id, isEditing],
+  );
   const renameIcon = async (renameTo: string) => {
     const newName = await packs.rename(iconId.id, renameTo);
     if (!newName)

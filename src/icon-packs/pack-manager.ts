@@ -7,7 +7,6 @@ import svg2uri from "mini-svg-data-uri";
 import emoji from "node-emoji";
 import { EventRef, Events, normalizePath, Notice, Platform } from "obsidian";
 import { basename, join } from "path";
-import { ArrayBuffer as AB } from "spark-md5";
 
 import IconSC from "../isc-main";
 import { evtPrefix, PMEvents } from "../typings/api";
@@ -147,12 +146,11 @@ export default class PackManager extends Events {
     let info;
     const queue = iconlist.files.map(async (path) => {
       if (!extPattern.test(path)) return;
-      const id = basename(path).replace(extPattern, ""),
-        data = await this.vault.adapter.readBinary(path);
-      if ((info = getIconInfoFromId(id, path, data))) {
+      const id = basename(path).replace(extPattern, "");
+      if ((info = getIconInfoFromId(id, path))) {
         this._customIcons.set(id, info);
-        const { md5, name, pack, ext, path } = info,
-          iconId: FileIconInfo = { id, md5, name, pack, ext, path };
+        const { name, pack, ext, path } = info,
+          iconId: FileIconInfo = { id, name, pack, ext, path };
         this._fuse.add(iconId);
       } else {
         console.warn(
@@ -265,7 +263,6 @@ export default class PackManager extends Events {
               name,
               ext,
               path: await this.addIcon(id, ext, data),
-              md5: AB.hash(data),
             };
             this.set(id, info, false);
           } catch (error) {
@@ -436,10 +433,9 @@ export default class PackManager extends Events {
   set(id: string, info: FileIconData, refresh = true): void {
     this._customIcons.set(id, info);
     this._fuse.remove((icon) => icon.id === id);
-    const { md5, pack, path, ext } = info,
+    const { pack, path, ext } = info,
       iconId: FileIconInfo = {
         id,
-        md5,
         name: id.substring(pack.length + 1),
         pack,
         path,

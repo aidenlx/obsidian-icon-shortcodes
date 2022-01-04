@@ -1,7 +1,6 @@
 import { extension, lookup } from "mime-types";
 import emoji from "node-emoji";
 import { extname } from "path";
-import { ArrayBuffer as AB } from "spark-md5";
 
 import { FileIconData } from "./types";
 
@@ -25,7 +24,7 @@ export const stripColons = (str: string): string => {
       str = str.substring(0, colonIndex);
       return stripColons(str);
     } else {
-      str = str.substr(colonIndex + 1);
+      str = str.substring(colonIndex + 1);
       return stripColons(str);
     }
   }
@@ -38,7 +37,6 @@ export const PackPrefixPattern = /^([A-Za-z0-9]+?)_/;
 export const getIconInfoFromId = (
   id: string,
   path: string,
-  data: ArrayBuffer,
 ): FileIconData | null => {
   const result = getPacknNameFromId(id);
   if (!result) return null;
@@ -49,7 +47,6 @@ export const getIconInfoFromId = (
     name,
     path,
     ext: extname(path),
-    md5: AB.hash(data),
   };
 };
 export const getPacknNameFromId = (

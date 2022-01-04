@@ -93,8 +93,8 @@ const Icons = ({ pack }: { pack: string }) => {
       <div className="icons">
         {ids.map((fuzzy) => (
           <IconPreview
-            iconId={fuzzy.item as FileIconInfo}
-            key={fuzzy.item.id + (fuzzy.item.md5 ?? "")}
+            iconInfo={fuzzy.item as FileIconInfo}
+            key={fuzzy.item.id}
           />
         ))}
       </div>
