@@ -66,7 +66,11 @@ const Icons = ({ pack }: { pack: string }) => {
   const [changed, setChanged] = useState(0);
   const ids = useMemo(
     () => {
-      const arr = packs.search(filter ? filter.trim().split(" ") : [], [pack]);
+      const arr = packs.search(
+        filter ? filter.trim().split(" ") : [],
+        [pack],
+        Infinity,
+      );
       if (filter) return arr;
       else return arr.sort(compareIconId);
     },
