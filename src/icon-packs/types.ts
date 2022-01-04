@@ -20,7 +20,7 @@ type FileBasicInfo = IconBasicInfo & {
 };
 
 export type FileIconInfo = FileBasicInfo & withId;
-export type FileIconData = FileBasicInfo & {
+export type FileIconData = IconBasicInfo & {
   /** real path in file system, null if not in Desktop */
   fsPath: string | null;
   /** resource path to icon file */
