@@ -124,7 +124,7 @@ export default class PackManager extends Events {
     return !(pack in status) || status[pack as keyof typeof status] === true;
   }
 
-  private refresh() {
+  private refreshPackNames() {
     this._cutomsIconPacknames.clear();
     for (const [, { pack }] of this._customIcons) {
       this._cutomsIconPacknames.add(pack);
@@ -136,7 +136,12 @@ export default class PackManager extends Events {
 
   private _loaded = false;
   async loadCustomIcons(): Promise<void> {
-    if (this._loaded) return;
+    if (this._loaded) {
+      this._fuse.setCollection([]);
+      this._customIcons.clear();
+      this._cutomsIconPacknames.clear();
+      this._loaded = false;
+    }
     if (!(await this.vault.adapter.exists(this.customIconsDir))) {
       await this.vault.adapter.mkdir(this.customIconsDir);
       return;
@@ -165,7 +170,7 @@ export default class PackManager extends Events {
         console.error("Failed to load icon", result.reason);
     }
     this._loaded = true;
-    this.refresh();
+    this.refreshPackNames();
     this.trigger("initialized", this.plugin.api);
   }
   async backupCustomIcons(pack?: string): Promise<void> {
@@ -281,7 +286,7 @@ export default class PackManager extends Events {
         addedIds.push(result.value);
       }
     }
-    this.refresh();
+    this.refreshPackNames();
     this.trigger("changed", this.plugin.api);
     new Notice(addedIds.length.toString() + " icons added");
   }
@@ -311,7 +316,7 @@ export default class PackManager extends Events {
       }
     }
     if (changed) {
-      this.refresh();
+      this.refreshPackNames();
       this.trigger("changed", this.plugin.api);
     }
   }
@@ -331,7 +336,7 @@ export default class PackManager extends Events {
       return result;
     });
     if (toDelete.size === 0) return;
-    this.refresh();
+    this.refreshPackNames();
     this.trigger("changed", this.plugin.api);
     const queue = [...toDelete].map(async (path) => {
       try {
@@ -368,7 +373,7 @@ export default class PackManager extends Events {
     }
     this.set(renameTo, info, false);
     this.delete(id, false, false);
-    this.refresh();
+    this.refreshPackNames();
     this.trigger("changed", this.plugin.api);
     return newId;
   }
@@ -414,7 +419,7 @@ export default class PackManager extends Events {
       new IconFileOpError("rename", id, error, targetId);
     }
 
-    this.refresh();
+    this.refreshPackNames();
     this.trigger("changed", this.plugin.api);
     return targetId;
   }
@@ -443,7 +448,7 @@ export default class PackManager extends Events {
       };
     this._fuse.add(iconId);
     if (refresh) {
-      this.refresh();
+      this.refreshPackNames();
       this.trigger("changed", this.plugin.api);
     }
   }
@@ -465,7 +470,7 @@ export default class PackManager extends Events {
     const result = this._customIcons.delete(id);
     this._fuse.remove((icon) => icon.id === id);
     if (refresh) {
-      this.refresh();
+      this.refreshPackNames();
       this.trigger("changed", this.plugin.api);
     }
     return result;
@@ -481,7 +486,7 @@ export default class PackManager extends Events {
     }
     this._customIcons.clear();
     this._fuse.remove((id) => !BuiltInIconIds.includes(id));
-    this.refresh();
+    this.refreshPackNames();
     this.trigger("changed", this.plugin.api);
   }
 

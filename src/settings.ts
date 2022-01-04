@@ -50,7 +50,7 @@ export class IconSCSettingTab extends PluginSettingTab {
   display(): void {
     const { containerEl } = this;
 
-    containerEl.empty();
+    this.containerEl.empty();
 
     new Setting(containerEl)
       .setName("Replace emoji shortcode with emoji character")
@@ -88,7 +88,57 @@ export class IconSCSettingTab extends PluginSettingTab {
       });
 
     this.skipIconPack();
-    this.manageCustomIcons();
+
+    // custom icon manage section
+    const managerContainer = createDiv({
+      cls: ["isc-settings-custom-icon", "installed-plugins-container"],
+    });
+    new Setting(this.containerEl)
+      .setHeading()
+      .setName("Custom Icons")
+      .addExtraButton((btn) =>
+        btn
+          .setIcon("sheets-in-box")
+          .setTooltip("Backup icons")
+          .onClick(() => this.plugin.packManager.backupCustomIcons()),
+      )
+      .addExtraButton((btn) =>
+        btn
+          .setIcon("restore-file-glyph")
+          .setTooltip("Restore backup")
+          .onClick(async () =>
+            this.plugin.packManager.importCustomIcons(
+              await fileDialog({ multiple: false, accept: ".zip" }),
+              false,
+            ),
+          ),
+      )
+      .addExtraButton((btn) =>
+        btn
+          .setIcon("switch")
+          .setTooltip("Reload custom icons")
+          .onClick(async () => {
+            await this.plugin.packManager.loadCustomIcons();
+            this.manageCustomIcons(managerContainer);
+            new Notice("Custom icons reloaded");
+          }),
+      )
+      .then(
+        (s) =>
+          Platform.isDesktopApp &&
+          s.addExtraButton((btn) =>
+            btn
+              .setIcon("folder")
+              .setTooltip("Open Icons Folder")
+              .onClick(() =>
+                this.app.openWithDefaultApp(
+                  this.plugin.packManager.customIconsDir,
+                ),
+              ),
+          ),
+      );
+    this.containerEl.appendChild(managerContainer);
+    this.manageCustomIcons(managerContainer);
   }
 
   skipIconPack(): void {
@@ -144,45 +194,8 @@ export class IconSCSettingTab extends PluginSettingTab {
     );
   }
 
-  manageCustomIcons(): void {
-    new Setting(this.containerEl)
-      .setHeading()
-      .setName("Custom Icons")
-      .addExtraButton((btn) =>
-        btn
-          .setIcon("sheets-in-box")
-          .setTooltip("Backup icons")
-          .onClick(() => this.plugin.packManager.backupCustomIcons()),
-      )
-      .addExtraButton((btn) =>
-        btn
-          .setIcon("restore-file-glyph")
-          .setTooltip("Restore backup")
-          .onClick(async () =>
-            this.plugin.packManager.importCustomIcons(
-              await fileDialog({ multiple: false, accept: ".zip" }),
-              false,
-            ),
-          ),
-      )
-      .then(
-        (s) =>
-          Platform.isDesktopApp &&
-          s.addExtraButton((btn) =>
-            btn
-              .setIcon("folder")
-              .setTooltip("Open Icons Folder")
-              .onClick(() =>
-                this.app.openWithDefaultApp(
-                  this.plugin.packManager.customIconsDir,
-                ),
-              ),
-          ),
-      );
-
-    const containerEl = this.containerEl.createDiv({
-      cls: ["isc-settings-custom-icon", "installed-plugins-container"],
-    });
+  manageCustomIcons(containerEl: HTMLElement): void {
+    if (containerEl.hasChildNodes()) containerEl.empty();
 
     const isPacknameInvalid = (name: string) =>
       !/^[A-Za-z0-9]+$/.test(name) ||
