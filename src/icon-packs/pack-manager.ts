@@ -287,7 +287,7 @@ export default class PackManager extends Events {
       }
     }
     this.refreshPackNames();
-    this.trigger("changed", this.plugin.api);
+    this.trigger("changed", this.plugin.api, addedIds);
     new Notice(addedIds.length.toString() + " icons added");
   }
   async deleteMultiple(...ids: string[]): Promise<void> {
@@ -317,28 +317,25 @@ export default class PackManager extends Events {
     }
     if (changed) {
       this.refreshPackNames();
-      this.trigger("changed", this.plugin.api);
+      this.trigger("changed", this.plugin.api, ids);
     }
   }
   async filter(
     predicate: (key: string, value: Omit<FileIconInfo, "id">) => boolean,
   ): Promise<void> {
-    let toDelete = new Set<string>();
-    for (const [key, value] of this._customIcons) {
-      if (!predicate(key, value)) {
-        this._customIcons.delete(key);
-        toDelete.add(key);
+    // id - path map
+    let IconsToDelete = new Map<string, string>();
+    for (const [id, data] of this._customIcons) {
+      if (!predicate(id, data)) {
+        this._customIcons.delete(id);
+        IconsToDelete.set(id, data.path);
       }
     }
-    this._fuse.remove((icon) => {
-      const result = isFileIconInfo(icon) && !predicate(icon.id, icon);
-      if (result) toDelete.add(icon.path);
-      return result;
-    });
-    if (toDelete.size === 0) return;
+    this._fuse.remove((icon) => IconsToDelete.has(icon.id));
+    if (IconsToDelete.size === 0) return;
     this.refreshPackNames();
-    this.trigger("changed", this.plugin.api);
-    const queue = [...toDelete].map(async (path) => {
+    this.trigger("changed", this.plugin.api, [...IconsToDelete.keys()]);
+    const queue = [...IconsToDelete.values()].map(async (path) => {
       try {
         await this.vault.adapter.remove(path);
       } catch (error) {
@@ -374,7 +371,7 @@ export default class PackManager extends Events {
     this.set(renameTo, info, false);
     this.delete(id, false, false);
     this.refreshPackNames();
-    this.trigger("changed", this.plugin.api);
+    this.trigger("changed", this.plugin.api, [id, newId]);
     return newId;
   }
   async star(id: string): Promise<string | null> {
@@ -420,7 +417,7 @@ export default class PackManager extends Events {
     }
 
     this.refreshPackNames();
-    this.trigger("changed", this.plugin.api);
+    this.trigger("changed", this.plugin.api, [id, targetId]);
     return targetId;
   }
 
@@ -449,7 +446,7 @@ export default class PackManager extends Events {
     this._fuse.add(iconId);
     if (refresh) {
       this.refreshPackNames();
-      this.trigger("changed", this.plugin.api);
+      this.trigger("changed", this.plugin.api, [id]);
     }
   }
 
@@ -471,7 +468,7 @@ export default class PackManager extends Events {
     this._fuse.remove((icon) => icon.id === id);
     if (refresh) {
       this.refreshPackNames();
-      this.trigger("changed", this.plugin.api);
+      this.trigger("changed", this.plugin.api, [id]);
     }
     return result;
   }

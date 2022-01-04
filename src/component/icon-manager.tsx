@@ -1,5 +1,6 @@
 import "./icon-manager.less";
 
+import { enableMapSet } from "immer";
 import { Modal, setIcon } from "obsidian";
 import React, {
   createContext,
@@ -9,11 +10,14 @@ import React, {
   useState,
 } from "react";
 import ReactDOM from "react-dom";
+import { useImmer } from "use-immer";
 
 import PackManager from "../icon-packs/pack-manager";
 import { FileIconInfo, FuzzyMatch, IconInfo } from "../icon-packs/types";
 import IconSC from "../isc-main";
 import IconPreview from "./icon-preview";
+
+enableMapSet();
 
 type icons = Record<"trash" | "pencil" | "star" | "checkmark", string>;
 const getIcons = (): icons => {
@@ -30,6 +34,8 @@ const getIcons = (): icons => {
 export const Context = createContext<{ packs: PackManager; icons: icons }>(
   null as any,
 );
+
+const ALL_UPDATE_KEY = "%ALL%";
 
 export default class IconManager extends Modal {
   constructor(public plugin: IconSC, public pack: string) {
@@ -53,34 +59,37 @@ export default class IconManager extends Modal {
     ReactDOM.unmountComponentAtNode(this.contentEl);
   }
 }
-
-const compareIconId = (
-  a: FuzzyMatch<IconInfo>,
-  b: FuzzyMatch<IconInfo>,
-): number => a.item.name.localeCompare(b.item.name);
+const compareIconId = (a: IconInfo, b: IconInfo): number =>
+  a.name.localeCompare(b.name);
 const Icons = ({ pack }: { pack: string }) => {
   if (pack === "emoji") throw new TypeError("Emoji not supported");
 
   const { packs } = useContext(Context);
   const [filter, setFilter] = useState("");
-  const [changed, setChanged] = useState(0);
+  const [affected, setAffected] = useImmer(new Map<string, number>());
   const ids = useMemo(
     () => {
-      const arr = packs.search(
-        filter ? filter.trim().split(" ") : [],
-        [pack],
-        Infinity,
-      );
-      if (filter) return arr;
-      else return arr.sort(compareIconId);
+      let arr = packs
+        .search(filter ? filter.trim().split(" ") : [], [pack], Infinity)
+        // add an updated property to force an icon update internally
+        .map(({ item }) => item as FileIconInfo);
+      if (!filter) arr.sort(compareIconId);
+      return arr;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filter, pack, changed],
+    [filter, pack, affected],
   );
   useEffect(() => {
-    const handler = () => setChanged((prev) => prev + 1);
-    packs.on("changed", handler);
-    return () => packs.off("changed", handler);
+    const eventRef = packs.on("changed", (_api, affected) =>
+      setAffected((draft) => {
+        if (affected)
+          affected.forEach((id: string) =>
+            draft.set(id, (draft.get(id) || 0) + 1),
+          );
+        else draft.set(ALL_UPDATE_KEY, (draft.get(ALL_UPDATE_KEY) || 0) + 1);
+      }),
+    );
+    return () => packs.offref(eventRef);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [packs]);
 
@@ -95,12 +104,17 @@ const Icons = ({ pack }: { pack: string }) => {
         />
       </div>
       <div className="icons">
-        {ids.map((fuzzy) => (
-          <IconPreview
-            iconInfo={fuzzy.item as FileIconInfo}
-            key={fuzzy.item.id}
-          />
-        ))}
+        {ids.map((item) => {
+          const updated =
+            (affected.get(item.id) ?? 0) + (affected.get(ALL_UPDATE_KEY) ?? 0);
+          return (
+            <IconPreview
+              iconInfo={item}
+              updated={updated}
+              key={item.id + updated}
+            />
+          );
+        })}
       </div>
     </>
   );

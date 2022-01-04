@@ -74,7 +74,7 @@ export default interface IconSCAPI {
 
 export const evtPrefix = "iconsc:" as const;
 export type PMEvents =
-  | [name: "changed", api: IconSCAPI]
+  | [name: "changed", api: IconSCAPI, affected?: string[]]
   | [name: "initialized", api: IconSCAPI];
 
 declare global {

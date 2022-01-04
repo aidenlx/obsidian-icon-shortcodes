@@ -16,26 +16,27 @@ import { Context } from "./icon-manager";
 
 interface IconPreviewProps {
   iconInfo: FileIconInfo;
+  updated: number;
 }
 
-const IconPreview = ({ iconInfo: iconId }: IconPreviewProps) => {
+const IconPreview = ({ iconInfo, updated }: IconPreviewProps) => {
   const { packs, icons } = useContext(Context),
     { trash, pencil, star, checkmark } = icons;
 
-  const [input, setInput] = useState(iconId.name.replace(/[-_]/g, " ")),
+  const [input, setInput] = useState(iconInfo.name.replace(/[-_]/g, " ")),
     [isEditing, setIsEditing] = useState(false);
 
-  const inputId = `${iconId.pack}_${sanitizeName(input)}`,
-    isInputVaild = inputId === iconId.id || !packs.hasIcon(inputId);
+  const inputId = `${iconInfo.pack}_${sanitizeName(input)}`,
+    isInputVaild = inputId === iconInfo.id || !packs.hasIcon(inputId);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const iconSrc = useMemo(
-    () => packs.getIcon(iconId.id, true),
+    () => packs.getIcon(iconInfo.id, true),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [iconId.id, isEditing],
+    [iconInfo.id, updated],
   );
   const renameIcon = async (renameTo: string) => {
-    const newName = await packs.rename(iconId.id, renameTo);
+    const newName = await packs.rename(iconInfo.id, renameTo);
     if (!newName)
       new Notice(`Failed to rename to ${input}, check log for details`);
     else {
@@ -66,8 +67,8 @@ const IconPreview = ({ iconInfo: iconId }: IconPreviewProps) => {
           icon={star}
           onClick={async () => {
             let newName;
-            if ((newName = await packs.star(iconId.id))) {
-              new Notice(`${iconId.id} is now ${newName}`);
+            if ((newName = await packs.star(iconInfo.id))) {
+              new Notice(`${iconInfo.id} is now ${newName}`);
             }
           }}
         />
@@ -77,7 +78,7 @@ const IconPreview = ({ iconInfo: iconId }: IconPreviewProps) => {
           onClick={async () => {
             if (isEditing) {
               if (isInputVaild) {
-                if (inputId !== iconId.id) {
+                if (inputId !== iconInfo.id) {
                   await renameIcon(inputId);
                 } else {
                   setIsEditing(false);
@@ -94,8 +95,8 @@ const IconPreview = ({ iconInfo: iconId }: IconPreviewProps) => {
           btnType="warning"
           icon={trash}
           onClick={async () => {
-            if (await packs.delete(iconId.id)) {
-              new Notice(`${iconId.id} is removed from the pack`);
+            if (await packs.delete(iconInfo.id)) {
+              new Notice(`${iconInfo.id} is removed from the pack`);
             }
           }}
         />
