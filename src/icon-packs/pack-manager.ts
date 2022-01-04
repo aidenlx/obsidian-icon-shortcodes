@@ -3,7 +3,6 @@ import "./icon.less";
 import cls from "classnames";
 import Fuse from "fuse.js";
 import JSZip from "jszip";
-import svg2uri from "mini-svg-data-uri";
 import emoji from "node-emoji";
 import { EventRef, Events, normalizePath, Notice, Platform } from "obsidian";
 import { basename, join } from "path";
@@ -15,7 +14,7 @@ import {
   BuiltInIconPacknames,
   BuiltInSVGIconPacks,
 } from "./built-ins";
-import { FileIconData, FileIconInfo, IconInfo, isFileIconInfo } from "./types";
+import { FileIconInfo, IconInfo, isFileIconInfo } from "./types";
 import {
   extPattern,
   getIconInfoFromId,
@@ -35,7 +34,7 @@ const CUSTOM_ICON_PATH = "/icons.json";
 const CUSTOM_ICON_DIR = "icons";
 
 export default class PackManager extends Events {
-  private _customIcons = new Map<string, FileIconData>();
+  private _customIcons = new Map<string, FileIconInfo>();
   private _cutomsIconPacknames: Set<string> = new Set();
   get vault() {
     return this.plugin.app.vault;
@@ -95,19 +94,17 @@ export default class PackManager extends Events {
   getIcon(id: string, raw?: false): string | HTMLImageElement | null;
   getIcon(id: string, raw = false): string | HTMLImageElement | null {
     id = stripColons(id);
-    let info;
     if (emoji.hasEmoji(id)) return emoji.get(id);
-    else if ((info = BuiltInSVGIconPacks.get(id))) {
-      const { data, pack } = info,
-        svgUri = svg2uri(data);
+    else if (BuiltInSVGIconPacks.has(id)) {
+      const { dataUri: svgUri, pack } = BuiltInSVGIconPacks.get(id)!;
       return raw
         ? svgUri
         : createEl("img", {
             cls: cls(["isc-icon", `isc-${pack}`]),
             attr: { src: svgUri },
           });
-    } else if ((info = this._customIcons.get(id))) {
-      const { path, pack } = info,
+    } else if (this._customIcons.has(id)) {
+      const { path, pack } = this._customIcons.get(id)!,
         src = this.vault.adapter.getResourcePath(path);
       return raw
         ? src
@@ -264,6 +261,7 @@ export default class PackManager extends Events {
         (async () => {
           try {
             const info = {
+              id,
               pack,
               name,
               ext,
@@ -396,7 +394,7 @@ export default class PackManager extends Events {
     try {
       const { ext } = info;
       if (this._customIcons.has(targetId)) {
-        const temp = this._customIcons.get(targetId) as FileIconData,
+        const temp = this._customIcons.get(targetId) as FileIconInfo,
           { ext: targetExt } = temp;
         await this.renameIconFile(targetId, targetExt, targetId + "_temp");
         info.path = await this.renameIconFile(id, ext, targetId);
@@ -432,7 +430,7 @@ export default class PackManager extends Events {
   }
 
   /** set info in database, no file changes */
-  set(id: string, info: FileIconData, refresh = true): void {
+  set(id: string, info: FileIconInfo, refresh = true): void {
     this._customIcons.set(id, info);
     this._fuse.remove((icon) => icon.id === id);
     const { pack, path, ext } = info,

@@ -33,7 +33,13 @@ export default interface IconSCAPI {
   getIconFromUser(): Promise<IconInfo | null>;
 
   isEmoji: (str: string) => boolean;
-  postProcessor: MarkdownPostProcessor;
+
+  /**
+   * @param replacer takes a vaild and existing :shortcode: and returns a string
+   */
+  postProcessor(input: string, replacer: (shortcode: string) => string): string;
+  postProcessor(input: HTMLElement): void;
+
   version: {
     current: string;
     /**
@@ -91,7 +97,7 @@ export const getApi = (
   getIcon: packManager.getIcon.bind(packManager),
   getIconFromUser: () => new EmojiSuggesterModal(plugin).open(),
   isEmoji: emoji.hasEmoji.bind(emoji),
-  postProcessor: plugin.postProcessor,
+  postProcessor: plugin.postProcessor.bind(plugin),
   version: {
     get current() {
       return plugin.manifest.version;

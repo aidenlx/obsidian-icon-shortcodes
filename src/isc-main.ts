@@ -3,7 +3,7 @@ import { DEFAULT_SETTINGS, IconSCSettings, IconSCSettingTab } from "settings";
 
 import PackManager from "./icon-packs/pack-manager";
 import tryUpdateIcons from "./modules/json-to-svg";
-import getShortcodeProcessor from "./modules/post-ps";
+import { getMDPostProcessor, getNodePostProcessor } from "./modules/post-ps";
 import { EmojiSuggester } from "./modules/suggester";
 import { getApi } from "./typings/api";
 import API, { API_NAME } from "./typings/api";
@@ -16,7 +16,23 @@ export default class IconSC extends Plugin {
 
   packManager = new PackManager(this);
 
-  postProcessor = getShortcodeProcessor(this);
+  _nodeProcessor = getNodePostProcessor(this);
+  _mdProcessor = getMDPostProcessor(this);
+
+  postProcessor(input: string, replacer: (shortcode: string) => string): string;
+  postProcessor(input: HTMLElement): void;
+  postProcessor(
+    input: HTMLElement | string,
+    replacer?: (shortcode: string) => string,
+  ): string | void {
+    if (typeof input === "string" && replacer) {
+      return this._mdProcessor(input, replacer);
+    } else if (input instanceof HTMLElement) {
+      return this._nodeProcessor(input);
+    } else {
+      throw new TypeError("Invalid args given to postProcessor");
+    }
+  }
 
   api: API = getApi(this.packManager, this);
 
@@ -31,7 +47,7 @@ export default class IconSC extends Plugin {
       this.register(() => (window[API_NAME] = undefined));
 
     this.registerEditorSuggest(new EmojiSuggester(this));
-    this.registerMarkdownPostProcessor(this.postProcessor);
+    this.registerMarkdownPostProcessor(this._nodeProcessor);
 
     this.addSettingTab(new IconSCSettingTab(this.app, this));
   }

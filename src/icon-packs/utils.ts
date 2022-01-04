@@ -2,7 +2,7 @@ import { extension, lookup } from "mime-types";
 import emoji from "node-emoji";
 import { extname } from "path";
 
-import { FileIconData } from "./types";
+import { FileIconInfo } from "./types";
 
 export type EntriesFromRecord<T> = [key: keyof T, value: T[keyof T]][];
 
@@ -37,12 +37,13 @@ export const PackPrefixPattern = /^([A-Za-z0-9]+?)_/;
 export const getIconInfoFromId = (
   id: string,
   path: string,
-): FileIconData | null => {
+): FileIconInfo | null => {
   const result = getPacknNameFromId(id);
   if (!result) return null;
   const { name, pack } = result;
   path = path.trim();
   return {
+    id,
     pack,
     name,
     path,

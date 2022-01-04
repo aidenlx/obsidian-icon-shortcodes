@@ -34,6 +34,7 @@
     "@typescript-eslint/eslint-plugin": "^5.3.1",
     "@typescript-eslint/parser": "^5.3.1",
     "classnames": "^2.3.1",
+    "clone-regexp": "^3.0.0",
     "compare-versions": "^4.1.1",
     "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",

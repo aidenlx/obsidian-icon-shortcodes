@@ -1,9 +1,9 @@
-import { MarkdownPostProcessor } from "obsidian";
+import cloneRegexp from "clone-regexp";
 
 import { stripColons } from "../icon-packs/utils";
 import IconSC from "../isc-main";
 
-const RE_SHORTCODE = /:\+1:|:-1:|:[\w-]+:/g;
+const RE_SHORTCODE = /:\+1:|:-1:|:[\w-]+:/;
 
 const acceptNode = (node: Node): number => {
   switch (node.nodeName) {
@@ -11,7 +11,6 @@ const acceptNode = (node: Node): number => {
     case "MJX-CONTAINER":
       return NodeFilter.FILTER_REJECT;
     case "#text": {
-      RE_SHORTCODE.lastIndex = 0;
       if (node.nodeValue && RE_SHORTCODE.test(node.nodeValue)) {
         return NodeFilter.FILTER_ACCEPT;
       } else return NodeFilter.FILTER_REJECT;
@@ -21,10 +20,13 @@ const acceptNode = (node: Node): number => {
   }
 };
 
-const getShortcodeProcessor = (plugin: IconSC): MarkdownPostProcessor => {
+export const getNodePostProcessor = (
+  plugin: IconSC,
+): ((el: HTMLElement) => void) => {
   const scReplace = (text: Text) => {
-    RE_SHORTCODE.lastIndex = 0;
-    for (const code of [...text.wholeText.matchAll(RE_SHORTCODE)]
+    for (const code of [
+      ...text.wholeText.matchAll(cloneRegexp(RE_SHORTCODE, { global: true })),
+    ]
       .sort((a, b) => (a.index as number) - (b.index as number))
       .map((arr) => arr[0])) {
       text = insertElToText(text, code);
@@ -60,4 +62,12 @@ const getShortcodeProcessor = (plugin: IconSC): MarkdownPostProcessor => {
   };
 };
 
-export default getShortcodeProcessor;
+export const getMDPostProcessor =
+  (plugin: IconSC) => (str: string, replacer: (shortcode: string) => string) =>
+    str.replace(cloneRegexp(RE_SHORTCODE, { global: true }), (code) => {
+      if (plugin.packManager.hasIcon(stripColons(code))) {
+        return replacer(code);
+      } else {
+        return code;
+      }
+    });

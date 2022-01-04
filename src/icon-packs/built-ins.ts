@@ -1,5 +1,5 @@
+import svg2uri from "mini-svg-data-uri";
 import emojiByName from "node-emoji/lib/emoji.json";
-import { hash } from "spark-md5";
 
 import * as iconsets from "../icons/index";
 import { BultiInIconData, IconInfo } from "./types";
@@ -20,7 +20,7 @@ const getBuiltIns = (): {
     packnames.push(pack);
     for (const [id, svg] of ObjtoEntries(icons as Record<string, string>)) {
       const name = id.substring(pack.length + 1);
-      packs.set(id, { pack, data: svg, name });
+      packs.set(id, { pack, data: svg, dataUri: svg2uri(svg), name });
       ids.push({ id, pack, name });
     }
   }
