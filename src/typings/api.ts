@@ -1,9 +1,8 @@
 import compareVersions, { compare, satisfies } from "compare-versions";
 import emoji from "node-emoji";
-import { MarkdownPostProcessor } from "obsidian";
 
 import PackManager from "../icon-packs/pack-manager";
-import { IconInfo } from "../icon-packs/types";
+import { IconData, IconInfo } from "../icon-packs/types";
 import IconSC from "../isc-main";
 import { EmojiSuggesterModal } from "../modules/suggester";
 
@@ -25,6 +24,12 @@ export default interface IconSCAPI {
     id: string,
     raw?: false | undefined,
   ): string | HTMLImageElement | null;
+  /**
+   * @param id accept shortcode with colons
+   * @returns full data (including character/path/svg content depending on specific type) about icon
+   * if given id is found; null if given id is not found
+   */
+  getIconData(id: string): IconData | null;
 
   /**
    * Prompt user for icon, available since v0.6.1
@@ -95,6 +100,7 @@ export const getApi = (
 ): IconSCAPI => ({
   hasIcon: packManager.hasIcon.bind(packManager),
   getIcon: packManager.getIcon.bind(packManager),
+  getIconData: packManager.getIconData.bind(packManager),
   getIconFromUser: () => new EmojiSuggesterModal(plugin).open(),
   isEmoji: emoji.hasEmoji.bind(emoji),
   postProcessor: plugin.postProcessor.bind(plugin),

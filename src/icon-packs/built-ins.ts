@@ -8,8 +8,9 @@ import { ObjtoEntries } from "./utils";
 export type SVGPacknames = keyof typeof iconsets;
 
 class BultiInIconData implements BultiInIconDataType {
+  public type = "bulti-in" as const;
   constructor(public pack: string, public name: string, public data: string) {}
-  get dataUri() {
+  public get dataUri() {
     return svg2uri(this.data);
   }
 }

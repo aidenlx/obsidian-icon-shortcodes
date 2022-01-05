@@ -6,11 +6,12 @@ interface IconBasicInfo {
 }
 
 export type IconInfo = FileIconInfo | EmojiIconInfo | BultiInIconInfo;
+export type IconData = FileIconData | EmojiIconData | BultiInIconData;
 
 type withId = { id: string };
 
-type EmojiIconInfo = IconBasicInfo & withId & { pack: "emoji" };
-type EmojiIconData = EmojiIconInfo & { char: string };
+type EmojiIconInfo = IconBasicInfo & { pack: "emoji" } & withId;
+export type EmojiIconData = EmojiIconInfo & { char: string; type: "emoji" };
 
 type FileBasicInfo = IconBasicInfo & {
   /** path relative to vault */
@@ -20,11 +21,12 @@ type FileBasicInfo = IconBasicInfo & {
 };
 
 export type FileIconInfo = FileBasicInfo & withId;
-export type FileIconData = IconBasicInfo & {
+export type FileIconData = FileBasicInfo & {
   /** real path in file system, null if not in Desktop */
   fsPath: string | null;
   /** resource path to icon file */
   resourcePath: string;
+  type: "file";
 };
 export const isFileIconInfo = (id: IconInfo): id is FileIconInfo =>
   !!(id as FileIconInfo).ext;
@@ -35,6 +37,7 @@ export type BultiInIconData = IconBasicInfo & {
   dataUri: string;
   /** svg icon raw content */
   data: string;
+  type: "bulti-in";
 };
 
 export type FuzzyMatch<T> = Fuse.FuseResult<T>;

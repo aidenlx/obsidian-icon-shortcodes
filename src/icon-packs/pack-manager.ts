@@ -4,7 +4,15 @@ import cls from "classnames";
 import Fuse from "fuse.js";
 import JSZip from "jszip";
 import emoji from "node-emoji";
-import { EventRef, Events, normalizePath, Notice, Platform } from "obsidian";
+import {
+  EventRef,
+  Events,
+  FileSystemAdapter,
+  normalizePath,
+  Notice,
+  Platform,
+  Vault,
+} from "obsidian";
 import { basename, join } from "path";
 
 import IconSC from "../isc-main";
@@ -14,7 +22,15 @@ import {
   BuiltInIconPacknames,
   BuiltInSVGIconPacks,
 } from "./built-ins";
-import { FileIconInfo, IconInfo, isFileIconInfo } from "./types";
+import {
+  BultiInIconData,
+  EmojiIconData,
+  FileIconData as FileIconDataType,
+  FileIconInfo,
+  IconData,
+  IconInfo,
+  isFileIconInfo,
+} from "./types";
 import {
   extPattern,
   getIconInfoFromId,
@@ -24,11 +40,31 @@ import {
   stripColons,
 } from "./utils";
 
-type ExportedIcons = {
-  [key: Parameters<typeof getIconInfoFromId>[0]]: Parameters<
-    typeof getIconInfoFromId
-  >[1];
-};
+class FileIconData implements FileIconDataType {
+  public type = "file" as const;
+  constructor(private info: FileIconInfo, private vault: Vault) {}
+
+  public get pack() {
+    return this.info.pack;
+  }
+  public get name() {
+    return this.info.name;
+  }
+  public get path() {
+    return this.info.path;
+  }
+  public get ext() {
+    return this.info.ext;
+  }
+  public get fsPath() {
+    if (this.vault.adapter instanceof FileSystemAdapter) {
+      return this.vault.adapter.getFullPath(this.path);
+    } else return null;
+  }
+  public get resourcePath() {
+    return this.vault.adapter.getResourcePath(this.path);
+  }
+}
 
 const CUSTOM_ICON_PATH = "/icons.json";
 const CUSTOM_ICON_DIR = "icons";
@@ -112,6 +148,23 @@ export default class PackManager extends Events {
             cls: cls(["isc-icon", `isc-${pack}`]),
             attr: { src },
           });
+    } else return null;
+  }
+
+  getIconData(id: string): IconData | null {
+    id = stripColons(id);
+    if (emoji.hasEmoji(id)) {
+      return {
+        id,
+        name: id,
+        pack: "emoji",
+        char: emoji.get(id),
+        type: "emoji",
+      } as EmojiIconData;
+    } else if (BuiltInSVGIconPacks.has(id)) {
+      return BuiltInSVGIconPacks.get(id) as BultiInIconData;
+    } else if (this._customIcons.has(id)) {
+      return new FileIconData(this._customIcons.get(id)!, this.vault);
     } else return null;
   }
 
