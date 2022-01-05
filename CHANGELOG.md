@@ -1,3 +1,24 @@
+## [0.6.2](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.6.1...0.6.2) (2022-01-05)
+
+
+### Bug Fixes
+
+* **icon-manager:** fix icon not updated when star ([4270e79](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/4270e793ba191288c7b5f1c00461c1d3e4b21c18))
+* **pack-manager:** fix only first 20 result shown ([e0035a9](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/e0035a924c293dea79507de3959f3f4dd4b1b955))
+
+
+### Features
+
+* **api:** add getIconData() ([065e492](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/065e492efb5ad65b40dd3864fe76d9a014393808))
+* **api:** postProcessor now accept markdown string ([44d435d](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/44d435d8c40e078be3843d4045387caa8a81bda6))
+* **settings:** add button to reload custom icons ([28a9fe6](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/28a9fe6d2995bb7cb3bd7e685d6558d99b09dae2))
+
+
+### Performance Improvements
+
+* **built-ins:** dataUri now generate on demand ([c048d52](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/c048d5259d57ee15663df3cd2877c76c3aa4a56b))
+* **pack-manager:** custom icon file no longer read on load ([e760e5e](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/e760e5e141fc1c58ede83aeaec3462336a7e044a))
+
 ## [0.6.1](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.6.0...0.6.1) (2021-12-30)
 
 
