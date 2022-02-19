@@ -1,3 +1,5 @@
+## [0.6.3](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.6.2...0.6.3) (2022-02-19)
+
 ## [0.6.2](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.6.1...0.6.2) (2022-01-05)
 
 
