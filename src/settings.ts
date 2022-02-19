@@ -2,7 +2,6 @@ import "settings.less";
 import "invalid.less";
 
 import { fileDialog } from "file-select-dialog";
-import IconSC from "isc-main";
 import {
   App,
   ButtonComponent,
@@ -16,6 +15,7 @@ import {
 import IconManager from "./component/icon-manager";
 import { BuiltInIconPacknames, SVGPacknames } from "./icon-packs/built-ins";
 import { SupportedIconExt } from "./icon-packs/utils";
+import IconSC from "./isc-main";
 
 export interface IconSCSettings {
   code2emoji: boolean;

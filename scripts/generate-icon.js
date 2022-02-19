@@ -1,7 +1,7 @@
-const { writeFile, mkdir } = require("fs-extra");
-const { basename, dirname, join } = require("path");
+import { writeFile, mkdir } from "fs-extra";
+import { basename, join } from "path";
 
-const fg = require("fast-glob");
+import fg from "fast-glob";
 
 const formatLines = (lines) => {
   lines.unshift("/* eslint-disable simple-import-sort/exports */");

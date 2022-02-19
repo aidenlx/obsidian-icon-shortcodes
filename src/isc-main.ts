@@ -1,10 +1,10 @@
 import { Plugin } from "obsidian";
-import { DEFAULT_SETTINGS, IconSCSettings, IconSCSettingTab } from "settings";
 
 import PackManager from "./icon-packs/pack-manager";
 import tryUpdateIcons from "./modules/json-to-svg";
 import { getMDPostProcessor, getNodePostProcessor } from "./modules/post-ps";
 import { EmojiSuggester } from "./modules/suggester";
+import { DEFAULT_SETTINGS, IconSCSettings, IconSCSettingTab } from "./settings";
 import { getApi } from "./typings/api";
 import API, { API_NAME } from "./typings/api";
 

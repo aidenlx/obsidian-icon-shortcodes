@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "@aidenlx/eslint-config",
+    "plugin:react-hooks/recommended",
+    "plugin:react/recommended"
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    },
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    }
+  },
+  "ignorePatterns": ["lib/**/*"]
+}
