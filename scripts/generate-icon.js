@@ -1,7 +1,9 @@
-import { writeFile, mkdir } from "fs-extra";
+import { promises as fs } from "fs";
 import { basename, join } from "path";
 
-import fg from "fast-glob";
+import glob from "fast-glob";
+
+const { writeFile, mkdir } = fs;
 
 const formatLines = (lines) => {
   lines.unshift("/* eslint-disable simple-import-sort/exports */");
@@ -15,7 +17,7 @@ const iconsDir = "src/icons";
  */
 const importFontAwesome = async (faPath) => {
   const bundleName = "fa";
-  const series = (await fg([join(faPath, "*")], { onlyDirectories: true })).map(
+  const series = (await glob([join(faPath, "*")], { onlyDirectories: true })).map(
     (path) => basename(path),
   );
 
@@ -25,7 +27,7 @@ const importFontAwesome = async (faPath) => {
     lines: [],
   }));
   for (const { series, lines, prefix } of files) {
-    for (const path of await fg([join(faPath, series, "**/*.svg")])) {
+    for (const path of await glob([join(faPath, series, "**/*.svg")])) {
       let varName = basename(path).slice(0, -4).replace(/-/g, "_"),
         importPath = path.replace(/^node_modules\//, "");
       lines.push(
@@ -55,12 +57,12 @@ const importRemixicon = async (faPath) => {
     suffix: "_" + s,
     lines: [],
   }));
-  for (const path of await fg([join(faPath, "**/*.svg")])) {
+  for (const path of await glob([join(faPath, "**/*.svg")])) {
     let varName = basename(path).slice(0, -4).replace(/-/g, "_"),
       importPath = path.replace(/^node_modules\//, "");
 
     let matched = false;
-    for ({ prefix, suffix, lines } of files) {
+    for (const { prefix, suffix, lines } of files) {
       if (varName.endsWith(suffix)) {
         matched = true;
         lines.push(

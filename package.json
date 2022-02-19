@@ -60,7 +60,6 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "fast-glob": "^3.2.7",
     "file-select-dialog": "^1.5.4",
-    "fs-extra": "^10.0.0",
     "fuse.js": "^6.4.6",
     "immer": "^9.0.12",
     "json": "^11.0.0",
