@@ -1,7 +1,6 @@
+import glob from "fast-glob";
 import { promises as fs } from "fs";
 import { basename, join } from "path";
-
-import glob from "fast-glob";
 
 const { writeFile, mkdir } = fs;
 
@@ -17,9 +16,9 @@ const iconsDir = "src/icons";
  */
 const importFontAwesome = async (faPath) => {
   const bundleName = "fa";
-  const series = (await glob([join(faPath, "*")], { onlyDirectories: true })).map(
-    (path) => basename(path),
-  );
+  const series = (
+    await glob([join(faPath, "*")], { onlyDirectories: true })
+  ).map((path) => basename(path));
 
   const files = series.map((s) => ({
     series: s,
