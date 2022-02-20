@@ -18,14 +18,18 @@
     "build": "yarn run lib && cross-env BUILD=production node esbuild.config.mjs",
     "prettier": "prettier --write 'src/**/*.+(ts|tsx|json|html|css)'",
     "eslint": "eslint . --ext .ts,.tsx --fix",
-    "release": "release-it"
+    "release-full": "release-it",
+    "release-lib": "release-it --config .release-it.lib.cjs"
   },
   "keywords": [],
   "author": "AidenLx",
   "license": "MIT",
   "devDependencies": {
+    "@aidenlx/esbuild-plugin-obsidian": "^0.1.4",
     "@aidenlx/eslint-config": "^0.1.2",
+    "@aidenlx/obsidian-plugin-bumper": "^0.1.3",
     "@aidenlx/prettier-config": "^0.1.0",
+    "@aidenlx/release-it-config": "^0.1.3",
     "@aidenlx/ts-config": "^0.1.2",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@release-it/bumper": "^3.0.1",
@@ -91,48 +95,6 @@
   },
   "browser": {
     "path": "path-browserify"
-  },
-  "release-it": {
-    "hooks": {
-      "before:init": [
-        "npm run prettier",
-        "npm run eslint"
-      ],
-      "after:bump": [
-        "npm run build"
-      ],
-      "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
-    },
-    "git": {
-      "commitMessage": "chore: release v${version}",
-      "tagName": "${version}",
-      "tagAnnotation": "Release v${version}"
-    },
-    "npm": {
-      "publish": true
-    },
-    "github": {
-      "release": true,
-      "assets": [
-        "build/main.js",
-        "build/manifest.json",
-        "build/styles.css"
-      ],
-      "proxy": "http://127.0.0.1:7890",
-      "releaseName": "${version}"
-    },
-    "plugins": {
-      "@release-it/bumper": {
-        "out": "manifest.json"
-      },
-      "@release-it/conventional-changelog": {
-        "preset": "angular",
-        "infile": "CHANGELOG.md"
-      },
-      "./scripts/version-bump.cjs": {
-        "indent": 2
-      }
-    }
   },
   "config": {
     "commitizen": {
