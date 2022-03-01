@@ -4,7 +4,7 @@ import { promises as fs } from "fs";
 import { basename, join } from "path";
 import { promisify } from "util";
 
-const { mkdir, copyFile, rm } = fs,
+const { mkdir, copyFile, rm, writeFile } = fs,
   exec = promisify(child_process.exec);
 
 const iconsDir = "assets";
@@ -21,17 +21,40 @@ const prepareFolder = async (dir) => {
     if (error.code !== "EEXIST") throw error;
   }
 };
-const zip = async (targetDir) =>
-  exec(`zip -jr ${targetDir}.zip ${targetDir}/*.svg`);
+const zip = async (targetDir) => {
+  await exec(`zip -jr ${targetDir}.zip ${targetDir}/*.svg`);
+  rm(targetDir, { recursive: true });
+};
 
+let folderQueueMap = {};
+
+const prepare = async (folder) => {
+  if (!folderQueueMap[folder]) {
+    await prepareFolder(join(iconsDir, folder));
+    folderQueueMap[folder] = [];
+  }
+};
+const copy = async (from, folder, filename) => {
+  folderQueueMap[folder].push(
+    copyFile(from, join(iconsDir, folder, `${filename}.svg`)),
+  );
+};
+
+const fontAwesome = {
+  name: "Font Awesome (Free)",
+  description:
+    "the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.",
+  license: "CC BY 4.0 License",
+  homepage: "https://fontawesome.com",
+};
 /**
- * @param {string} faPath
+ * @param {string} packDir
  * @returns {Promise<Promise<void>[]>}
  */
-const importFontAwesome = async (faPath) => {
+const exportFontAwesome = async (packDir) => {
   const bundleName = "fa";
   const series = (
-    await glob([join(faPath, "*")], { onlyDirectories: true })
+    await glob([join(packDir, "*")], { onlyDirectories: true })
   ).map((path) => basename(path));
 
   const seriesPattern = series.map((s) => ({
@@ -39,23 +62,27 @@ const importFontAwesome = async (faPath) => {
     prefix: bundleName + s[0],
   }));
 
-  return seriesPattern.map(async ({ series, prefix }) => {
-    let copyQueue = [];
-    const writeTo = join(iconsDir, `${bundleName}-${series}`);
-    await prepareFolder(writeTo);
-    for (const path of await glob([join(faPath, series, "**/*.svg")])) {
+  for (const { series, prefix } of seriesPattern) {
+    let folder = `${bundleName}-${series}`;
+    await prepare(folder);
+    for (const path of await glob([join(packDir, series, "**/*.svg")])) {
       let varName = basename(path).slice(0, -4).replace(/-/g, "_");
-      copyQueue.push(copyFile(path, join(writeTo, `${prefix}_${varName}.svg`)));
+      copy(path, folder, `${prefix}_${varName}`);
     }
-    await Promise.all(copyQueue);
-    return zip(writeTo);
-  });
+  }
 };
 
+const remixicon = {
+  name: "Remix Icon",
+  description:
+    "a set of open-source neutral-style system symbols elaborately crafted for designers and developers.",
+  license: "Apache-2.0 License",
+  homepage: "http://remixicon.com",
+};
 /**
- * @param {string} faPath
+ * @param {string} packDir
  */
-const importRemixicon = async (faPath) => {
+const exportRemixicon = async (packDir) => {
   const bundleName = "ri";
   const series = ["fill", "line"];
 
@@ -64,30 +91,19 @@ const importRemixicon = async (faPath) => {
       prefix: bundleName + s[0],
       suffix: "_" + s,
     })),
-    files = await glob([join(faPath, "**/*.svg")]);
+    files = await glob([join(packDir, "**/*.svg")]);
 
-  let folderQueueMap = {};
   for (const path of files) {
     let varName = basename(path).slice(0, -4).replace(/-/g, "_"),
       importPath = path.replace(/^node_modules\//, "");
     let matched = false;
-    const copy = async (folder, filename) => {
-      const writeTo = join(iconsDir, folder);
-      if (!folderQueueMap[folder]) {
-        await prepareFolder(writeTo);
-        folderQueueMap[folder] = [];
-      }
-      folderQueueMap[folder].push(
-        copyFile(path, join(writeTo, `${filename}.svg`)),
-      );
-    };
+
     for (const { series, prefix, suffix } of seriesPattern) {
+      const folder = `${bundleName}-${series}`;
       if (varName.endsWith(suffix)) {
         matched = true;
-        await copy(
-          `${bundleName}-${series}`,
-          `${prefix}_${varName.slice(0, -suffix.length)}`,
-        );
+        await prepare(folder);
+        copy(path, folder, `${prefix}_${varName.slice(0, -suffix.length)}`);
         break;
       }
     }
@@ -96,7 +112,9 @@ const importRemixicon = async (faPath) => {
         const { series, prefix } = seriesPattern.find(
           (f) => f.series === "line",
         );
-        await copy(`${bundleName}-${series}`, `${prefix}_${varName}`);
+        const folder = `${bundleName}-${series}`;
+        await prepare(folder);
+        copy(path, folder, `${prefix}_${varName}`);
       } else
         console.error(
           "unexpected suffix in %s, skipping...",
@@ -104,12 +122,60 @@ const importRemixicon = async (faPath) => {
         );
     }
   }
-  for (const [folder, queue] of Object.entries(folderQueueMap)) {
-    Promise.all(queue).then(() => zip(join(iconsDir, folder)));
+};
+
+const rpgawesome = {
+  name: "RPG Awesome",
+  description:
+    "a suite of 495 pictographic, rpg and fantasy themes icons for easy scalable vector graphics on websites",
+  license: "BSD-2-Clause License",
+  homepage: "http://nagoshiashumari.github.io/Rpg-Awesome/",
+};
+const exportRPGAwesome = async (packDir) => {
+  const bundleName = "rpg-awesome",
+    prefix = "rpg";
+  for (const path of await glob([join(packDir, "*.svg")])) {
+    let varName = basename(path).slice(0, -4).replace(/-/g, "_");
+    await prepare(bundleName);
+    copy(path, bundleName, `${prefix}_${varName}`);
   }
 };
 
 (async () => {
-  importFontAwesome("node_modules/@fortawesome/fontawesome-free/svgs");
-  importRemixicon("node_modules/remixicon/icons");
+  await Promise.all([
+    exportFontAwesome("node_modules/@fortawesome/fontawesome-free/svgs"),
+    exportRemixicon("node_modules/remixicon/icons"),
+    exportRPGAwesome("node_modules/rpg-awsome-raw/Font"),
+  ]);
+  await Promise.all(
+    Object.entries(folderQueueMap).map(async ([folder, queue]) => {
+      await Promise.all(queue);
+      console.log(`${folder} done: ` + queue.length);
+      return zip(join(iconsDir, folder));
+    }),
+  );
+  let manifest = {};
+  for (const [zipFileName, queue] of Object.entries(folderQueueMap)) {
+    manifest[zipFileName] = {
+      path: join(iconsDir, zipFileName),
+      count: queue.length,
+    };
+    if (zipFileName.startsWith("fa")) {
+      let series = zipFileName.split("-").pop();
+      Object.assign(manifest[zipFileName], fontAwesome, {
+        name: `${fontAwesome.name} - ${series}`,
+      });
+    } else if (zipFileName.startsWith("ri")) {
+      let series = zipFileName.split("-").pop();
+      Object.assign(manifest[zipFileName], remixicon, {
+        name: `${remixicon.name} - ${series}`,
+      });
+    } else if (zipFileName === "rpg-awesome") {
+      Object.assign(manifest[zipFileName], rpgawesome);
+    }
+  }
+  manifest = Object.fromEntries(
+    Object.entries(manifest).sort(([a], [b]) => a.localeCompare(b)),
+  );
+  writeFile(join(iconsDir, "manifest.json"), JSON.stringify(manifest, null, 2));
 })();

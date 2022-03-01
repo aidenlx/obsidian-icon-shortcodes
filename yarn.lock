@@ -91,6 +91,7 @@ __metadata:
     react-dom: "npm:@preact/compat@^17.0.2"
     release-it: ^14.11.6
     remixicon: ^2.5.0
+    rpg-awsome-raw: "https://github.com/aidenlx/rpg-awesome-raw"
     semver: ^7.3.5
     spark-md5: ^3.0.2
     tslib: ^2.3.1
@@ -5772,6 +5773,13 @@ __metadata:
   bin:
     rimraf: bin.js
   checksum: 87f4164e396f0171b0a3386cc1877a817f572148ee13a7e113b238e48e8a9f2f31d009a92ec38a591ff1567d9662c6b67fd8818a2dbbaed74bc26a87a2a4a9a0
+  languageName: node
+  linkType: hard
+
+"rpg-awsome-raw@https://github.com/aidenlx/rpg-awesome-raw":
+  version: 0.1.1
+  resolution: "rpg-awsome-raw@https://github.com/aidenlx/rpg-awesome-raw.git#commit=b5398dfdb2d9e3a8b7809977a609ff0e5f8c4f3a"
+  checksum: 3ba0077de9e10e237a2dab22dd87e730846bab07229ccbb3eec8462692a1be461b5207c103fd992886d0acd6c289fb78a3159768aac7718d9bbb770efadee3d2
   languageName: node
   linkType: hard
 

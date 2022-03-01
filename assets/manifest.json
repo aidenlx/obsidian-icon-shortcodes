@@ -1,0 +1,50 @@
+{
+  "fa-brands": {
+    "path": "assets/fa-brands",
+    "count": 457,
+    "name": "Font Awesome (Free) - brands",
+    "description": "the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.",
+    "license": "CC BY 4.0 License",
+    "homepage": "https://fontawesome.com"
+  },
+  "fa-regular": {
+    "path": "assets/fa-regular",
+    "count": 152,
+    "name": "Font Awesome (Free) - regular",
+    "description": "the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.",
+    "license": "CC BY 4.0 License",
+    "homepage": "https://fontawesome.com"
+  },
+  "fa-solid": {
+    "path": "assets/fa-solid",
+    "count": 1002,
+    "name": "Font Awesome (Free) - solid",
+    "description": "the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.",
+    "license": "CC BY 4.0 License",
+    "homepage": "https://fontawesome.com"
+  },
+  "ri-fill": {
+    "path": "assets/ri-fill",
+    "count": 1086,
+    "name": "Remix Icon - fill",
+    "description": "a set of open-source neutral-style system symbols elaborately crafted for designers and developers.",
+    "license": "Apache-2.0 License",
+    "homepage": "http://remixicon.com"
+  },
+  "ri-line": {
+    "path": "assets/ri-line",
+    "count": 1185,
+    "name": "Remix Icon - line",
+    "description": "a set of open-source neutral-style system symbols elaborately crafted for designers and developers.",
+    "license": "Apache-2.0 License",
+    "homepage": "http://remixicon.com"
+  },
+  "rpg-awesome": {
+    "path": "assets/rpg-awesome",
+    "count": 495,
+    "name": "RPG Awesome",
+    "description": "a suite of 495 pictographic, rpg and fantasy themes icons for easy scalable vector graphics on websites",
+    "license": "BSD-2-Clause License",
+    "homepage": "http://nagoshiashumari.github.io/Rpg-Awesome/"
+  }
+}

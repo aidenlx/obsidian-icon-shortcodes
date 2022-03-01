@@ -5,7 +5,9 @@ package-lock.json
 
 # build
 build
-assets
+assets/*
+!assets/*.zip
+!assets/manifest.json
 
 # https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
 .pnp.*
