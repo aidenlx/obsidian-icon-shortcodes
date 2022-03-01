@@ -29,11 +29,8 @@ export const DEFAULT_SETTINGS: IconSCSettings = {
   code2emoji: true,
   suggester: true,
   iconpack: {
-    fab: false,
-    far: true,
-    fas: false,
-    rif: false,
-    ril: true,
+    obs: false,
+    luc: true,
   },
   spaceAfterSC: false,
   isMigrated: false,
@@ -147,7 +144,7 @@ export class IconSCSettingTab extends PluginSettingTab {
     const getSetting = (
       id: SVGPacknames,
       name: string,
-      getDesc: (el: DocumentFragment) => void,
+      getDesc?: (el: DocumentFragment) => void,
     ) =>
       new Setting(containerEl)
         .setName(name)
@@ -162,35 +159,14 @@ export class IconSCSettingTab extends PluginSettingTab {
         });
     new Setting(this.containerEl).setHeading().setName("Built-in Icon Packs");
 
-    getSetting("far", "Font Awesome (Line)", (el) =>
+    getSetting("luc", "Lucide", (el) =>
       el.createEl("a", {
-        href: "https://fontawesome.com/",
+        href: "https://lucide.dev",
         text: "official website",
       }),
     );
-    getSetting("fab", "Font Awesome (Brand)", (el) =>
-      el.createEl("a", {
-        href: "https://fontawesome.com/",
-        text: "official website",
-      }),
-    );
-    getSetting("fas", "Font Awesome (Solid)", (el) =>
-      el.createEl("a", {
-        href: "https://fontawesome.com/",
-        text: "official website",
-      }),
-    );
-    getSetting("ril", "Remixicon (Line)", (el) =>
-      el.createEl("a", {
-        href: "https://remixicon.com",
-        text: "official website",
-      }),
-    );
-    getSetting("rif", "Remixicon (Solid)", (el) =>
-      el.createEl("a", {
-        href: "https://remixicon.com",
-        text: "official website",
-      }),
+    getSetting("obs", "Obsidian's built-in icons", (el) =>
+      el.appendText("Obsidian's built-in icons are mostly used for UI components. "),
     );
   }
 

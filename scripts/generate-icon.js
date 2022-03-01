@@ -1,18 +1,32 @@
+import child_process from "child_process";
 import glob from "fast-glob";
 import { promises as fs } from "fs";
 import { basename, join } from "path";
+import { promisify } from "util";
 
-const { writeFile, mkdir } = fs;
+const { mkdir, copyFile, rm } = fs,
+  exec = promisify(child_process.exec);
 
-const formatLines = (lines) => {
-  lines.unshift("/* eslint-disable simple-import-sort/exports */");
-  lines.push("");
-  return lines.join("\n");
+const iconsDir = "assets";
+
+const prepareFolder = async (dir) => {
+  try {
+    await rm(dir, { recursive: true });
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+  try {
+    await mkdir(dir, { recursive: true });
+  } catch (error) {
+    if (error.code !== "EEXIST") throw error;
+  }
 };
-const iconsDir = "src/icons";
+const zip = async (targetDir) =>
+  exec(`zip -jr ${targetDir}.zip ${targetDir}/*.svg`);
 
 /**
  * @param {string} faPath
+ * @returns {Promise<Promise<void>[]>}
  */
 const importFontAwesome = async (faPath) => {
   const bundleName = "fa";
@@ -20,27 +34,22 @@ const importFontAwesome = async (faPath) => {
     await glob([join(faPath, "*")], { onlyDirectories: true })
   ).map((path) => basename(path));
 
-  const files = series.map((s) => ({
+  const seriesPattern = series.map((s) => ({
     series: s,
     prefix: bundleName + s[0],
-    lines: [],
   }));
-  for (const { series, lines, prefix } of files) {
-    for (const path of await glob([join(faPath, series, "**/*.svg")])) {
-      let varName = basename(path).slice(0, -4).replace(/-/g, "_"),
-        importPath = path.replace(/^node_modules\//, "");
-      lines.push(
-        `export ` +
-          `{ default as ${prefix}_${varName} }` +
-          ` from "${importPath}";`,
-      );
-    }
-  }
 
-  for (const { prefix, lines } of files) {
-    await writeFile(join(iconsDir, prefix + ".ts"), formatLines(lines));
-  }
-  return files.map(({ prefix }) => prefix);
+  return seriesPattern.map(async ({ series, prefix }) => {
+    let copyQueue = [];
+    const writeTo = join(iconsDir, `${bundleName}-${series}`);
+    await prepareFolder(writeTo);
+    for (const path of await glob([join(faPath, series, "**/*.svg")])) {
+      let varName = basename(path).slice(0, -4).replace(/-/g, "_");
+      copyQueue.push(copyFile(path, join(writeTo, `${prefix}_${varName}.svg`)));
+    }
+    await Promise.all(copyQueue);
+    return zip(writeTo);
+  });
 };
 
 /**
@@ -50,40 +59,44 @@ const importRemixicon = async (faPath) => {
   const bundleName = "ri";
   const series = ["fill", "line"];
 
-  const files = series.map((s) => ({
-    series: s,
-    prefix: bundleName + s[0],
-    suffix: "_" + s,
-    lines: [],
-  }));
-  for (const path of await glob([join(faPath, "**/*.svg")])) {
+  const seriesPattern = series.map((s) => ({
+      series: s,
+      prefix: bundleName + s[0],
+      suffix: "_" + s,
+    })),
+    files = await glob([join(faPath, "**/*.svg")]);
+
+  let folderQueueMap = {};
+  for (const path of files) {
     let varName = basename(path).slice(0, -4).replace(/-/g, "_"),
       importPath = path.replace(/^node_modules\//, "");
-
     let matched = false;
-    for (const { prefix, suffix, lines } of files) {
+    const copy = async (folder, filename) => {
+      const writeTo = join(iconsDir, folder);
+      if (!folderQueueMap[folder]) {
+        await prepareFolder(writeTo);
+        folderQueueMap[folder] = [];
+      }
+      folderQueueMap[folder].push(
+        copyFile(path, join(writeTo, `${filename}.svg`)),
+      );
+    };
+    for (const { series, prefix, suffix } of seriesPattern) {
       if (varName.endsWith(suffix)) {
         matched = true;
-        lines.push(
-          `export ` +
-            `{ default as ${prefix}_${varName.slice(0, -suffix.length)} }` +
-            ` from "${importPath}";`,
+        await copy(
+          `${bundleName}-${series}`,
+          `${prefix}_${varName.slice(0, -suffix.length)}`,
         );
         break;
       }
     }
     if (!matched) {
-      let file;
-      if (
-        importPath.includes("Editor/") &&
-        (file = files.find((f) => f.series === "line"))
-      ) {
-        const { prefix, lines } = file;
-        lines.push(
-          `export ` +
-            `{ default as ${prefix}_${varName} }` +
-            ` from "${importPath}";`,
+      if (importPath.includes("Editor/")) {
+        const { series, prefix } = seriesPattern.find(
+          (f) => f.series === "line",
         );
+        await copy(`${bundleName}-${series}`, `${prefix}_${varName}`);
       } else
         console.error(
           "unexpected suffix in %s, skipping...",
@@ -91,24 +104,12 @@ const importRemixicon = async (faPath) => {
         );
     }
   }
-
-  for (const { prefix, lines } of files) {
-    await writeFile(join(iconsDir, prefix + ".ts"), formatLines(lines));
+  for (const [folder, queue] of Object.entries(folderQueueMap)) {
+    Promise.all(queue).then(() => zip(join(iconsDir, folder)));
   }
-  return files.map(({ prefix }) => prefix);
 };
 
-(async (writeTo) => {
-  try {
-    await mkdir(iconsDir);
-  } catch (err) {
-    if (err && err.code !== "EEXIST") throw err;
-  }
-
-  const all = await Promise.all([
-    importFontAwesome("node_modules/@fortawesome/fontawesome-free/svgs"),
-    importRemixicon("node_modules/remixicon/icons"),
-  ]);
-  let lines = all.flat().map((name) => `export * as ${name} from "./${name}";`);
-  await writeFile(writeTo, formatLines(lines));
-})("src/icons/index.ts");
+(async () => {
+  importFontAwesome("node_modules/@fortawesome/fontawesome-free/svgs");
+  importRemixicon("node_modules/remixicon/icons");
+})();

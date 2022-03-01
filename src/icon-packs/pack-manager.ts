@@ -542,7 +542,7 @@ export default class PackManager extends Events {
     keys: ["name", "pack"],
     includeScore: true,
     // ignoreLocation: true,
-    // findAllMatches: true,
+    findAllMatches: true,
     threshold: 0.5,
     shouldSort: true,
     includeMatches: true,

@@ -58,6 +58,10 @@ export default class IconSC extends Plugin {
 
   async loadSettings() {
     this.settings = { ...this.settings, ...(await this.loadData()) };
+    this.settings.iconpack = {
+      ...DEFAULT_SETTINGS.iconpack,
+      ...this.settings.iconpack,
+    };
   }
 
   async saveSettings() {

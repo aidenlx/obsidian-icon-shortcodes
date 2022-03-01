@@ -5,7 +5,7 @@ package-lock.json
 
 # build
 build
-src/icons
+assets
 
 # https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
 .pnp.*
