@@ -6,11 +6,14 @@ Insert emoji and custom icons with shortcodes
 
 - Easily import and manage custom icons (support `.bmp`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.svg`, and `.webp`)
 - Render custom icons in editor with [Codemirror Options](https://github.com/nothingislost/obsidian-codemirror-options) (Desktop, non-live preview only)
-- Built-in Unicode 13.1 Emoji, [Font Awesome](https://fontawesome.com/), and [Remixicon](https://github.com/Remix-Design/RemixIcon) support
+- Built-in Unicode 13.1 Emoji, [Lucide](https://lucide.dev) support
+- [Font Awesome](https://fontawesome.com/), and [Remixicon](https://github.com/Remix-Design/RemixIcon) available via download
 - [API](#for-developer) ready to be intergated by other plugins
 - Fuzzy search: type in `:book` to find 📖(`:open_book:`) and 📗(`:green_book:`)
 
 Inspired by [obsidian-emoji-shortcodes](https://github.com/phibr0/obsidian-emoji-shortcodes), [obsidian-icon-folder](https://github.com/FlorianWoelki/obsidian-icon-folder), [obsidian-icons](https://github.com/visini/obsidian-icons-plugin) and [remark-emoji](https://github.com/rhysd/remark-emoji).
+
+NOTE: since v0.7.0, Font Awesome and RemixIcon are no longer bundled as bulti-in icon packs to reduce bundle size and speed up the loading. Go to the setting tab to download them.
 
 Note: this plugin may conflicts with [obsidian-emoji-shortcodes](https://github.com/phibr0/obsidian-emoji-shortcodes), disable it before using this plugin
 
