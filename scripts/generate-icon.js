@@ -22,7 +22,7 @@ const prepareFolder = async (dir) => {
   }
 };
 const zip = async (targetDir) => {
-  await exec(`zip -jr ${targetDir}.zip ${targetDir}/*.svg`);
+  // await exec(`zip -jr ${targetDir}.zip ${targetDir}/*.svg`);
   rm(targetDir, { recursive: true });
 };
 
@@ -41,7 +41,7 @@ const copy = async (from, folder, filename) => {
 };
 
 const fontAwesome = {
-  name: "Font Awesome (Free)",
+  series: "Font Awesome (Free)",
   description:
     "the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.",
   license: "CC BY 4.0 License",
@@ -73,7 +73,7 @@ const exportFontAwesome = async (packDir) => {
 };
 
 const remixicon = {
-  name: "Remix Icon",
+  series: "Remix Icon",
   description:
     "a set of open-source neutral-style system symbols elaborately crafted for designers and developers.",
   license: "Apache-2.0 License",
@@ -125,7 +125,8 @@ const exportRemixicon = async (packDir) => {
 };
 
 const rpgawesome = {
-  name: "RPG Awesome",
+  series: "RPG Awesome",
+  style: "",
   description:
     "a suite of 495 pictographic, rpg and fantasy themes icons for easy scalable vector graphics on websites",
   license: "BSD-2-Clause License",
@@ -157,25 +158,23 @@ const exportRPGAwesome = async (packDir) => {
   let manifest = {};
   for (const [zipFileName, queue] of Object.entries(folderQueueMap)) {
     manifest[zipFileName] = {
-      path: join(iconsDir, zipFileName),
+      path: join(iconsDir, zipFileName + ".zip"),
       count: queue.length,
     };
     if (zipFileName.startsWith("fa")) {
-      let series = zipFileName.split("-").pop();
       Object.assign(manifest[zipFileName], fontAwesome, {
-        name: `${fontAwesome.name} - ${series}`,
+        style: zipFileName.split("-").pop(),
       });
     } else if (zipFileName.startsWith("ri")) {
-      let series = zipFileName.split("-").pop();
       Object.assign(manifest[zipFileName], remixicon, {
-        name: `${remixicon.name} - ${series}`,
+        style: zipFileName.split("-").pop(),
       });
     } else if (zipFileName === "rpg-awesome") {
       Object.assign(manifest[zipFileName], rpgawesome);
     }
   }
-  manifest = Object.fromEntries(
-    Object.entries(manifest).sort(([a], [b]) => a.localeCompare(b)),
-  );
+  manifest = Object.entries(manifest)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([, info]) => info);
   writeFile(join(iconsDir, "manifest.json"), JSON.stringify(manifest, null, 2));
 })();
