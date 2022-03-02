@@ -1,3 +1,17 @@
+# [0.7.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.6.3...0.7.0) (2022-03-02)
+
+
+### Bug Fixes
+
+* fix wrong version in manifest.json ([05c1ee4](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/05c1ee47c3c0596bac0f7e924a2201fc7babd3aa))
+* **pack-manager:** fix pack match not working on id shorter than 3 chars ([4a21c20](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/4a21c200195bca6de617269f8345d3aef9faa0a4))
+
+
+### Features
+
+* add icon pack browser ([24c46f2](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/24c46f2aaec1cda18069ee7f8dd61abe83465ddf))
+* add support for lucide icons ([1d3117a](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/1d3117ac866b44677879065702ffa7d4ddb4b523))
+
 ## [0.6.3](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.6.2...0.6.3) (2022-02-19)
 
 ## [0.6.2](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.6.1...0.6.2) (2022-01-05)
