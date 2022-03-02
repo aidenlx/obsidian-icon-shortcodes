@@ -153,6 +153,25 @@ const exportRPGAwesome = async (packDir) => {
   }
   return rpgawesome;
 };
+const devicon = {
+  series: "Devicon",
+  bundleName: "dev",
+  packId: "dev",
+  style: "",
+  description:
+    "Set of icons representing programming languages, designing & development tools",
+  license: "MIT License",
+  homepage: "https://devicon.dev",
+};
+const exportDevicon = async (packDir) => {
+  const { bundleName, packId } = devicon;
+  for (const path of await glob([join(packDir, "**/*.svg")])) {
+    let iconName = basename(path).slice(0, -4).replace(/-/g, "_");
+    await prepare(bundleName);
+    copy(path, bundleName, packId, iconName);
+  }
+  return devicon;
+};
 
 (async () => {
   let manifestList = (
@@ -160,6 +179,7 @@ const exportRPGAwesome = async (packDir) => {
       exportFontAwesome("node_modules/@fortawesome/fontawesome-free/svgs"),
       exportRemixicon("node_modules/remixicon/icons"),
       exportRPGAwesome("node_modules/rpg-awsome-raw/Font"),
+      exportDevicon("node_modules/devicon/icons"),
     ])
   ).flat();
   await Promise.all(

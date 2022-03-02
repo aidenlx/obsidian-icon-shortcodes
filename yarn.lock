@@ -62,6 +62,7 @@ __metadata:
     conventional-changelog-angular: ^5.0.13
     cross-env: ^7.0.3
     cz-conventional-changelog: ^3.3.0
+    devicon: 2.14.0
     esbuild: ^0.13.13
     esbuild-plugin-inline-worker: ^0.1.1
     esbuild-plugin-less: ^1.1.5
@@ -2041,6 +2042,13 @@ __metadata:
   version: 6.1.0
   resolution: "detect-indent@npm:6.1.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fdetect-indent%2F-%2Fdetect-indent-6.1.0.tgz"
   checksum: ab953a73c72dbd4e8fc68e4ed4bfd92c97eb6c43734af3900add963fd3a9316f3bc0578b018b24198d4c31a358571eff5f0656e81a1f3b9ad5c547d58b2d093d
+  languageName: node
+  linkType: hard
+
+"devicon@npm:2.14.0":
+  version: 2.14.0
+  resolution: "devicon@npm:2.14.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fdevicon%2F-%2Fdevicon-2.14.0.tgz"
+  checksum: 3a5b86d913ad6638fb089f31ad9213c0f23771d9a71eb0420e6e5d4bd64c3454e7c8d777caf9ba5e2bd813f93fb43e66eedbc099c523747bb92d9204ac0c3976
   languageName: node
   linkType: hard
 

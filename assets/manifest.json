@@ -1,5 +1,16 @@
 [
   {
+    "bundleName": "dev",
+    "count": 674,
+    "description": "Set of icons representing programming languages, designing & development tools",
+    "homepage": "https://devicon.dev",
+    "license": "MIT License",
+    "packId": "dev",
+    "path": "assets/dev.zip",
+    "series": "Devicon",
+    "style": ""
+  },
+  {
     "bundleName": "fa-brands",
     "count": 459,
     "description": "the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.",

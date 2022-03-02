@@ -51,6 +51,7 @@
     "conventional-changelog-angular": "^5.0.13",
     "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
+    "devicon": "2.14.0",
     "esbuild": "^0.13.13",
     "esbuild-plugin-inline-worker": "^0.1.1",
     "esbuild-plugin-less": "^1.1.5",
