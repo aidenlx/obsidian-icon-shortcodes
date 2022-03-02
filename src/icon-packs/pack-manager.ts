@@ -185,7 +185,7 @@ export default class PackManager extends Events {
   }
 
   private _loaded = false;
-  async loadCustomIcons(): Promise<void> {
+  async loadIcons(): Promise<void> {
     if (this._loaded) {
       this._fuse.setCollection([]);
       this._customIcons.clear();
@@ -223,7 +223,7 @@ export default class PackManager extends Events {
     this.refreshPackNames();
     this.trigger("initialized", this.plugin.api);
   }
-  async backupCustomIcons(pack?: string): Promise<void> {
+  async backupIcons(pack?: string): Promise<void> {
     let zip = new JSZip();
     const iconlist = await this.vault.adapter.list(this.customIconsDir);
     for (const filepath of iconlist.files) {
@@ -246,46 +246,62 @@ export default class PackManager extends Events {
       );
     }
   }
-  async importCustomIcons(
-    files: FileList,
-    zipNameAsPack: boolean,
-  ): Promise<void> {
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+
+  async importIconsFromFileList(list: FileList, zipNameAsPack = false) {
+    let queue = [] as Promise<string>[];
+    for (let i = 0; i < list.length; i++) {
+      const file = list[i];
       if (file.type !== "application/zip") continue;
-      const packName = file.name.replace(/\.zip$/, ""),
-        zip = await JSZip.loadAsync(file);
-      const queue = zip.file(iconFilePattern).map(async (file) => {
-        let { name } = file;
-        if (zipNameAsPack && !name.startsWith(packName + "_"))
-          name = packName + "_" + name;
-        const id = this.getAvailableId(name);
-        const writeTo = join(this.customIconsDir, id);
-        if (await this.vault.adapter.exists(writeTo)) {
-          return Promise.reject(`icon ${id} already exists, skipping..`);
-        }
-        this.vault.adapter.writeBinary(
-          writeTo,
-          await file.async("arraybuffer"),
-        );
-        return id;
-      });
-      const addedIcons = (await Promise.allSettled(queue)).reduce(
-        (arr, result) => {
-          if (result.status === "rejected") {
-            console.error("Failed to import icon", result.reason);
-          } else {
-            arr.push(result.value);
-          }
-          return arr;
-        },
-        [] as string[],
-      );
-      new Notice(
-        addedIcons.length + " icons imported, restart obsidian to take effects",
-      );
-      return; // only import the first zip file
+      queue.push(this.importIcons(file, zipNameAsPack));
     }
+    return Promise.allSettled(queue);
+  }
+
+  /**
+   *
+   * @param files
+   * @param zipNameAsPack if true, use zip filename as pack name; otherwise, get pack name from each icon's id
+   * @returns
+   */
+  async importIcons(
+    file: File | { name: string; data: ArrayBuffer },
+    zipNameAsPack: boolean,
+  ): Promise<string> {
+    const packNameFromZip = file.name.replace(/\.zip$/, "");
+    let zip;
+    if (file instanceof File) {
+      zip = await JSZip.loadAsync(file);
+    } else {
+      zip = await JSZip.loadAsync(file.data);
+    }
+    const queue = zip.file(iconFilePattern).map(async (file) => {
+      let { name } = file;
+      if (zipNameAsPack && !name.startsWith(packNameFromZip + "_"))
+        name = packNameFromZip + "_" + name;
+      const id = this.getAvailableId(name);
+      const writeTo = join(this.customIconsDir, id);
+      if (await this.vault.adapter.exists(writeTo)) {
+        return Promise.reject(`icon ${id} already exists, skipping..`);
+      }
+      await this.vault.adapter.writeBinary(
+        writeTo,
+        await file.async("arraybuffer"),
+      );
+      return id;
+    });
+    const addedIcons = (await Promise.allSettled(queue)).reduce(
+      (arr, result) => {
+        if (result.status === "rejected") {
+          console.error("Failed to import icon", result.reason);
+        } else {
+          arr.push(result.value);
+        }
+        return arr;
+      },
+      [] as string[],
+    );
+    new Notice(addedIcons.length + " icons imported");
+    return file.name;
   }
 
   async addFromFiles(pack: string, files: FileList) {

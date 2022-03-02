@@ -55,6 +55,7 @@ __metadata:
     "@types/spark-md5": ^3.0.2
     "@typescript-eslint/eslint-plugin": ^5.3.1
     "@typescript-eslint/parser": ^5.3.1
+    assert-never: ^1.2.1
     classnames: ^2.3.1
     clone-regexp: ^3.0.0
     compare-versions: ^4.1.1
@@ -83,15 +84,17 @@ __metadata:
     mime-types: ^2.1.34
     mini-svg-data-uri: ^1.4.3
     node-emoji: "github:rhysd/node-emoji#fix-gh-short-codes"
-    obsidian: "github:obsidianmd/obsidian-api"
+    obsidian: ^0.13.26
     path-browserify: ^1.0.1
     preact: ^10.5.15
     prettier: ^2.4.1
     react: "npm:@preact/compat@^17.0.2"
     react-dom: "npm:@preact/compat@^17.0.2"
+    react-icons: ^4.3.1
+    react-loading: ^2.0.3
     release-it: ^14.11.6
     remixicon: 2.5.0
-    rpg-awsome-raw: "https://github.com/aidenlx/rpg-awesome-raw"
+    rpg-awsome-raw: "github:aidenlx/rpg-awesome-raw"
     semver: ^7.3.5
     spark-md5: ^3.0.2
     tslib: ^2.3.1
@@ -1083,6 +1086,13 @@ __metadata:
   version: 1.0.1
   resolution: "arrify@npm:1.0.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Farrify%2F-%2Farrify-1.0.1.tgz"
   checksum: 745075dd4a4624ff0225c331dacb99be501a515d39bcb7c84d24660314a6ec28e68131b137e6f7e16318170842ce97538cd298fc4cd6b2cc798e0b957f2747e7
+  languageName: node
+  linkType: hard
+
+"assert-never@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "assert-never@npm:1.2.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fassert-never%2F-%2Fassert-never-1.2.1.tgz"
+  checksum: ea4f1756d90f55254c4dc7a20d6c5d5bc169160562aefe3d8756b598c10e695daf568f21b6d6b12245d7f3782d3ff83ef6a01ab75d487adfc6909470a813bf8c
   languageName: node
   linkType: hard
 
@@ -4915,15 +4925,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"obsidian@github:obsidianmd/obsidian-api":
-  version: 0.13.21
-  resolution: "obsidian@https://github.com/obsidianmd/obsidian-api.git#commit=342a49dcc4e2012e4c60e16a5a3d16d740ad86b6"
+"obsidian@npm:^0.13.26":
+  version: 0.13.26
+  resolution: "obsidian@npm:0.13.26"
   dependencies:
     "@codemirror/state": ^0.19.6
     "@codemirror/view": ^0.19.31
     "@types/codemirror": 0.0.108
     moment: 2.29.1
-  checksum: 6a1ce32c7613eeda47fa104b925c98ec0bdc8941f761fa3691a8e3c7da5f2dfdd6d81b7fc471f936d300622df079aff56f41375c48b174ceb904b904b361adab
+  checksum: ddc91063eb72677368a9f3c823df180ec161c158d23688bfe0f96a7aa86cb640202d0e5e3b9f91d02b90673b6d8ea72ad85d080a18c237a73a847e657c79560f
   languageName: node
   linkType: hard
 
@@ -5437,10 +5447,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-icons@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "react-icons@npm:4.3.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Freact-icons%2F-%2Freact-icons-4.3.1.tgz"
+  peerDependencies:
+    react: "*"
+  checksum: 2cc608acdd3e906aa3aaee290b8398220639677c949382d86e554020e5dab6a9f1ed7484418aa5272cb5c5c018e1fc9a323d433d901697a76530029f9ecb1263
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.13.1":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Freact-is%2F-%2Freact-is-16.13.1.tgz"
   checksum: f7a19ac3496de32ca9ae12aa030f00f14a3d45374f1ceca0af707c831b2a6098ef0d6bdae51bd437b0a306d7f01d4677fcc8de7c0d331eb47ad0f46130e53c5f
+  languageName: node
+  linkType: hard
+
+"react-loading@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "react-loading@npm:2.0.3"
+  peerDependencies:
+    prop-types: ^15.6.0
+    react: ">=0.14.0"
+  checksum: a2b24b94c1988c1418a3d714c5d95dd13407f43e6ac59f350ae54ad75dd613bfea0abb59c8530900821806b72596e57555a700f9541bd12d9ac88387cce919fa
   languageName: node
   linkType: hard
 
@@ -5776,7 +5805,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpg-awsome-raw@https://github.com/aidenlx/rpg-awesome-raw":
+"rpg-awsome-raw@github:aidenlx/rpg-awesome-raw":
   version: 0.1.1
   resolution: "rpg-awsome-raw@https://github.com/aidenlx/rpg-awesome-raw.git#commit=b5398dfdb2d9e3a8b7809977a609ff0e5f8c4f3a"
   checksum: 3ba0077de9e10e237a2dab22dd87e730846bab07229ccbb3eec8462692a1be461b5207c103fd992886d0acd6c289fb78a3159768aac7718d9bbb770efadee3d2

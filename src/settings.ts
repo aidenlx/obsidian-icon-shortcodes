@@ -16,6 +16,7 @@ import IconManager from "./component/icon-manager";
 import { BuiltInIconPacknames, SVGPacknames } from "./icon-packs/built-ins";
 import { SupportedIconExt } from "./icon-packs/utils";
 import IconSC from "./isc-main";
+import BrowserPacks from "./component/browser-packs";
 
 export interface IconSCSettings {
   code2emoji: boolean;
@@ -85,6 +86,14 @@ export class IconSCSettingTab extends PluginSettingTab {
       });
 
     this.skipIconPack();
+    new Setting(containerEl)
+      .setName("Icon Packs")
+      .setDesc("Browse and download icon packs")
+      .addButton((btn) =>
+        btn
+          .setButtonText("Browser")
+          .onClick(() => new BrowserPacks(this.plugin).open()),
+      );
 
     // custom icon manage section
     const managerContainer = createDiv({
@@ -97,25 +106,27 @@ export class IconSCSettingTab extends PluginSettingTab {
         btn
           .setIcon("sheets-in-box")
           .setTooltip("Backup icons")
-          .onClick(() => this.plugin.packManager.backupCustomIcons()),
+          .onClick(() => this.plugin.packManager.backupIcons()),
       )
       .addExtraButton((btn) =>
         btn
           .setIcon("restore-file-glyph")
           .setTooltip("Restore backup")
-          .onClick(async () =>
-            this.plugin.packManager.importCustomIcons(
-              await fileDialog({ multiple: false, accept: ".zip" }),
+          .onClick(async () => {
+            this.plugin.packManager.importIconsFromFileList(
+              await fileDialog({ multiple: true, accept: ".zip" }),
               false,
-            ),
-          ),
+            );
+            await this.plugin.packManager.loadIcons();
+            this.manageCustomIcons(managerContainer);
+          }),
       )
       .addExtraButton((btn) =>
         btn
           .setIcon("switch")
           .setTooltip("Reload custom icons")
           .onClick(async () => {
-            await this.plugin.packManager.loadCustomIcons();
+            await this.plugin.packManager.loadIcons();
             this.manageCustomIcons(managerContainer);
             new Notice("Custom icons reloaded");
           }),
@@ -157,7 +168,7 @@ export class IconSCSettingTab extends PluginSettingTab {
             },
           );
         });
-    new Setting(this.containerEl).setHeading().setName("Built-in Icon Packs");
+    new Setting(this.containerEl).setHeading().setName("Icon Packs");
 
     getSetting("luc", "Lucide", (el) =>
       el.createEl("a", {
@@ -166,7 +177,9 @@ export class IconSCSettingTab extends PluginSettingTab {
       }),
     );
     getSetting("obs", "Obsidian's built-in icons", (el) =>
-      el.appendText("Obsidian's built-in icons are mostly used for UI components. "),
+      el.appendText(
+        "Obsidian's built-in icons are mostly used for UI components. ",
+      ),
     );
   }
 
@@ -237,7 +250,7 @@ export class IconSCSettingTab extends PluginSettingTab {
         btn
           .setIcon("sheets-in-box")
           .setTooltip("Backup icons")
-          .onClick(() => this.plugin.packManager.backupCustomIcons(pack)),
+          .onClick(() => this.plugin.packManager.backupIcons(pack)),
       )
       .addButton((btn) =>
         btn

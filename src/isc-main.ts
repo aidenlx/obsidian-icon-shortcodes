@@ -1,5 +1,6 @@
 import { Plugin } from "obsidian";
 
+import BrowserPacks from "./component/browser-packs";
 import PackManager from "./icon-packs/pack-manager";
 import tryUpdateIcons from "./modules/json-to-svg";
 import { getMDPostProcessor, getNodePostProcessor } from "./modules/post-ps";
@@ -41,7 +42,7 @@ export default class IconSC extends Plugin {
 
     await this.loadSettings();
     await tryUpdateIcons(this);
-    await this.packManager.loadCustomIcons();
+    await this.packManager.loadIcons();
 
     (window[API_NAME] = this.api) &&
       this.register(() => (window[API_NAME] = undefined));
