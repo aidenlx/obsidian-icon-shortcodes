@@ -47,7 +47,7 @@ export default class BrowserPacks extends Modal {
   }
 }
 
-const getIconPackBundleUrl = (path: string, branch = "dev") =>
+const getIconPackBundleUrl = (path: string, branch = "master") =>
   `https://raw.githubusercontent.com/aidenlx/obsidian-icon-shortcodes/${branch}/${path}`;
 
 interface IconPackManifestRaw {
@@ -68,7 +68,7 @@ type IconPackManifest = Pick<IconPackManifestRaw, commonKeys> &
   Record<"styles", StyleInfo[]> &
   Record<"count", number>;
 
-const getManifestList = async (branch = "dev"): Promise<IconPackManifest[]> => {
+const getManifestList = async (branch = "master"): Promise<IconPackManifest[]> => {
   const url = `https://raw.githubusercontent.com/aidenlx/obsidian-icon-shortcodes/${branch}/assets/manifest.json?${Date.now()}`,
     rawList = (await requestUrl({ url })).json as IconPackManifestRaw[];
   let list: IconPackManifest[] = [];
