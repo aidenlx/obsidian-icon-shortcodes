@@ -1,56 +1,68 @@
 [
   {
-    "path": "assets/fa-brands.zip",
+    "bundleName": "fa-brands",
     "count": 457,
-    "series": "Font Awesome (Free)",
     "description": "the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.",
-    "license": "CC BY 4.0 License",
     "homepage": "https://fontawesome.com",
+    "license": "CC BY 4.0 License",
+    "packId": "fab",
+    "path": "assets/fa-brands.zip",
+    "series": "Font Awesome (Free)",
     "style": "brands"
   },
   {
-    "path": "assets/fa-regular.zip",
+    "bundleName": "fa-regular",
     "count": 152,
-    "series": "Font Awesome (Free)",
     "description": "the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.",
-    "license": "CC BY 4.0 License",
     "homepage": "https://fontawesome.com",
+    "license": "CC BY 4.0 License",
+    "packId": "far",
+    "path": "assets/fa-regular.zip",
+    "series": "Font Awesome (Free)",
     "style": "regular"
   },
   {
-    "path": "assets/fa-solid.zip",
+    "bundleName": "fa-solid",
     "count": 1002,
-    "series": "Font Awesome (Free)",
     "description": "the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.",
-    "license": "CC BY 4.0 License",
     "homepage": "https://fontawesome.com",
+    "license": "CC BY 4.0 License",
+    "packId": "fas",
+    "path": "assets/fa-solid.zip",
+    "series": "Font Awesome (Free)",
     "style": "solid"
   },
   {
-    "path": "assets/ri-fill.zip",
+    "bundleName": "ri-fill",
     "count": 1086,
-    "series": "Remix Icon",
     "description": "a set of open-source neutral-style system symbols elaborately crafted for designers and developers.",
-    "license": "Apache-2.0 License",
     "homepage": "http://remixicon.com",
+    "license": "Apache-2.0 License",
+    "packId": "rif",
+    "path": "assets/ri-fill.zip",
+    "series": "Remix Icon",
     "style": "fill"
   },
   {
-    "path": "assets/ri-line.zip",
+    "bundleName": "ri-line",
     "count": 1185,
-    "series": "Remix Icon",
     "description": "a set of open-source neutral-style system symbols elaborately crafted for designers and developers.",
-    "license": "Apache-2.0 License",
     "homepage": "http://remixicon.com",
+    "license": "Apache-2.0 License",
+    "packId": "ril",
+    "path": "assets/ri-line.zip",
+    "series": "Remix Icon",
     "style": "line"
   },
   {
-    "path": "assets/rpg-awesome.zip",
+    "bundleName": "rpg-awesome",
     "count": 495,
-    "series": "RPG Awesome",
-    "style": "",
     "description": "a suite of 495 pictographic, rpg and fantasy themes icons for easy scalable vector graphics on websites",
+    "homepage": "http://nagoshiashumari.github.io/Rpg-Awesome/",
     "license": "BSD-2-Clause License",
-    "homepage": "http://nagoshiashumari.github.io/Rpg-Awesome/"
+    "packId": "rpg",
+    "path": "assets/rpg-awesome.zip",
+    "series": "RPG Awesome",
+    "style": ""
   }
 ]

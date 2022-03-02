@@ -22,7 +22,7 @@ const prepareFolder = async (dir) => {
   }
 };
 const zip = async (targetDir) => {
-  // await exec(`zip -jr ${targetDir}.zip ${targetDir}/*.svg`);
+  await exec(`zip -jr ${targetDir}.zip ${targetDir}/*.svg`);
   rm(targetDir, { recursive: true });
 };
 
@@ -34,14 +34,15 @@ const prepare = async (folder) => {
     folderQueueMap[folder] = [];
   }
 };
-const copy = async (from, folder, filename) => {
+const copy = async (from, folder, packId, iconName) => {
   folderQueueMap[folder].push(
-    copyFile(from, join(iconsDir, folder, `${filename}.svg`)),
+    copyFile(from, join(iconsDir, folder, `${packId}_${iconName}.svg`)),
   );
 };
 
 const fontAwesome = {
   series: "Font Awesome (Free)",
+  bundleName: "fa",
   description:
     "the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.",
   license: "CC BY 4.0 License",
@@ -49,31 +50,37 @@ const fontAwesome = {
 };
 /**
  * @param {string} packDir
- * @returns {Promise<Promise<void>[]>}
  */
 const exportFontAwesome = async (packDir) => {
-  const bundleName = "fa";
-  const series = (
+  const { bundleName } = fontAwesome;
+  const styles = (
     await glob([join(packDir, "*")], { onlyDirectories: true })
   ).map((path) => basename(path));
 
-  const seriesPattern = series.map((s) => ({
-    series: s,
-    prefix: bundleName + s[0],
+  const patterns = styles.map((style) => ({
+    bundleName: `${bundleName}-${style}`,
+    style,
+    packId: bundleName + style[0],
   }));
 
-  for (const { series, prefix } of seriesPattern) {
-    let folder = `${bundleName}-${series}`;
-    await prepare(folder);
-    for (const path of await glob([join(packDir, series, "**/*.svg")])) {
-      let varName = basename(path).slice(0, -4).replace(/-/g, "_");
-      copy(path, folder, `${prefix}_${varName}`);
+  for (const { bundleName, style, packId } of patterns) {
+    await prepare(bundleName);
+    for (const path of await glob([join(packDir, style, "**/*.svg")])) {
+      let iconName = basename(path).slice(0, -4).replace(/-/g, "_");
+      copy(path, bundleName, packId, iconName);
     }
   }
+  return patterns.map(({ bundleName, style, packId }) => ({
+    ...fontAwesome,
+    bundleName,
+    style,
+    packId,
+  }));
 };
 
 const remixicon = {
   series: "Remix Icon",
+  bundleName: "ri",
   description:
     "a set of open-source neutral-style system symbols elaborately crafted for designers and developers.",
   license: "Apache-2.0 License",
@@ -83,38 +90,35 @@ const remixicon = {
  * @param {string} packDir
  */
 const exportRemixicon = async (packDir) => {
-  const bundleName = "ri";
-  const series = ["fill", "line"];
+  const { bundleName } = remixicon;
+  const styles = ["fill", "line"];
 
-  const seriesPattern = series.map((s) => ({
-      series: s,
-      prefix: bundleName + s[0],
-      suffix: "_" + s,
+  const patterns = styles.map((style) => ({
+      bundleName: `${bundleName}-${style}`,
+      style,
+      packId: bundleName + style[0],
+      suffix: "_" + style,
     })),
     files = await glob([join(packDir, "**/*.svg")]);
 
   for (const path of files) {
-    let varName = basename(path).slice(0, -4).replace(/-/g, "_"),
+    let iconName = basename(path).slice(0, -4).replace(/-/g, "_"),
       importPath = path.replace(/^node_modules\//, "");
     let matched = false;
 
-    for (const { series, prefix, suffix } of seriesPattern) {
-      const folder = `${bundleName}-${series}`;
-      if (varName.endsWith(suffix)) {
+    for (const { bundleName, packId, suffix } of patterns) {
+      if (iconName.endsWith(suffix)) {
         matched = true;
-        await prepare(folder);
-        copy(path, folder, `${prefix}_${varName.slice(0, -suffix.length)}`);
+        await prepare(bundleName);
+        copy(path, bundleName, packId, iconName.slice(0, -suffix.length));
         break;
       }
     }
     if (!matched) {
       if (importPath.includes("Editor/")) {
-        const { series, prefix } = seriesPattern.find(
-          (f) => f.series === "line",
-        );
-        const folder = `${bundleName}-${series}`;
-        await prepare(folder);
-        copy(path, folder, `${prefix}_${varName}`);
+        const { bundleName, packId } = patterns.find((f) => f.style === "line");
+        await prepare(bundleName);
+        copy(path, bundleName, packId, iconName);
       } else
         console.error(
           "unexpected suffix in %s, skipping...",
@@ -122,10 +126,18 @@ const exportRemixicon = async (packDir) => {
         );
     }
   }
+  return patterns.map(({ bundleName, style, packId }) => ({
+    ...remixicon,
+    bundleName,
+    style,
+    packId,
+  }));
 };
 
 const rpgawesome = {
   series: "RPG Awesome",
+  bundleName: "rpg-awesome",
+  packId: "rpg",
   style: "",
   description:
     "a suite of 495 pictographic, rpg and fantasy themes icons for easy scalable vector graphics on websites",
@@ -133,21 +145,23 @@ const rpgawesome = {
   homepage: "http://nagoshiashumari.github.io/Rpg-Awesome/",
 };
 const exportRPGAwesome = async (packDir) => {
-  const bundleName = "rpg-awesome",
-    prefix = "rpg";
+  const { bundleName, packId } = rpgawesome;
   for (const path of await glob([join(packDir, "*.svg")])) {
-    let varName = basename(path).slice(0, -4).replace(/-/g, "_");
+    let iconName = basename(path).slice(0, -4).replace(/-/g, "_");
     await prepare(bundleName);
-    copy(path, bundleName, `${prefix}_${varName}`);
+    copy(path, bundleName, packId, iconName);
   }
+  return rpgawesome;
 };
 
 (async () => {
-  await Promise.all([
-    exportFontAwesome("node_modules/@fortawesome/fontawesome-free/svgs"),
-    exportRemixicon("node_modules/remixicon/icons"),
-    exportRPGAwesome("node_modules/rpg-awsome-raw/Font"),
-  ]);
+  let manifestList = (
+    await Promise.all([
+      exportFontAwesome("node_modules/@fortawesome/fontawesome-free/svgs"),
+      exportRemixicon("node_modules/remixicon/icons"),
+      exportRPGAwesome("node_modules/rpg-awsome-raw/Font"),
+    ])
+  ).flat();
   await Promise.all(
     Object.entries(folderQueueMap).map(async ([folder, queue]) => {
       await Promise.all(queue);
@@ -155,26 +169,50 @@ const exportRPGAwesome = async (packDir) => {
       return zip(join(iconsDir, folder));
     }),
   );
-  let manifest = {};
+  for (let manifest of manifestList) {
+    manifest.path = join(iconsDir, manifest.bundleName + ".zip");
+    const queue = folderQueueMap[manifest.bundleName];
+    manifest.count = queue.length;
+  }
   for (const [zipFileName, queue] of Object.entries(folderQueueMap)) {
-    manifest[zipFileName] = {
+    manifestList[zipFileName] = {
       path: join(iconsDir, zipFileName + ".zip"),
       count: queue.length,
     };
-    if (zipFileName.startsWith("fa")) {
-      Object.assign(manifest[zipFileName], fontAwesome, {
-        style: zipFileName.split("-").pop(),
-      });
-    } else if (zipFileName.startsWith("ri")) {
-      Object.assign(manifest[zipFileName], remixicon, {
-        style: zipFileName.split("-").pop(),
-      });
-    } else if (zipFileName === "rpg-awesome") {
-      Object.assign(manifest[zipFileName], rpgawesome);
+  }
+  manifestList.sort(({ bundleName: a }, { bundleName: b }) =>
+    a.localeCompare(b),
+  );
+  // sort keys
+  manifestList = manifestList.map((obj) =>
+    Object.fromEntries(
+      Object.entries(obj).sort(([a], [b]) => a.localeCompare(b)),
+    ),
+  );
+  for (const manifest of manifestList) {
+    if (!checkFields(manifest)) {
+      console.error(manifest);
+      throw new TypeError("manifest missing fields");
     }
   }
-  manifest = Object.entries(manifest)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([, info]) => info);
-  writeFile(join(iconsDir, "manifest.json"), JSON.stringify(manifest, null, 2));
+  writeFile(
+    join(iconsDir, "manifest.json"),
+    JSON.stringify(manifestList, null, 2),
+  );
 })();
+
+const fields = [
+  "series",
+  "style",
+  "bundleName",
+  "packId",
+  "path",
+  "count",
+  "description",
+  "license",
+  "homepage",
+];
+const checkFields = (manifest) => {
+  const keys = Object.keys(manifest);
+  return fields.every((field) => keys.includes(field));
+};
