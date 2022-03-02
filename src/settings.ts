@@ -23,6 +23,7 @@ export interface IconSCSettings {
   suggester: boolean;
   iconpack: Record<SVGPacknames, boolean> & Record<string, boolean>;
   spaceAfterSC: boolean;
+  triggerWithTrailingSpace: boolean;
   isMigrated: boolean;
 }
 
@@ -33,6 +34,7 @@ export const DEFAULT_SETTINGS: IconSCSettings = {
     obs: false,
     luc: true,
   },
+  triggerWithTrailingSpace: false,
   spaceAfterSC: false,
   isMigrated: false,
 };
@@ -50,6 +52,17 @@ export class IconSCSettingTab extends PluginSettingTab {
 
     this.containerEl.empty();
 
+    new Setting(containerEl).setHeading().setName("Icon Suggester");
+    new Setting(containerEl)
+      .setDesc(
+        "If this is turned on, a Suggester will appear everytime you type :(or ：： if full-width) followed by a letter. This will help you insert Emojis. ",
+      )
+      .addToggle((cb) => {
+        cb.setValue(this.plugin.settings.suggester).onChange(async (value) => {
+          this.plugin.settings.suggester = value;
+          await this.plugin.saveSettings();
+        });
+      });
     new Setting(containerEl)
       .setName("Replace emoji shortcode with emoji character")
       .setDesc(
@@ -62,20 +75,21 @@ export class IconSCSettingTab extends PluginSettingTab {
           await this.plugin.saveSettings();
         });
       });
-
     new Setting(containerEl)
-      .setName("Icon Suggester")
+      .setName("Trigger with trailing space")
       .setDesc(
-        "If this is turned on, a Suggester will appear everytime you type :(or ：： if full-width) followed by a letter. This will help you insert Emojis. ",
+        "only trigger suggester if there is a trailing space before the colon",
       )
       .addToggle((cb) => {
-        cb.setValue(this.plugin.settings.suggester).onChange(async (value) => {
-          this.plugin.settings.suggester = value;
-          await this.plugin.saveSettings();
-        });
+        cb.setValue(this.plugin.settings.triggerWithTrailingSpace).onChange(
+          async (value) => {
+            this.plugin.settings.triggerWithTrailingSpace = value;
+            await this.plugin.saveSettings();
+          },
+        );
       });
     new Setting(containerEl)
-      .setName("Suggester: Add space after inserted shortcode")
+      .setName("Add space after inserted shortcode")
       .addToggle((cb) => {
         cb.setValue(this.plugin.settings.spaceAfterSC).onChange(
           async (value) => {

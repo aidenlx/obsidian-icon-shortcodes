@@ -127,7 +127,11 @@ export class EmojiSuggester
   ): EditorSuggestTriggerInfo | null {
     if (!this.plugin.settings.suggester) return null;
     const sub = editor.getLine(cursor.line).substring(0, cursor.ch);
-    const match = sub.match(/(?::|：：)([^:\s]+$)/);
+    const trailingSpace = this.plugin.settings.triggerWithTrailingSpace
+      ? " "
+      : "";
+    let pattern = String.raw`(?:${trailingSpace}:|：：)([^:\s]+$)`;
+    const match = sub.match(new RegExp(pattern, "i"));
     if (!match) return null;
     const prevSC = (match.input as string)
       .substring(0, match.index)
