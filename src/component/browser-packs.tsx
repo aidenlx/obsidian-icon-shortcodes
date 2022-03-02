@@ -3,18 +3,18 @@ import "./browser-packs.less";
 import assertNever from "assert-never";
 import cls from "classnames";
 import { Modal, requestUrl } from "obsidian";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import Loading from "./loading";
 import {
+  FiAward,
   FiDownload,
   FiExternalLink,
   FiHome,
-  FiAward,
   FiImage,
 } from "react-icons/fi";
 
 import IconSC from "../isc-main";
+import Loading from "./loading";
 
 export default class BrowserPacks extends Modal {
   constructor(public plugin: IconSC) {

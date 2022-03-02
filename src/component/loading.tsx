@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
 import type { HTMLProps } from "react";
-
+import React, { useEffect, useState } from "react";
 import * as svgSources from "react-loading/lib/svg";
 
 type LoadingType =

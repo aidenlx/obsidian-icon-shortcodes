@@ -12,11 +12,11 @@ import {
   TextComponent,
 } from "obsidian";
 
+import BrowserPacks from "./component/browser-packs";
 import IconManager from "./component/icon-manager";
 import { BuiltInIconPacknames, SVGPacknames } from "./icon-packs/built-ins";
 import { SupportedIconExt } from "./icon-packs/utils";
 import IconSC from "./isc-main";
-import BrowserPacks from "./component/browser-packs";
 
 export interface IconSCSettings {
   code2emoji: boolean;
