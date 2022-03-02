@@ -42,7 +42,7 @@ __metadata:
     "@aidenlx/prettier-config": ^0.1.0
     "@aidenlx/release-it-config": ^0.1.3
     "@aidenlx/ts-config": ^0.1.2
-    "@fortawesome/fontawesome-free": ^5.15.4
+    "@fortawesome/fontawesome-free": 6.0.0
     "@release-it/bumper": ^3.0.1
     "@release-it/conventional-changelog": ^3.3.0
     "@types/json-schema": ^7.0.9
@@ -90,7 +90,7 @@ __metadata:
     react: "npm:@preact/compat@^17.0.2"
     react-dom: "npm:@preact/compat@^17.0.2"
     release-it: ^14.11.6
-    remixicon: ^2.5.0
+    remixicon: 2.5.0
     rpg-awsome-raw: "https://github.com/aidenlx/rpg-awesome-raw"
     semver: ^7.3.5
     spark-md5: ^3.0.2
@@ -306,10 +306,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-free@npm:^5.15.4":
-  version: 5.15.4
-  resolution: "@fortawesome/fontawesome-free@npm:5.15.4::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40fortawesome%2Ffontawesome-free%2F-%2Ffontawesome-free-5.15.4.tgz"
-  checksum: 32281c3df4075290d9a96dfc22f72fadb3da7055d4117e48d34046b8c98032a55fa260ae351b0af5d6f6fb57a2f5d79a4abe52af456da35195f7cb7dda27b4a2
+"@fortawesome/fontawesome-free@npm:6.0.0":
+  version: 6.0.0
+  resolution: "@fortawesome/fontawesome-free@npm:6.0.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40fortawesome%2Ffontawesome-free%2F-%2Ffontawesome-free-6.0.0.tgz"
+  checksum: 138e352ba6e9ecdd711899943919d4020704ddf22dc6a7de14d0dbfb5222c60738fcded6ca39a3fcd6fa8eaf9b83033e44dd25625d9e0118a9cea1d4585b36de
   languageName: node
   linkType: hard
 
@@ -5613,7 +5613,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remixicon@npm:^2.5.0":
+"remixicon@npm:2.5.0":
   version: 2.5.0
   resolution: "remixicon@npm:2.5.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fremixicon%2F-%2Fremixicon-2.5.0.tgz"
   checksum: 7fa8f3643e3f24d7fa1cdbf37391bb4b3bfc0fda6643ba4e09e92fb8639351cee03f51539f18640747c2055e3622c8b81369f323857793ffbe7d2292cbac60c6

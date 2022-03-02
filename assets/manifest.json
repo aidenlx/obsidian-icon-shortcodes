@@ -1,7 +1,7 @@
 [
   {
     "bundleName": "fa-brands",
-    "count": 457,
+    "count": 459,
     "description": "the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.",
     "homepage": "https://fontawesome.com",
     "license": "CC BY 4.0 License",
@@ -12,7 +12,7 @@
   },
   {
     "bundleName": "fa-regular",
-    "count": 152,
+    "count": 161,
     "description": "the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.",
     "homepage": "https://fontawesome.com",
     "license": "CC BY 4.0 License",
@@ -23,7 +23,7 @@
   },
   {
     "bundleName": "fa-solid",
-    "count": 1002,
+    "count": 1128,
     "description": "the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.",
     "homepage": "https://fontawesome.com",
     "license": "CC BY 4.0 License",
