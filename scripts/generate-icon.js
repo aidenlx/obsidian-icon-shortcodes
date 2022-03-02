@@ -136,8 +136,8 @@ const exportRemixicon = async (packDir) => {
 
 const rpgawesome = {
   series: "RPG Awesome",
-  bundleName: "rpg-awesome",
-  packId: "rpg",
+  bundleName: "ra",
+  packId: "ra",
   style: "",
   description:
     "a suite of 495 pictographic, rpg and fantasy themes icons for easy scalable vector graphics on websites",

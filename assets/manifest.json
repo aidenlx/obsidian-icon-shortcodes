@@ -33,6 +33,17 @@
     "style": "solid"
   },
   {
+    "bundleName": "ra",
+    "count": 495,
+    "description": "a suite of 495 pictographic, rpg and fantasy themes icons for easy scalable vector graphics on websites",
+    "homepage": "http://nagoshiashumari.github.io/Rpg-Awesome/",
+    "license": "BSD-2-Clause License",
+    "packId": "ra",
+    "path": "assets/ra.zip",
+    "series": "RPG Awesome",
+    "style": ""
+  },
+  {
     "bundleName": "ri-fill",
     "count": 1086,
     "description": "a set of open-source neutral-style system symbols elaborately crafted for designers and developers.",
@@ -53,16 +64,5 @@
     "path": "assets/ri-line.zip",
     "series": "Remix Icon",
     "style": "line"
-  },
-  {
-    "bundleName": "rpg-awesome",
-    "count": 495,
-    "description": "a suite of 495 pictographic, rpg and fantasy themes icons for easy scalable vector graphics on websites",
-    "homepage": "http://nagoshiashumari.github.io/Rpg-Awesome/",
-    "license": "BSD-2-Clause License",
-    "packId": "rpg",
-    "path": "assets/rpg-awesome.zip",
-    "series": "RPG Awesome",
-    "style": ""
   }
 ]
