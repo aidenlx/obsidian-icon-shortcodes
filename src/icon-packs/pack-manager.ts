@@ -546,16 +546,17 @@ export default class PackManager extends Events {
     threshold: 0.5,
     shouldSort: true,
     includeMatches: true,
+    useExtendedSearch: true,
   });
   search(query: string[], packs?: string[], limit?: number) {
     let exp = query.map<Fuse.Expression>((s) => ({ name: s }));
     packs = packs ?? this.enabledPacknames;
-    exp.push({ $or: packs.map((p) => ({ pack: `="${p}"` })) });
+    exp.push({ $or: packs.map((p) => ({ pack: `=${p}` })) });
     return this._fuse.search({ $and: exp }, { limit: limit ?? 20 });
   }
   getAllIds(packs?: string[], limit?: number) {
     let exp = (packs ?? this.enabledPacknames).map((p) => ({
-      pack: `="${p}"`,
+      pack: `=${p}`,
     }));
     return this._fuse.search({ $or: exp }, { limit: limit ?? 20 });
   }
