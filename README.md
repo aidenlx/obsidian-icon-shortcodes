@@ -5,7 +5,7 @@
 Insert emoji and custom icons with shortcodes
 
 - Easily import and manage custom icons (support `.bmp`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.svg`, and `.webp`)
-- Render custom icons in editor with [Codemirror Options](https://github.com/nothingislost/obsidian-codemirror-options) (Desktop, non-live preview only)
+- Render custom icons in editor (Legacy editor supported by [Codemirror Options](https://github.com/nothingislost/obsidian-codemirror-options)
 - Built-in Unicode 13.1 Emoji, [Lucide](https://lucide.dev) support
 - [Font Awesome](https://fontawesome.com/), and [Remixicon](https://github.com/Remix-Design/RemixIcon) available via download
 - [API](#for-developer) ready to be intergated by other plugins

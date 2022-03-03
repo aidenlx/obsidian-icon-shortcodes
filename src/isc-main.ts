@@ -1,6 +1,6 @@
 import { Plugin } from "obsidian";
 
-import BrowserPacks from "./component/browser-packs";
+import buildIconPlugin from "./icon-in-editor";
 import PackManager from "./icon-packs/pack-manager";
 import tryUpdateIcons from "./modules/json-to-svg";
 import { getMDPostProcessor, getNodePostProcessor } from "./modules/post-ps";
@@ -49,6 +49,7 @@ export default class IconSC extends Plugin {
 
     this.registerEditorSuggest(new EmojiSuggester(this));
     this.registerMarkdownPostProcessor(this._nodeProcessor);
+    this.registerEditorExtension(buildIconPlugin(this));
 
     this.addSettingTab(new IconSCSettingTab(this.app, this));
   }

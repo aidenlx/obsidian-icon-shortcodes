@@ -10,6 +10,30 @@ if you want to view the source visit the plugins github repository
 */
 `;
 
+const cmModules = [
+  "@codemirror/autocomplete",
+  "@codemirror/closebrackets",
+  "@codemirror/collab",
+  "@codemirror/commands",
+  "@codemirror/comment",
+  "@codemirror/fold",
+  "@codemirror/gutter",
+  "@codemirror/highlight",
+  "@codemirror/history",
+  "@codemirror/language",
+  "@codemirror/lint",
+  "@codemirror/matchbrackets",
+  "@codemirror/panel",
+  "@codemirror/rangeset",
+  "@codemirror/rectangular-selection",
+  "@codemirror/search",
+  "@codemirror/state",
+  "@codemirror/stream-parser",
+  "@codemirror/text",
+  "@codemirror/tooltip",
+  "@codemirror/view",
+];
+
 const isProd = process.env.BUILD === "production";
 
 try {
@@ -18,7 +42,7 @@ try {
     bundle: true,
     watch: !isProd,
     platform: "browser",
-    external: ["obsidian"],
+    external: ["obsidian", ...cmModules],
     format: "cjs",
     mainFields: ["browser", "module", "main"],
     banner: { js: banner },

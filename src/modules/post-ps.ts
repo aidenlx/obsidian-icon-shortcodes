@@ -1,9 +1,9 @@
-import cloneRegexp from "clone-regexp";
-
-import { stripColons } from "../icon-packs/utils";
+import {
+  getGlobalRegexp,
+  RE_SHORTCODE,
+  stripColons,
+} from "../icon-packs/utils";
 import IconSC from "../isc-main";
-
-const RE_SHORTCODE = /:\+1:|:-1:|:[\w-]+:/;
 
 const acceptNode = (node: Node): number => {
   switch (node.nodeName) {
@@ -25,7 +25,7 @@ export const getNodePostProcessor = (
 ): ((el: HTMLElement) => void) => {
   const scReplace = (text: Text) => {
     for (const code of [
-      ...text.wholeText.matchAll(cloneRegexp(RE_SHORTCODE, { global: true })),
+      ...text.wholeText.matchAll(getGlobalRegexp(RE_SHORTCODE)),
     ]
       .sort((a, b) => (a.index as number) - (b.index as number))
       .map((arr) => arr[0])) {
@@ -64,7 +64,7 @@ export const getNodePostProcessor = (
 
 export const getMDPostProcessor =
   (plugin: IconSC) => (str: string, replacer: (shortcode: string) => string) =>
-    str.replace(cloneRegexp(RE_SHORTCODE, { global: true }), (code) => {
+    str.replace(getGlobalRegexp(RE_SHORTCODE), (code) => {
       if (plugin.packManager.hasIcon(stripColons(code))) {
         return replacer(code);
       } else {

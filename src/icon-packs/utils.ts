@@ -105,3 +105,9 @@ export const getIconsFromFileList = async (
   const result = await Promise.all(promises);
   return result.length > 0 ? result : null;
 };
+
+import cloneRegexp from "clone-regexp";
+
+export const RE_SHORTCODE = /:\+1:|:-1:|:[\w-]+:/;
+export const getGlobalRegexp = (pattern: RegExp) =>
+  cloneRegexp(pattern, { global: true });
