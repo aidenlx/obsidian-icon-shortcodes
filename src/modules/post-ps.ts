@@ -49,7 +49,7 @@ export const getNodePostProcessor = (
   };
 
   return (el: HTMLElement) => {
-    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_ALL, {
       acceptNode,
     });
     let currentNode: Node | null = walker.currentNode;
