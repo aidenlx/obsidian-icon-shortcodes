@@ -15,6 +15,11 @@ import {
 
 import IconSC from "../isc-main";
 import Loading from "./loading";
+import {
+  getIconPackBundleUrl,
+  getManifestViaAPI,
+  IconPackManifestRaw,
+} from "../modules/icon-packs";
 
 export default class BrowserPacks extends Modal {
   constructor(public plugin: IconSC) {
@@ -31,35 +36,22 @@ export default class BrowserPacks extends Modal {
     ReactDOM.unmountComponentAtNode(this.contentEl);
   }
 
-  async getIconPack(path: string, branch?: string): Promise<boolean> {
-    const url = `${getIconPackBundleUrl(path, branch)}?${Date.now()}`;
-    try {
-      const zip = (await requestUrl({ url })).arrayBuffer;
+  async getIconPack(path: string, branch?: string): Promise<void> {
+    const download = async (alt = false) => {
+      const url = getIconPackBundleUrl(path, branch, alt),
+        zip = (await requestUrl({ url })).arrayBuffer;
       await this.plugin.packManager.importIcons(
         { name: url.split("/").pop()!, data: zip },
         false,
       );
-      return true;
+    };
+    try {
+      await download();
     } catch (error) {
-      console.error(error);
-      return false;
+      console.error("switch to alternative link", error);
+      await download(true);
     }
   }
-}
-
-const getIconPackBundleUrl = (path: string, branch = "master") =>
-  `https://raw.githubusercontent.com/aidenlx/obsidian-icon-shortcodes/${branch}/${path}`;
-
-interface IconPackManifestRaw {
-  path: string;
-  count: number;
-  series: string;
-  description: string;
-  license: string;
-  bundleName: string;
-  packId: string;
-  homepage: string;
-  style: string;
 }
 
 type commonKeys = "series" | "description" | "homepage" | "license";
@@ -68,9 +60,10 @@ type IconPackManifest = Pick<IconPackManifestRaw, commonKeys> &
   Record<"styles", StyleInfo[]> &
   Record<"count", number>;
 
-const getManifestList = async (branch = "master"): Promise<IconPackManifest[]> => {
-  const url = `https://raw.githubusercontent.com/aidenlx/obsidian-icon-shortcodes/${branch}/assets/manifest.json?${Date.now()}`,
-    rawList = (await requestUrl({ url })).json as IconPackManifestRaw[];
+const getManifestList = async (
+  branch = "master",
+): Promise<IconPackManifest[]> => {
+  const rawList = (await getManifestViaAPI(branch)) as IconPackManifestRaw[];
   let list: IconPackManifest[] = [];
   for (const manifest of rawList) {
     let last = list.last();
@@ -94,7 +87,7 @@ const getManifestList = async (branch = "master"): Promise<IconPackManifest[]> =
 const BrowserPackView = ({
   getIconPack,
 }: {
-  getIconPack: (path: string, branch?: string) => Promise<boolean>;
+  getIconPack: (path: string, branch?: string) => Promise<void>;
 }) => {
   const [manifestList, setManifestList] = useState<
     IconPackManifest[] | null | Error
@@ -148,7 +141,7 @@ const IconPackManifest = ({
   onDownload,
 }: {
   manifest: IconPackManifest;
-  onDownload: (path: string) => Promise<boolean>;
+  onDownload: (path: string) => Promise<void>;
 }) => {
   const getSubClass = useCallback(
     (className: string) => `${PackManifestClass}-${className}`,
@@ -203,7 +196,7 @@ const IconPackStyle = ({
   onDownload,
 }: {
   styleInfo: StyleInfo;
-  onDownload: (path: string) => Promise<boolean>;
+  onDownload: (path: string) => Promise<void>;
 }) => {
   const getSubClass = useCallback(
     (className: string) => `${StyleInfoClass}-${className}`,
@@ -239,9 +232,11 @@ const IconPackStyle = ({
               onClick={async () => {
                 setState({ state: "downloading" });
                 try {
-                  setState({ state: "done" });
                   await onDownload(path);
+                  setState({ state: "done" });
+                  console.log("done");
                 } catch (error) {
+                  console.error(error);
                   setState({ state: "error", error });
                 }
               }}

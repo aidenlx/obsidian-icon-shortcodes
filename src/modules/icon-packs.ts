@@ -1,76 +1,62 @@
 import { requestUrl } from "obsidian";
 
-const getManifest = async (branch = "master") => {
-  const url = `https://raw.githubusercontent.com/aidenlx/obsidian-icon-shortcodes/${branch}/assets/manifest.json`;
-  try {
-    return (await requestUrl({ url })).json;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-};
-const getIconPack = async (path: string, branch = "master") => {
-  const url = `https://raw.githubusercontent.com/aidenlx/obsidian-icon-shortcodes/${branch}/${path}`;
-  try {
-    return (await requestUrl({ url })).arrayBuffer;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-};
+export const getIconPackBundleUrl = (
+  path: string,
+  branch = "master",
+  alt = false,
+) =>
+  `https://${
+    alt ? "raw.staticdn.net" : "raw.githubusercontent.com"
+  }/aidenlx/obsidian-icon-shortcodes/${branch}/${path}`;
 
-class GitHubError extends Error {
+export interface IconPackManifestRaw {
+  path: string;
+  count: number;
+  series: string;
+  description: string;
+  license: string;
+  bundleName: string;
+  packId: string;
+  homepage: string;
+  style: string;
+}
+
+export class GitHubError extends Error {
   constructor(public response: { message: string }) {
     super("GitHub: " + response.message);
   }
 }
 
-const getManifestViaAPI = async (branch: string) => {
-  const url = `https://api.github.com/repos/aidenlx/obsidian-icon-shortcodes/git/trees/${branch}?recursive=1`;
-  try {
-    const response = (await requestUrl({ url })).json;
-    if (Array.isArray(response.tree)) {
-      const manifestUrl = response.tree.find(
-        (item: any) => item.path === "assets/manifest.json",
-      )?.url;
-      if (!manifestUrl) {
-        console.error("No manifest.json for icon pack found", response);
-        return null;
-      } else {
-        return manifestUrl;
-      }
+export const getManifestViaAPI = async (branch = "master") => {
+  const url = `https://api.github.com/repos/aidenlx/obsidian-icon-shortcodes/git/trees/${branch}?recursive=1&${Date.now()}`;
+  const response = (await requestUrl({ url })).json;
+  if (Array.isArray(response.tree)) {
+    const manifestUrl = response.tree.find(
+      (item: any) => item.path === "assets/manifest.json",
+    )?.url;
+    if (!manifestUrl) {
+      console.error(response);
+      throw new Error("No manifest.json for icon pack found");
     } else {
-      throw new GitHubError(response);
+      return await getJSONfromBlobUrl(manifestUrl);
     }
-  } catch (error) {
-    if (error instanceof GitHubError) {
-      console.error(error);
-    } else {
-      console.error(error);
-    }
-    return null;
+  } else {
+    throw new GitHubError(response);
   }
 };
 
-const getJSONfromBlobUrl = async (manifestUrl: string) => {
-  try {
-    const response = (await requestUrl({ url: manifestUrl })).json;
-    if (response.encoding && response.content) {
-      if (response.encoding === "base64") {
-        return JSON.parse(window.atob(response.content));
-      } else {
-        console.error("Unsupported encoding", response);
-        return null;
-      }
+const getJSONfromBlobUrl = async (
+  manifestUrl: string,
+): Promise<IconPackManifestRaw[]> => {
+  const response = (await requestUrl({ url: manifestUrl })).json;
+  if (response.encoding && response.content) {
+    if (response.encoding === "base64") {
+      return JSON.parse(window.atob(response.content)) as IconPackManifestRaw[];
     } else {
-      throw new GitHubError(response);
+      console.error(response);
+      throw new TypeError("Unsupported encoding");
     }
-  } catch (error) {
-    if (error instanceof GitHubError) {
-      console.error(error);
-    } else {
-      console.error(error);
-    }
-    return error;
+  } else {
+    throw new GitHubError(response);
   }
 };
