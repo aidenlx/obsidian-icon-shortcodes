@@ -1,6 +1,7 @@
 import { Plugin } from "obsidian";
 
 import buildIconPlugin from "./icon-in-editor";
+import type { ShortcodePosField } from "./icon-in-editor/state";
 import getShortcodePosField from "./icon-in-editor/state";
 import PackManager from "./icon-packs/pack-manager";
 import tryUpdateIcons from "./modules/json-to-svg";
@@ -21,7 +22,7 @@ export default class IconSC extends Plugin {
   _nodeProcessor = getNodePostProcessor(this);
   _mdProcessor = getMDPostProcessor(this);
 
-  shortcodePosField = getShortcodePosField(this);
+  shortcodePosField: ShortcodePosField = getShortcodePosField(this);
 
   postProcessor(input: string, replacer: (shortcode: string) => string): string;
   postProcessor(input: HTMLElement): void;
