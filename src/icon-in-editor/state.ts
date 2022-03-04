@@ -1,19 +1,20 @@
 import { syntaxTree } from "@codemirror/language";
-import { EditorState, StateField } from "@codemirror/state";
 import {
   Range,
   RangeSet,
   RangeSetBuilder,
   RangeValue,
 } from "@codemirror/rangeset";
+import { EditorState, StateField } from "@codemirror/state";
+import { tokenClassNodeProp } from "@codemirror/stream-parser";
+import type { NodeType } from "@lezer/common";
+
 import {
   getGlobalRegexp,
   RE_SHORTCODE,
   stripColons,
 } from "../icon-packs/utils";
 import type IconSC from "../isc-main";
-import type { NodeType } from "@lezer/common";
-import { tokenClassNodeProp } from "@codemirror/stream-parser";
 import UnionRanges from "../modules/union";
 
 class ShortcodePos extends RangeValue {
