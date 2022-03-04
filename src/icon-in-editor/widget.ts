@@ -19,7 +19,7 @@ export default class IconWidget extends WidgetType {
         "cm-isc-emoji": typeof icon === "string",
         "cm-isc-img": icon instanceof HTMLImageElement,
       }),
-      // attr: { "aria-hidden": "true" },
+      attr: { "aria-label": this.id.replace(/_/g, " ") },
     });
     if (icon) {
       wrap.append(icon);
