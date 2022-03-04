@@ -1,4 +1,4 @@
-import type { DecorationSet, ViewUpdate } from "@codemirror/view";
+import { DecorationSet, PluginField, ViewUpdate } from "@codemirror/view";
 import { EditorView, ViewPlugin } from "@codemirror/view";
 import { editorLivePreviewField } from "obsidian";
 
@@ -54,6 +54,7 @@ const setupIconPlugin = (plugin: IconSC) => {
         },
       },
       decorations: (v) => v.decorations,
+      provide: PluginField.atomicRanges.from((v) => v.decorations),
     },
   );
   plugin.registerEditorExtension([ShortcodePosField, IconLivePreview]);
