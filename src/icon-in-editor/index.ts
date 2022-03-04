@@ -1,5 +1,6 @@
-import { EditorView } from "@codemirror/view";
-import { DecorationSet, ViewPlugin, ViewUpdate } from "@codemirror/view";
+import { editorLivePreviewField } from "obsidian";
+import { ViewPlugin, EditorView, Decoration } from "@codemirror/view";
+import type { DecorationSet, ViewUpdate } from "@codemirror/view";
 
 import type IconSC from "../isc-main";
 import icons from "./deco";
@@ -16,8 +17,15 @@ const buildIconPlugin = (plugin: IconSC) =>
       }
 
       update(update: ViewUpdate) {
-        if (update.docChanged || update.viewportChanged)
+        const prevMode = update.startState.field(editorLivePreviewField),
+          currMode = update.state.field(editorLivePreviewField);
+        if (
+          update.docChanged ||
+          update.viewportChanged ||
+          prevMode !== currMode
+        ) {
           this.decorations = icons(update.view, this.plugin);
+        }
       }
     },
     {

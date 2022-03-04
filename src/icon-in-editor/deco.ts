@@ -4,6 +4,7 @@ import type { EditorView } from "@codemirror/view";
 import { Decoration, WidgetType } from "@codemirror/view";
 import type { NodeType } from "@lezer/common";
 import cls from "classnames";
+import { editorLivePreviewField } from "obsidian";
 
 import {
   getGlobalRegexp,
@@ -102,12 +103,19 @@ const icons = (view: EditorView, plugin: IconSC) => {
     if (prevTo !== to) getShortcodeRange(prevTo, from);
   }
   return Decoration.set(
-    ranges.map(([code, from, to]) =>
-      Decoration.replace({
-        widget: new IconWidget(code, plugin),
-        side: 1,
-      }).range(from, to),
-    ),
+    ranges.map(([code, from, to]) => {
+      if (view.state.field(editorLivePreviewField)) {
+        return Decoration.replace({
+          widget: new IconWidget(code, plugin),
+          side: 1,
+        }).range(from, to);
+      } else {
+        return Decoration.widget({
+          widget: new IconWidget(code, plugin),
+          side: 1,
+        }).range(to);
+      }
+    }),
   );
 };
 
