@@ -1,3 +1,23 @@
+# [0.8.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.7.0...0.8.0) (2022-03-04)
+
+
+### Bug Fixes
+
+* **browser-packs:** icon pack manifest url is now pointed to master branch ([269d58a](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/269d58afc79ad280da97c6bcf48333533f8352ba))
+* fix lib failed to build ([1464122](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/1464122b929f213b85287318707908ee418c6ed0))
+* **icon-in-editor:** icon menu can now be triggered properly when included in headings, quote, etc ([3ff48bc](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/3ff48bca190263d704ae0b27ecd410409eaf0def))
+* **post-ps:** code blocks and math equations are escaped properly now ([44146ea](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/44146ea20b259e8c67ed6f58d7fe2b95106ca7ec))
+
+
+### Features
+
+* **browser-pack:** improve icon download in China ([814eb6b](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/814eb6bc1217d7a024b6bdbd79ebb9f1e72c9b6e))
+* **icon-in-editor:** add click menu to change/delete icon ([5dc96de](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/5dc96dec03ac98a806bc1cd3aa33cdc308befe7a))
+* **icon-in-editor:** cursor can now skip icon shortcode ([770ebb2](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/770ebb2e5012ecc39866715fed23fd0e014213ce))
+* **icon-in-editor:** support source mode ([b3bfdd8](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/b3bfdd892d3b55d91ca1fb70645e7266b05f8bbe))
+* initial implementation for icons in editor ([797e76f](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/797e76f3b21835a82f22d8fd250b57c2c93191b8))
+* **suggester:** add option to only trigger suggester if there is a trailing space before the colon ([74a559f](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/74a559f96da127f5f8897278ee429e4523657a01)), closes [#26](https://github.com/aidenlx/obsidian-icon-shortcodes/issues/26)
+
 # [0.7.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.6.3...0.7.0) (2022-03-02)
 
 
