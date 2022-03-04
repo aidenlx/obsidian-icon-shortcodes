@@ -1,3 +1,15 @@
+## [0.8.1](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.8.0...0.8.1) (2022-03-04)
+
+
+### Bug Fixes
+
+* **icon-in-editor:** fix click on icon sometimes select the wrong range ([56d4b58](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/56d4b5817cb6d57648c178ed0967e25b6b6ddea0))
+
+
+### Features
+
+* **icon-in-editor:** add aria-label for icons showing icon shortcode ([1f4963b](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/1f4963b0d2c8a7efe8c80fb6aa8307dcbe96e4b7))
+
 # [0.8.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.7.0...0.8.0) (2022-03-04)
 
 
