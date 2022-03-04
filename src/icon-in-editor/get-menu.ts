@@ -1,5 +1,6 @@
-import { Menu } from "obsidian";
 import { EditorView } from "@codemirror/view";
+import { Menu } from "obsidian";
+
 import IconSC from "../isc-main";
 
 const getMenu = (

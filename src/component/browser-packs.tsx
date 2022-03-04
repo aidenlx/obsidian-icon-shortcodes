@@ -14,12 +14,12 @@ import {
 } from "react-icons/fi";
 
 import IconSC from "../isc-main";
-import Loading from "./loading";
 import {
   getIconPackBundleUrl,
   getManifestViaAPI,
   IconPackManifestRaw,
 } from "../modules/icon-packs";
+import Loading from "./loading";
 
 export default class BrowserPacks extends Modal {
   constructor(public plugin: IconSC) {
