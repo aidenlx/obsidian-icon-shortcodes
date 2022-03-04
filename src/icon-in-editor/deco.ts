@@ -1,9 +1,8 @@
 import { syntaxTree } from "@codemirror/language";
 import { tokenClassNodeProp } from "@codemirror/stream-parser";
 import type { EditorView } from "@codemirror/view";
-import { Decoration, WidgetType } from "@codemirror/view";
+import { Decoration } from "@codemirror/view";
 import type { NodeType } from "@lezer/common";
-import cls from "classnames";
 import { editorLivePreviewField } from "obsidian";
 
 import {
@@ -12,37 +11,7 @@ import {
   stripColons,
 } from "../icon-packs/utils";
 import type IconSC from "../isc-main";
-
-class IconWidget extends WidgetType {
-  constructor(public id: string, public plugin: IconSC) {
-    super();
-  }
-
-  eq(other: IconWidget) {
-    return other.id === this.id;
-  }
-
-  toDOM() {
-    const icon = this.plugin.packManager.getIcon(this.id);
-    let wrap = createSpan({
-      cls: cls("cm-isc", {
-        "cm-isc-emoji": typeof icon === "string",
-        "cm-isc-img": icon instanceof HTMLImageElement,
-      }),
-      attr: { "aria-hidden": "true" },
-    });
-    if (icon) {
-      wrap.append(icon);
-    } else {
-      wrap.append(`:${this.id}:`);
-    }
-    return wrap;
-  }
-
-  ignoreEvent() {
-    return true;
-  }
-}
+import IconWidget from "./widget";
 
 const allowedTypes = [
   "link-alias",
@@ -104,16 +73,12 @@ const icons = (view: EditorView, plugin: IconSC) => {
   }
   return Decoration.set(
     ranges.map(([code, from, to]) => {
+      const widget = new IconWidget(code, plugin);
+      widget.setPos(from, to);
       if (view.state.field(editorLivePreviewField)) {
-        return Decoration.replace({
-          widget: new IconWidget(code, plugin),
-          side: 1,
-        }).range(from, to);
+        return Decoration.replace({ widget, side: 1 }).range(from, to);
       } else {
-        return Decoration.widget({
-          widget: new IconWidget(code, plugin),
-          side: 1,
-        }).range(to);
+        return Decoration.widget({ widget, side: 1 }).range(to);
       }
     }),
   );

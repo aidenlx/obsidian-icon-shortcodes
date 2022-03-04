@@ -1,8 +1,16 @@
+.view-content .mod-cm6 .cm-isc {
+  cursor: pointer;
+}
+
 img.isc-icon {
   display: inline;
   height: 1em;
   width: 1em;
   vertical-align: text-top;
+  cursor: default;
+  .view-content .mod-cm6 .cm-isc > & {
+    cursor: pointer;
+  }
   .markdown-preview-view &,
   .markdown-source-view & {
     height: var(--editor-font-size);
