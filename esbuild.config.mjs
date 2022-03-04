@@ -34,6 +34,7 @@ const cmModules = [
   "@codemirror/view",
 ];
 
+const isBeta = process.env.BETA === "1";
 const isProd = process.env.BUILD === "production";
 
 try {
@@ -57,7 +58,7 @@ try {
       lessLoader({
         javascriptEnabled: true,
       }),
-      obPlugin(),
+      obPlugin({ beta: isBeta }),
       iconList,
     ],
   });
