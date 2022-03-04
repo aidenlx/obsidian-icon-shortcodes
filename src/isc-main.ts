@@ -49,7 +49,7 @@ export default class IconSC extends Plugin {
 
     this.registerEditorSuggest(new EmojiSuggester(this));
     this.registerMarkdownPostProcessor(this._nodeProcessor);
-    this.registerEditorExtension(buildIconPlugin(this));
+    buildIconPlugin(this);
 
     this.addSettingTab(new IconSCSettingTab(this.app, this));
   }

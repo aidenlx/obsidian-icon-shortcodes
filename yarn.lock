@@ -90,6 +90,7 @@ __metadata:
     jszip: ^3.7.1
     mime-types: ^2.1.34
     mini-svg-data-uri: ^1.4.3
+    monkey-around: ^2.3.0
     node-emoji: "github:rhysd/node-emoji#fix-gh-short-codes"
     obsidian: ^0.13.26
     path-browserify: ^1.0.1
@@ -4774,6 +4775,13 @@ __metadata:
   version: 2.29.1
   resolution: "moment@npm:2.29.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fmoment%2F-%2Fmoment-2.29.1.tgz"
   checksum: 1e14d5f422a2687996be11dd2d50c8de3bd577c4a4ca79ba5d02c397242a933e5b941655de6c8cb90ac18f01cc4127e55b4a12ae3c527a6c0a274e455979345e
+  languageName: node
+  linkType: hard
+
+"monkey-around@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "monkey-around@npm:2.3.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fmonkey-around%2F-%2Fmonkey-around-2.3.0.tgz"
+  checksum: 88e6cf8b6bf452f47bc3b77731a33a95964fc6877a95988337183561e95d0f1b9569bb99106155a3a3d0a46379d6a8a5271f12a0013c9990ecb3f34bf5b25ba0
   languageName: node
   linkType: hard
 
