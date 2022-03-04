@@ -75,10 +75,11 @@ const icons = (view: EditorView, plugin: IconSC) => {
     ranges.map(([code, from, to]) => {
       const widget = new IconWidget(code, plugin);
       widget.setPos(from, to);
+      const spec = { widget, side: -1, from, to };
       if (view.state.field(editorLivePreviewField)) {
-        return Decoration.replace({ widget, side: 1 }).range(from, to);
+        return Decoration.replace(spec).range(from, to);
       } else {
-        return Decoration.widget({ widget, side: 1 }).range(to);
+        return Decoration.widget(spec).range(to);
       }
     }),
   );
