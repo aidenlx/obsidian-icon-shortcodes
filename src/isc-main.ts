@@ -8,6 +8,7 @@ import { EmojiSuggester } from "./modules/suggester";
 import { DEFAULT_SETTINGS, IconSCSettings, IconSCSettingTab } from "./settings";
 import { getApi } from "./typings/api";
 import API, { API_NAME } from "./typings/api";
+import getShortcodePosField from "./icon-in-editor/state";
 
 const API_NAME: API_NAME extends keyof typeof window ? API_NAME : never =
   "IconSCAPIv0" as const; // this line will throw error if name out of sync
@@ -19,6 +20,8 @@ export default class IconSC extends Plugin {
 
   _nodeProcessor = getNodePostProcessor(this);
   _mdProcessor = getMDPostProcessor(this);
+
+  shortcodePosField = getShortcodePosField(this);
 
   postProcessor(input: string, replacer: (shortcode: string) => string): string;
   postProcessor(input: HTMLElement): void;

@@ -7,7 +7,8 @@ import icons from "./deco";
 import getMenu from "./get-menu";
 
 const setupIconPlugin = (plugin: IconSC) => {
-  const viewPlugin = ViewPlugin.fromClass(
+  const ShortcodePosField = plugin.shortcodePosField;
+  const IconLivePreview = ViewPlugin.fromClass(
     class IconPlugin {
       decorations: DecorationSet;
       plugin: IconSC;
@@ -25,7 +26,7 @@ const setupIconPlugin = (plugin: IconSC) => {
           update.viewportChanged ||
           prevMode !== currMode
         ) {
-          this.decorations = icons(update.view, this.plugin);
+          this.decorations = icons(update.view, plugin);
         }
       }
     },
@@ -38,7 +39,9 @@ const setupIconPlugin = (plugin: IconSC) => {
             target.parentElement?.matches("span.cm-isc")
           ) {
             const from = view.posAtDOM(target),
-              widget = view.plugin(viewPlugin)?.decorations.iter(from).value;
+              widget = view
+                .plugin(IconLivePreview)
+                ?.decorations.iter(from).value;
             if (!widget) return;
             const menu = getMenu(
               widget.spec.from,
@@ -53,7 +56,7 @@ const setupIconPlugin = (plugin: IconSC) => {
       decorations: (v) => v.decorations,
     },
   );
-  plugin.registerEditorExtension(viewPlugin);
+  plugin.registerEditorExtension([ShortcodePosField, IconLivePreview]);
 };
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
