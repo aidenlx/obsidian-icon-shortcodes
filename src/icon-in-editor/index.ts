@@ -1,65 +1,11 @@
-import { DecorationSet, PluginField, ViewUpdate } from "@codemirror/view";
-import { EditorView, ViewPlugin } from "@codemirror/view";
-import { editorLivePreviewField } from "obsidian";
-
 import type IconSC from "../isc-main";
-import icons from "./deco";
-import getMenu from "./get-menu";
+import getIconLivePreviewPlugin from "./view-plugin";
 
 const setupIconPlugin = (plugin: IconSC) => {
-  const ShortcodePosField = plugin.shortcodePosField;
-  const IconLivePreview = ViewPlugin.fromClass(
-    class IconPlugin {
-      decorations: DecorationSet;
-      plugin: IconSC;
-
-      constructor(view: EditorView) {
-        this.plugin = plugin;
-        this.decorations = icons(view, this.plugin);
-      }
-
-      update(update: ViewUpdate) {
-        const prevMode = update.startState.field(editorLivePreviewField),
-          currMode = update.state.field(editorLivePreviewField);
-        if (
-          update.docChanged ||
-          update.viewportChanged ||
-          prevMode !== currMode
-        ) {
-          this.decorations = icons(update.view, plugin);
-        }
-      }
-    },
-    {
-      eventHandlers: {
-        mousedown: (evt, view) => {
-          let target = evt.target as HTMLElement;
-          if (
-            target.matches("span.cm-isc") ||
-            target.parentElement?.matches("span.cm-isc")
-          ) {
-            const from = view.posAtDOM(target),
-              widget = view
-                .plugin(IconLivePreview)
-                ?.decorations.iter(from).value;
-            if (!widget) return;
-            const menu = getMenu(
-              widget.spec.from,
-              widget.spec.to,
-              plugin,
-              view,
-            );
-            wait(100).then(() => menu.showAtMouseEvent(evt));
-          }
-        },
-      },
-      decorations: (v) => v.decorations,
-      provide: PluginField.atomicRanges.from((v) => v.decorations),
-    },
-  );
-  plugin.registerEditorExtension([ShortcodePosField, IconLivePreview]);
+  plugin.registerEditorExtension([
+    plugin.shortcodePosField,
+    getIconLivePreviewPlugin(plugin),
+  ]);
 };
-
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export default setupIconPlugin;

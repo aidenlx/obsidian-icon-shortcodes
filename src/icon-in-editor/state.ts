@@ -80,8 +80,8 @@ const getShortcodePosField = (plugin: IconSC) => {
     };
     let prevTo = from;
     syntaxTree(state).iterate({
-      from,
-      to,
+      from: from - 1,
+      to: to + 1,
       enter: (type, from, to) => {
         if (type.name === "Document") return;
         if (from !== prevTo) saveRange(prevTo, from);
@@ -115,8 +115,8 @@ const getShortcodePosField = (plugin: IconSC) => {
             const text = tr.state.sliceDoc(from, to);
             return text === value.text;
           },
-          filterFrom: from,
-          filterTo: to,
+          filterFrom: from - 1,
+          filterTo: to + 1,
         });
         // include lines that have changed
         changedLines.push([
