@@ -1,3 +1,4 @@
+import { decode } from "js-base64";
 import { requestUrl } from "obsidian";
 
 export const getIconPackBundleUrl = (
@@ -51,7 +52,7 @@ const getJSONfromBlobUrl = async (
   const response = (await requestUrl({ url: manifestUrl })).json;
   if (response.encoding && response.content) {
     if (response.encoding === "base64") {
-      return JSON.parse(window.atob(response.content)) as IconPackManifestRaw[];
+      return JSON.parse(decode(response.content)) as IconPackManifestRaw[];
     } else {
       console.error(response);
       throw new TypeError("Unsupported encoding");
