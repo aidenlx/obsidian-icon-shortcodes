@@ -1,3 +1,10 @@
+## [0.8.3](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.8.2...0.8.3) (2022-03-07)
+
+
+### Bug Fixes
+
+* **browser-packs:** fix failure on opening browser pack due to base64 decoding issue ([c5141a0](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/c5141a0bfa3454ddbb02fd0ec7d1618040dd93bf))
+
 ## [0.8.2](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.8.1...0.8.2) (2022-03-07)
 
 

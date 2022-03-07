@@ -99,7 +99,7 @@ For all exposed API method, check [api.ts](src/typings/api.ts)
 
 ## Compatibility
 
-The required API feature is only available for Obsidian v0.13.4+.
+The required API feature is only available for Obsidian v0.13.27+.
 
 ## Installation
 
