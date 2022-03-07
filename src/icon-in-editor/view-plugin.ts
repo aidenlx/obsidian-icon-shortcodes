@@ -56,7 +56,6 @@ const getIconLivePreviewPlugin = (plugin: IconSC) => {
             anchor = value.spec.from;
             head = value.spec.to;
           } else (anchor = from), (head = to);
-          console.log(from, to, value);
           return;
         }
       });
