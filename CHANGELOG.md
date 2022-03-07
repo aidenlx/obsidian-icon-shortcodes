@@ -1,3 +1,12 @@
+## [0.8.2](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.8.1...0.8.2) (2022-03-07)
+
+
+### Bug Fixes
+
+* **icon-in-editor:** fix duplicate icons in source mode ([466f2d4](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/466f2d43ce90818c425ffd4b37126dc4d895285c))
+* **icon-in-editor:** fix icon menu sometimes closed once opened ([54d37b2](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/54d37b22cc8ee7c33d92f492073f9eb399e5c76d))
+* remove redundant console log ([43fec94](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/43fec940360a29d0eebafb9a9de0861acc4e3ef7))
+
 ## [0.8.1](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.8.0...0.8.1) (2022-03-04)
 
 
