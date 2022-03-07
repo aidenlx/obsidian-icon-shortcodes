@@ -109,16 +109,7 @@ const getShortcodePosField = (plugin: IconSC) => {
       rangeset = rangeset.map(tr.changes);
       let changedLines: [lineStart: number, lineEnd: number][] = [];
       tr.changes.iterChangedRanges((_f, _t, from, to) => {
-        // filter those that no longer a vaild shortcode
-        rangeset = rangeset.update({
-          filter: (from: number, to: number, value: ShortcodePos) => {
-            const text = tr.state.sliceDoc(from, to);
-            return text === value.text;
-          },
-          filterFrom: from - 1,
-          filterTo: to + 1,
-        });
-        // include lines that have changed
+        // lines that have changed
         changedLines.push([
           tr.state.doc.lineAt(from).number,
           tr.state.doc.lineAt(to).number,
@@ -126,16 +117,18 @@ const getShortcodePosField = (plugin: IconSC) => {
       });
       let newShortcodeRanges: Range<ShortcodePos>[] = [];
       for (const [start, end] of UnionRanges(changedLines)) {
-        for (let l = start; l <= end; l++) {
-          getShortcodeRanges(
-            tr.state,
-            tr.state.doc.line(l).from,
-            tr.state.doc.line(l).to,
-            (from, to, value) => {
-              newShortcodeRanges.push(value.range(from, to));
-            },
-          );
-        }
+        const { from } = tr.state.doc.line(start),
+          { to } = tr.state.doc.line(end);
+        // filter out shortcode pos in current line range
+        rangeset = rangeset.update({
+          filterFrom: from,
+          filterTo: to,
+          filter: () => false,
+        });
+        // recompute shortcode pos in current line range
+        getShortcodeRanges(tr.state, from, to, (from, to, value) => {
+          newShortcodeRanges.push(value.range(from, to));
+        });
       }
       rangeset = rangeset.update({ add: newShortcodeRanges });
       return rangeset;

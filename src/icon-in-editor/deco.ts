@@ -9,7 +9,7 @@ const icons = (view: EditorView, plugin: IconSC) => {
   let ranges: [iconId: string, from: number, to: number][] = [];
   const SCInfo = view.state.field(plugin.shortcodePosField);
   for (let { from, to } of view.visibleRanges) {
-    SCInfo.between(from - 1, to + 1, (from, to, { iconId }) => {
+    SCInfo.between(from, to, (from, to, { iconId }) => {
       ranges.push([iconId, from, to]);
     });
   }

@@ -52,7 +52,11 @@ const getIconLivePreviewPlugin = (plugin: IconSC) => {
         head: number = -1;
       this.decorations.between(elFrom - 1, elFrom + 1, (from, to, value) => {
         if (elFrom >= from && elFrom <= to) {
-          (anchor = from), (head = to);
+          if (from === to) {
+            anchor = value.spec.from;
+            head = value.spec.to;
+          } else (anchor = from), (head = to);
+          console.log(from, to, value);
           return;
         }
       });
@@ -60,6 +64,7 @@ const getIconLivePreviewPlugin = (plugin: IconSC) => {
         console.error("no range found for", target);
         return;
       }
+      console.log(anchor, head, view.state.doc.slice(anchor, head));
       wait(0).then(() => view.dispatch({ selection: { anchor, head } }));
       if (evt.button === 0 || evt.button === 1) {
         const menu = getMenu(anchor, head, plugin, view);
