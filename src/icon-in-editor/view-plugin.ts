@@ -64,11 +64,10 @@ const getIconLivePreviewPlugin = (plugin: IconSC) => {
         console.error("no range found for", target);
         return;
       }
-      console.log(anchor, head, view.state.doc.slice(anchor, head));
       wait(0).then(() => view.dispatch({ selection: { anchor, head } }));
       if (evt.button === 0 || evt.button === 1) {
         const menu = getMenu(anchor, head, plugin, view);
-        wait(100).then(() => menu.showAtMouseEvent(evt));
+        wait(200).then(() => menu.showAtMouseEvent(evt));
       }
     }
   }
