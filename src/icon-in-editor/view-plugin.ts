@@ -6,7 +6,12 @@ import type IconSC from "../isc-main";
 import icons from "./deco";
 import getMenu from "./get-menu";
 
-const getIconLivePreviewPlugin = (plugin: IconSC) => {
+interface IconPlugin {
+  constructor(view: EditorView): IconPlugin;
+  update(update: ViewUpdate): void;
+}
+
+const getIconLivePreviewPlugin = (plugin: IconSC): ViewPlugin<IconPlugin> => {
   class IconPlugin {
     decorations: DecorationSet;
     plugin: IconSC;
