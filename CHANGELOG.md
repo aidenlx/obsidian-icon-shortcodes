@@ -1,3 +1,10 @@
+## [0.8.4](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.8.3...0.8.4) (2022-03-08)
+
+
+### Bug Fixes
+
+* **icon-in-editor:** fix icon not rendered on start if at the end of doc ([990f71f](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/990f71f55b82285c3de7e27012ca09982079b8d1))
+
 ## [0.8.3](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.8.2...0.8.3) (2022-03-07)
 
 
