@@ -99,7 +99,7 @@ const getShortcodePosField = (plugin: IconSC) => {
       getShortcodeRanges(
         state,
         0,
-        state.doc.length - 1,
+        state.doc.length,
         rangeset.add.bind(rangeset),
       );
       return rangeset.finish();
