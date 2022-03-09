@@ -1,5 +1,6 @@
-import type { EmojiIconData as EmojiIconDataType } from "./types";
 import emoji from "node-emoji";
+
+import type { EmojiIconData as EmojiIconDataType } from "./types";
 import { getClsForIcon } from "./utils";
 
 export default class EmojiIconData implements EmojiIconDataType {

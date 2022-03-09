@@ -1,4 +1,5 @@
 import { Stat } from "obsidian";
+
 import type IconSC from "../isc-main";
 
 declare global {

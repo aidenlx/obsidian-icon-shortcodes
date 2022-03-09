@@ -1,8 +1,8 @@
 import { FileSystemAdapter } from "obsidian";
-import IconSC from "../isc-main";
-import { FileIconData as FileIconDataType } from "./types";
 import { extname } from "path";
 
+import IconSC from "../isc-main";
+import { FileIconData as FileIconDataType } from "./types";
 import { getClsForIcon, getPacknNameFromId } from "./utils";
 
 export default class FileIconData implements FileIconDataType {

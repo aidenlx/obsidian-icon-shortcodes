@@ -90,8 +90,9 @@ export const getIconsFromFileList = async (
   return result.length > 0 ? result : null;
 };
 
-import cloneRegexp from "clone-regexp";
 import classNames from "classnames";
+import cloneRegexp from "clone-regexp";
+
 import IconSC from "../isc-main";
 
 export const RE_SHORTCODE = /:\+1:|:-1:|:[\w-]+:/;

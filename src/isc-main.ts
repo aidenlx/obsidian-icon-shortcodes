@@ -3,6 +3,7 @@ import { Plugin } from "obsidian";
 import buildIconPlugin from "./icon-in-editor";
 import type { ShortcodePosField } from "./icon-in-editor/state";
 import getShortcodePosField from "./icon-in-editor/state";
+import FileIconCache from "./icon-packs/icon-cache";
 import PackManager from "./icon-packs/pack-manager";
 import tryUpdateIcons from "./modules/json-to-svg";
 import { getMDPostProcessor, getNodePostProcessor } from "./modules/post-ps";
@@ -10,7 +11,6 @@ import { EmojiSuggester } from "./modules/suggester";
 import { DEFAULT_SETTINGS, IconSCSettings, IconSCSettingTab } from "./settings";
 import { getApi } from "./typings/api";
 import API, { API_NAME } from "./typings/api";
-import FileIconCache from "./icon-packs/icon-cache";
 
 const API_NAME: API_NAME extends keyof typeof window ? API_NAME : never =
   "IconSCAPIv0" as const; // this line will throw error if name out of sync

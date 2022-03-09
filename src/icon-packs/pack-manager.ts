@@ -1,5 +1,6 @@
 import "./icon.less";
 
+import assertNever from "assert-never";
 import Fuse from "fuse.js";
 import JSZip from "jszip";
 import emoji from "node-emoji";
@@ -13,6 +14,8 @@ import {
   BuiltInIconPacknames,
   BuiltInSVGIconPacks,
 } from "./built-ins";
+import EmojiIconData from "./emoji";
+import FileIconData from "./file-icon";
 import { BultiInIconData, IconData, IconInfo, isFileIconInfo } from "./types";
 import {
   extPattern,
@@ -21,9 +24,6 @@ import {
   sanitizeId,
   stripColons,
 } from "./utils";
-import FileIconData from "./file-icon";
-import EmojiIconData from "./emoji";
-import assertNever from "assert-never";
 
 const CUSTOM_ICON_PATH = "/icons.json";
 const CUSTOM_ICON_DIR = "icons";
