@@ -65,13 +65,19 @@ export default class IconSC extends Plugin {
   // }
 
   async loadSettings() {
-    let loaded = (await this.loadData()) as IconSCSettings;
-    delete (loaded as any)["iconpack"];
-    this.settings = {
-      ...this.settings,
-      ...loaded,
-      disabledPacks: new Set(loaded.disabledPacks),
-    };
+    let loaded = (await this.loadData()) as IconSCSettings | undefined;
+    if (loaded) {
+      if ((loaded as any).iconpack) {
+        delete (loaded as any)["iconpack"];
+      }
+      this.settings = {
+        ...this.settings,
+        ...loaded,
+        disabledPacks: loaded.disabledPacks
+          ? new Set(loaded.disabledPacks)
+          : this.settings.disabledPacks,
+      };
+    }
   }
 
   async saveSettings() {
