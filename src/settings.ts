@@ -160,6 +160,21 @@ export class IconSCSettingTab extends PluginSettingTab {
     this.manageCustomIcons(managerContainer);
   }
 
+  private _setDisabledPack(target: string, setting: Setting) {
+    return setting.addToggle((cb) => {
+      cb.setValue(!this.plugin.settings.disabledPacks.has(target)).onChange(
+        async (value) => {
+          if (value) {
+            this.plugin.settings.disabledPacks.delete(target);
+          } else {
+            this.plugin.settings.disabledPacks.add(target);
+          }
+          await this.plugin.saveSettings();
+        },
+      );
+      cb.toggleEl.setAttr("aria-label", `Enable/Disable ${target} Icon Pack`);
+    });
+  }
   skipIconPack(): void {
     const { containerEl } = this;
 
@@ -168,21 +183,11 @@ export class IconSCSettingTab extends PluginSettingTab {
       name: string,
       getDesc?: (el: DocumentFragment) => void,
     ) =>
-      new Setting(containerEl)
-        .setName(name)
-        .setDesc(createFragment(getDesc))
-        .addToggle((cb) => {
-          cb.setValue(
-            !this.plugin.settings.disabledPacks.has(pack),
-          ).onChange(async (value) => {
-            if (value) {
-              this.plugin.settings.disabledPacks.delete(pack);
-            } else {
-              this.plugin.settings.disabledPacks.add(pack);
-            }
-            await this.plugin.saveSettings();
-          });
-        });
+      this._setDisabledPack(
+        pack,
+        new Setting(containerEl).setName(name).setDesc(createFragment(getDesc)),
+      );
+
     new Setting(this.containerEl).setHeading().setName("Icon Packs");
 
     getSetting("luc", "Lucide", (el) =>
@@ -307,7 +312,7 @@ export class IconSCSettingTab extends PluginSettingTab {
           this.plugin.packManager.addFromFiles(pack, evt.dataTransfer.files);
         }),
       );
-
+    this._setDisabledPack(pack, setting);
     return setting;
   }
 }
