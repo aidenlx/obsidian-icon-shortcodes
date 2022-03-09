@@ -162,8 +162,7 @@ export default class PackManager extends Events {
 
   isPackEnabled(pack: string): boolean {
     if (pack === "emoji") return true;
-    const status = this.plugin.settings.iconpack;
-    return !(pack in status) || status[pack as keyof typeof status] === true;
+    return !this.plugin.settings.disabledPacks.has(pack);
   }
 
   private refreshPackNames() {

@@ -21,7 +21,7 @@ import IconSC from "./isc-main";
 export interface IconSCSettings {
   code2emoji: boolean;
   suggester: boolean;
-  iconpack: Record<SVGPacknames, boolean> & Record<string, boolean>;
+  disabledPacks: Set<string>;
   spaceAfterSC: boolean;
   triggerWithTrailingSpace: boolean;
   isMigrated: boolean;
@@ -30,10 +30,7 @@ export interface IconSCSettings {
 export const DEFAULT_SETTINGS: IconSCSettings = {
   code2emoji: true,
   suggester: true,
-  iconpack: {
-    obs: false,
-    luc: true,
-  },
+  disabledPacks: new Set(["obs"]),
   triggerWithTrailingSpace: false,
   spaceAfterSC: false,
   isMigrated: false,
@@ -167,7 +164,7 @@ export class IconSCSettingTab extends PluginSettingTab {
     const { containerEl } = this;
 
     const getSetting = (
-      id: SVGPacknames,
+      pack: SVGPacknames,
       name: string,
       getDesc?: (el: DocumentFragment) => void,
     ) =>
@@ -175,12 +172,16 @@ export class IconSCSettingTab extends PluginSettingTab {
         .setName(name)
         .setDesc(createFragment(getDesc))
         .addToggle((cb) => {
-          cb.setValue(this.plugin.settings.iconpack[id]).onChange(
-            async (value) => {
-              this.plugin.settings.iconpack[id] = value;
-              await this.plugin.saveSettings();
-            },
-          );
+          cb.setValue(
+            !this.plugin.settings.disabledPacks.has(pack),
+          ).onChange(async (value) => {
+            if (value) {
+              this.plugin.settings.disabledPacks.delete(pack);
+            } else {
+              this.plugin.settings.disabledPacks.add(pack);
+            }
+            await this.plugin.saveSettings();
+          });
         });
     new Setting(this.containerEl).setHeading().setName("Icon Packs");
 
