@@ -2,7 +2,7 @@ import { extension, lookup } from "mime-types";
 import emoji from "node-emoji";
 import { extname } from "path";
 
-import { FileIconInfo } from "./types";
+import { FileIconInfo, IconInfo } from "./types";
 
 export type EntriesFromRecord<T> = [key: keyof T, value: T[keyof T]][];
 
@@ -34,22 +34,6 @@ export const stripColons = (str: string): string => {
 
 export const PackPrefixPattern = /^([A-Za-z0-9]+?)_/;
 
-export const getIconInfoFromId = (
-  id: string,
-  path: string,
-): FileIconInfo | null => {
-  const result = getPacknNameFromId(id);
-  if (!result) return null;
-  const { name, pack } = result;
-  path = path.trim();
-  return {
-    id,
-    pack,
-    name,
-    path,
-    ext: extname(path),
-  };
-};
 export const getPacknNameFromId = (
   id: string,
 ): { pack: string; name: string } | null => {
@@ -107,7 +91,12 @@ export const getIconsFromFileList = async (
 };
 
 import cloneRegexp from "clone-regexp";
+import classNames from "classnames";
+import IconSC from "../isc-main";
 
 export const RE_SHORTCODE = /:\+1:|:-1:|:[\w-]+:/;
 export const getGlobalRegexp = (pattern: RegExp) =>
   cloneRegexp(pattern, { global: true });
+
+export const getClsForIcon = (icon: IconInfo) =>
+  classNames(["isc-icon", `isc-${icon.pack}`]);

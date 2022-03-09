@@ -11,19 +11,32 @@ export default interface IconSCAPI {
 
   /**
    * @param id accept shortcode with colons
-   * @param raw if true, return svg data uri instead of img element
-   * @returns emoji character if given emoji shortcode; svg data uri if given svg shortcode; null if given id is not found
+   * @param raw if true, return string (emoji) or data uri/resource path instead of span element
+   * @returns string (emoji) or data uri/resource path (icons); null if given id is not found
    */
   getIcon(id: string, raw: true): string | null;
   /**
    * @param id accept shortcode with colons
-   * @param raw if true, return svg data uri instead of img element
-   * @returns emoji character if given emoji shortcode; img element if given svg shortcode; null if given id is not found
+   * @param raw if true, return svg data uri instead of span element
+   * @returns span element containing the icon string(emoji) or img element; null if given id is not found
    */
-  getIcon(
-    id: string,
-    raw?: false | undefined,
-  ): string | HTMLImageElement | null;
+  getIcon(id: string, raw?: false): HTMLSpanElement | null;
+
+  /**
+   * get raw svg content of icon when available
+   * @param id accept shortcode with colons
+   * @param raw if true, return svg content (when given svg icon) /  instead of span element
+   * @returns string (emoji) or svg content (svg icon) or resource path (bitmap icon); null if given id is not found
+   */
+  getSVGIcon(id: string, raw: true): Promise<string | null>;
+  /**
+   * get inline svg version of icon when available
+   * @param id accept shortcode with colons
+   * @param raw if true, return string (emoji) or svg content (svg icon) or resource path (bitmap icon) instead of span element
+   * @returns span element containing the emoji string or svg element (svg icon) or img element (bitmap icon); null if given id is not found
+   */
+  getSVGIcon(id: string, raw?: false): Promise<HTMLSpanElement | null>;
+
   /**
    * @param id accept shortcode with colons
    * @returns full data (including character/path/svg content depending on specific type) about icon
@@ -101,6 +114,7 @@ export const getApi = (
   hasIcon: packManager.hasIcon.bind(packManager),
   getIcon: packManager.getIcon.bind(packManager),
   getIconData: packManager.getIconData.bind(packManager),
+  getSVGIcon: packManager.getSVGIcon.bind(packManager),
   getIconFromUser: () => new EmojiSuggesterModal(plugin).open(),
   isEmoji: emoji.hasEmoji.bind(emoji),
   postProcessor: plugin.postProcessor.bind(plugin),

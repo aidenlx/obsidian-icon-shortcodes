@@ -10,6 +10,7 @@ import { EmojiSuggester } from "./modules/suggester";
 import { DEFAULT_SETTINGS, IconSCSettings, IconSCSettingTab } from "./settings";
 import { getApi } from "./typings/api";
 import API, { API_NAME } from "./typings/api";
+import FileIconCache from "./icon-packs/icon-cache";
 
 const API_NAME: API_NAME extends keyof typeof window ? API_NAME : never =
   "IconSCAPIv0" as const; // this line will throw error if name out of sync
@@ -39,7 +40,8 @@ export default class IconSC extends Plugin {
     }
   }
 
-  api: API = getApi(this.packManager, this);
+  api = getApi(this.packManager, this);
+  fileIconCache = new FileIconCache(this);
 
   async onload() {
     console.log("loading Icon Shortcodes");

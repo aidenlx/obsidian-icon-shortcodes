@@ -4,6 +4,7 @@ import { setIcon } from "obsidian";
 
 import { LucideIcon, ObsidianIcon } from "../icons";
 import { BultiInIconData as BultiInIconDataType, IconInfo } from "./types";
+import { getClsForIcon } from "./utils";
 
 const kabobToSnake = (name: string) => name.replace(/-/g, "_");
 
@@ -12,6 +13,10 @@ const LucidePackName = "luc",
 
 export type SVGPacknames = typeof LucidePackName | typeof ObsidianPackName;
 
+const removeBultiInIconAttrs = (el: HTMLElement) =>
+  ["class", "height", "width"].forEach((k) =>
+    el.firstElementChild?.removeAttribute(k),
+  );
 class BultiInIconData implements BultiInIconDataType {
   public type = "bulti-in" as const;
   public name: string;
@@ -27,24 +32,37 @@ class BultiInIconData implements BultiInIconDataType {
       el,
       (this.pack === LucidePackName ? "lucide-" : "") + this.obsidianId,
     );
-    ["class", "height", "width"].forEach((k) =>
-      el.firstElementChild?.removeAttribute(k),
-    );
+    removeBultiInIconAttrs(el);
     el.firstElementChild?.setAttribute("xmlns", "http://www.w3.org/2000/svg");
     return el.innerHTML;
   }
   public get dataUri() {
     return svg2uri(this.data);
   }
+  public getDOM(svg: boolean): HTMLSpanElement {
+    const el = createSpan({ cls: getClsForIcon(this) });
+    if (svg) {
+      el.addClass("isc-svg-icon");
+      setIcon(
+        el,
+        (this.pack === LucidePackName ? "lucide-" : "") + this.obsidianId,
+      );
+      removeBultiInIconAttrs(el);
+    } else {
+      el.addClass("isc-img-icon");
+      el.createEl("img", { attr: { src: this.dataUri } });
+    }
+    return el;
+  }
 }
 
 const EMOJI_PACK_NAME = "emoji";
 const getBuiltIns = (): {
-  packs: ReadonlyMap<string, BultiInIconDataType>;
+  packs: ReadonlyMap<string, BultiInIconData>;
   ids: ReadonlyArray<IconInfo>;
   packnames: ReadonlyArray<string>;
 } => {
-  let packs = new Map<string, BultiInIconDataType>(),
+  let packs = new Map<string, BultiInIconData>(),
     ids = [] as IconInfo[],
     packnames = [] as string[];
 

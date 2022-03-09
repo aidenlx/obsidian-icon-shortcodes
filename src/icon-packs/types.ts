@@ -20,24 +20,31 @@ type FileBasicInfo = IconBasicInfo & {
   ext: string;
 };
 
-export type FileIconInfo = FileBasicInfo & withId;
-export type FileIconData = FileBasicInfo & {
-  /** real path in file system, null if not in Desktop */
-  fsPath: string | null;
-  /** resource path to icon file */
-  resourcePath: string;
-  type: "file";
+type IconBasicData = {
+  getDOM(svg: true): HTMLSpanElement | Promise<HTMLSpanElement>;
+  getDOM(svg: false): HTMLSpanElement;
 };
+
+export type FileIconInfo = FileBasicInfo & withId;
+export type FileIconData = FileBasicInfo &
+  IconBasicData & {
+    /** real path in file system, null if not in Desktop */
+    fsPath: string | null;
+    /** resource path to icon file */
+    resourcePath: string;
+    type: "file";
+  };
 export const isFileIconInfo = (id: IconInfo): id is FileIconInfo =>
   !!(id as FileIconInfo).ext;
 
 export type BultiInIconInfo = IconBasicInfo & withId;
-export type BultiInIconData = IconBasicInfo & {
-  /** data uri of svg icon */
-  dataUri: string;
-  /** svg icon raw content */
-  data: string;
-  type: "bulti-in";
-};
+export type BultiInIconData = IconBasicInfo &
+  IconBasicData & {
+    /** data uri of svg icon */
+    dataUri: string;
+    /** svg icon raw content */
+    data: string;
+    type: "bulti-in";
+  };
 
 export type FuzzyMatch<T> = Fuse.FuseResult<T>;

@@ -7,7 +7,6 @@ import emoji from "node-emoji";
 import {
   EventRef,
   Events,
-  FileSystemAdapter,
   normalizePath,
   Notice,
   Platform,
@@ -25,52 +24,25 @@ import {
 import {
   BultiInIconData,
   EmojiIconData,
-  FileIconData as FileIconDataType,
-  FileIconInfo,
   IconData,
   IconInfo,
   isFileIconInfo,
 } from "./types";
 import {
   extPattern,
-  getIconInfoFromId,
+  getClsForIcon,
   getIconsFromFileList,
   iconFilePattern,
   sanitizeId,
   stripColons,
 } from "./utils";
-
-class FileIconData implements FileIconDataType {
-  public type = "file" as const;
-  constructor(private info: FileIconInfo, private vault: Vault) {}
-
-  public get pack() {
-    return this.info.pack;
-  }
-  public get name() {
-    return this.info.name;
-  }
-  public get path() {
-    return this.info.path;
-  }
-  public get ext() {
-    return this.info.ext;
-  }
-  public get fsPath() {
-    if (this.vault.adapter instanceof FileSystemAdapter) {
-      return this.vault.adapter.getFullPath(this.path);
-    } else return null;
-  }
-  public get resourcePath() {
-    return this.vault.adapter.getResourcePath(this.path);
-  }
-}
+import { FileIconData } from "./file-icon";
 
 const CUSTOM_ICON_PATH = "/icons.json";
 const CUSTOM_ICON_DIR = "icons";
 
 export default class PackManager extends Events {
-  private _customIcons = new Map<string, FileIconInfo>();
+  private _customIcons = new Map<string, FileIconData>();
   private _cutomsIconPacknames: Set<string> = new Set();
   get vault() {
     return this.plugin.app.vault;
@@ -122,32 +94,52 @@ export default class PackManager extends Events {
     return emoji.hasEmoji(id) || BuiltInSVGIconPacks.has(id);
   }
 
+  private _getEmojiIcon(id: string, raw = false): string | HTMLSpanElement {
+    return raw
+      ? emoji.get(id)
+      : createSpan({
+          cls: [
+            ...getClsForIcon({ pack: "emoji", name: id, id: id }),
+            "isc-emoji-icon",
+          ],
+          text: emoji.get(id),
+        });
+  }
+
   /**
    * @param id accept shortcode with colons
    * @param raw if given, return resource path to icon file instead of img element
    */
   getIcon(id: string, raw: true): string | null;
-  getIcon(id: string, raw?: false): string | HTMLImageElement | null;
-  getIcon(id: string, raw = false): string | HTMLImageElement | null {
+  getIcon(id: string, raw?: false): HTMLSpanElement | null;
+  getIcon(id: string, raw = false): string | HTMLSpanElement | null {
     id = stripColons(id);
-    if (emoji.hasEmoji(id)) return emoji.get(id);
+    if (emoji.hasEmoji(id)) return this._getEmojiIcon(id, raw);
     else if (BuiltInSVGIconPacks.has(id)) {
-      const { dataUri: svgUri, pack } = BuiltInSVGIconPacks.get(id)!;
-      return raw
-        ? svgUri
-        : createEl("img", {
-            cls: cls(["isc-icon", `isc-${pack}`]),
-            attr: { src: svgUri },
-          });
+      const icon = BuiltInSVGIconPacks.get(id)!;
+      return raw ? icon.dataUri : icon.getDOM(false);
     } else if (this._customIcons.has(id)) {
-      const { path, pack } = this._customIcons.get(id)!,
-        src = this.vault.adapter.getResourcePath(path);
-      return raw
-        ? src
-        : createEl("img", {
-            cls: cls(["isc-icon", `isc-${pack}`]),
-            attr: { src },
-          });
+      const icon = this._customIcons.get(id)!;
+      return raw ? icon.resourcePath : icon.getDOM(false);
+    } else return null;
+  }
+
+  async getSVGIcon(id: string, raw: true): Promise<string | null>;
+  async getSVGIcon(id: string, raw?: false): Promise<HTMLSpanElement | null>;
+  async getSVGIcon(
+    id: string,
+    raw = false,
+  ): Promise<string | HTMLSpanElement | null> {
+    id = stripColons(id);
+    if (emoji.hasEmoji(id)) return this._getEmojiIcon(id, raw);
+    else if (BuiltInSVGIconPacks.has(id)) {
+      const icon = BuiltInSVGIconPacks.get(id)!,
+        el = icon.getDOM(true);
+      return raw ? el.innerHTML : el;
+    } else if (this._customIcons.has(id)) {
+      const icon = this._customIcons.get(id)!,
+        el = await icon.getDOM(true);
+      return raw ? el.innerHTML : el;
     } else return null;
   }
 
@@ -164,7 +156,7 @@ export default class PackManager extends Events {
     } else if (BuiltInSVGIconPacks.has(id)) {
       return BuiltInSVGIconPacks.get(id) as BultiInIconData;
     } else if (this._customIcons.has(id)) {
-      return new FileIconData(this._customIcons.get(id)!, this.vault);
+      return this._customIcons.get(id)!;
     } else return null;
   }
 
@@ -202,17 +194,16 @@ export default class PackManager extends Events {
     const queue = iconlist.files.map(async (path) => {
       if (!extPattern.test(path)) return;
       const id = basename(path).replace(extPattern, "");
-      if ((info = getIconInfoFromId(id, path))) {
-        this._customIcons.set(id, info);
-        const { name, pack, ext, path } = info,
-          iconId: FileIconInfo = { id, name, pack, ext, path };
-        this._fuse.add(iconId);
-      } else {
+      const icon = FileIconData.getData(id, path, this.plugin);
+      if (!icon) {
         console.warn(
           "Failed to load icon data (raw value: %o) for id %s, skipping...",
           path,
           id,
         );
+      } else {
+        this._customIcons.set(id, icon);
+        this._fuse.add(icon);
       }
     });
     for (const result of await Promise.allSettled(queue)) {
@@ -329,14 +320,12 @@ export default class PackManager extends Events {
       arr.push(
         (async () => {
           try {
-            const info = {
+            const path = await this.addIcon(id, ext, data);
+            this.set(
               id,
-              pack,
-              name,
-              ext,
-              path: await this.addIcon(id, ext, data),
-            };
-            this.set(id, info, false);
+              new FileIconData(id, name, pack, path, this.plugin),
+              false,
+            );
           } catch (error) {
             throw new IconFileOpError("add", id, error);
           }
@@ -388,7 +377,7 @@ export default class PackManager extends Events {
     }
   }
   async filter(
-    predicate: (key: string, value: Omit<FileIconInfo, "id">) => boolean,
+    predicate: (key: string, value: Omit<FileIconData, "id">) => boolean,
   ): Promise<void> {
     // id - path map
     let IconsToDelete = new Map<string, string>();
@@ -463,7 +452,7 @@ export default class PackManager extends Events {
     try {
       const { ext } = info;
       if (this._customIcons.has(targetId)) {
-        const temp = this._customIcons.get(targetId) as FileIconInfo,
+        const temp = this._customIcons.get(targetId) as FileIconData,
           { ext: targetExt } = temp;
         await this.renameIconFile(targetId, targetExt, targetId + "_temp");
         info.path = await this.renameIconFile(id, ext, targetId);
@@ -499,18 +488,11 @@ export default class PackManager extends Events {
   }
 
   /** set info in database, no file changes */
-  set(id: string, info: FileIconInfo, refresh = true): void {
+  set(id: string, info: FileIconData, refresh = true): void {
+    if (this._customIcons.get(id) === info) return;
     this._customIcons.set(id, info);
     this._fuse.remove((icon) => icon.id === id);
-    const { pack, path, ext } = info,
-      iconId: FileIconInfo = {
-        id,
-        name: id.substring(pack.length + 1),
-        pack,
-        path,
-        ext,
-      };
-    this._fuse.add(iconId);
+    this._fuse.add(info);
     if (refresh) {
       this.refreshPackNames();
       this.trigger("changed", this.plugin.api, [id]);

@@ -23,19 +23,19 @@ const acceptNode = (node: Node): number => {
 export const getNodePostProcessor = (
   plugin: IconSC,
 ): ((el: HTMLElement) => void) => {
-  const scReplace = (text: Text) => {
+  const scReplace = async (text: Text) => {
     for (const code of [
       ...text.wholeText.matchAll(getGlobalRegexp(RE_SHORTCODE)),
     ]
       .sort((a, b) => (a.index as number) - (b.index as number))
       .map((arr) => arr[0])) {
-      text = insertElToText(text, code);
+      text = await insertElToText(text, code);
     }
   };
-  const insertElToText = (text: Text, pattern: string) => {
+  const insertElToText = async (text: Text, pattern: string) => {
     const index = text.wholeText.indexOf(pattern);
     if (index < 0) return text;
-    const icon = plugin.packManager.getIcon(stripColons(pattern));
+    const icon = await plugin.packManager.getSVGIcon(stripColons(pattern));
     if (!icon) return text;
     if (typeof icon === "string") {
       text.textContent &&

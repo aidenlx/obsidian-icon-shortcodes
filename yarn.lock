@@ -51,6 +51,7 @@ __metadata:
     "@lezer/common": ^0.15.11
     "@release-it/bumper": ^3.0.1
     "@release-it/conventional-changelog": ^3.3.0
+    "@types/dompurify": ^2.3.3
     "@types/json-schema": ^7.0.9
     "@types/jszip": ^3.4.1
     "@types/mime-types": ^2.1.1
@@ -685,6 +686,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/dompurify@npm:^2.3.3":
+  version: 2.3.3
+  resolution: "@types/dompurify@npm:2.3.3::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Fdompurify%2F-%2Fdompurify-2.3.3.tgz"
+  dependencies:
+    "@types/trusted-types": "*"
+  checksum: 427e2dc60d94d13d7860a293b926b376727cb2f545a3334a3f2e7de695a2bb23058dd15108e49e0651378229b443ee8ae0028034b6f2df9a9008c04fb7ad6f8f
+  languageName: node
+  linkType: hard
+
 "@types/estree@npm:*":
   version: 0.0.51
   resolution: "@types/estree@npm:0.0.51::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Festree%2F-%2Festree-0.0.51.tgz"
@@ -843,6 +853,13 @@ __metadata:
   dependencies:
     "@types/estree": "*"
   checksum: d8fd304f147ed08f1d075f09cb8d440b7f785f69c9ec5c30eadf98132fe3f58f3b1bbbd11283858bb261afac5a2039c1c255f290b0f6e4a47cd6a746f30a6aa8
+  languageName: node
+  linkType: hard
+
+"@types/trusted-types@npm:*":
+  version: 2.0.2
+  resolution: "@types/trusted-types@npm:2.0.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Ftrusted-types%2F-%2Ftrusted-types-2.0.2.tgz"
+  checksum: 3371eef5f1c50e1c3c07a127c1207b262ba65b83dd167a1c460fc1b135a3fb0c97b9f508efebd383f239cc5dd5b7169093686a692a501fde9c3f7208657d9b0d
   languageName: node
   linkType: hard
 

@@ -157,7 +157,7 @@ export class EmojiSuggester
     const { id, pack } = suggestion.item;
     this.context.editor.replaceRange(
       this.plugin.settings.code2emoji && pack === "emoji"
-        ? (this.packManager.getIcon(id) as string)
+        ? (this.packManager.getIcon(id, true) as string)
         : `:${id}:` + (this.plugin.settings.spaceAfterSC ? " " : ""),
       this.context.start,
       this.context.end,

@@ -13,19 +13,19 @@ export default class IconWidget extends WidgetType {
   }
 
   toDOM(view: EditorView) {
-    const icon = this.plugin.packManager.getIcon(this.id);
     let wrap = createSpan({
-      cls: cls("cm-isc", {
-        "cm-isc-emoji": typeof icon === "string",
-        "cm-isc-img": icon instanceof HTMLImageElement,
-      }),
+      cls: "cm-isc-icon",
       attr: { "aria-label": this.id.replace(/_/g, " ") },
     });
-    if (icon) {
-      wrap.append(icon);
-    } else {
-      wrap.append(`:${this.id}:`);
-    }
+
+    this.plugin.packManager.getSVGIcon(this.id).then((span) => {
+      if (!span) {
+        wrap.append(`:${this.id}:`);
+      } else {
+        span.classList.forEach((cls) => wrap.addClass(cls));
+        wrap.replaceChildren(...span.childNodes);
+      }
+    });
     return wrap;
   }
 
