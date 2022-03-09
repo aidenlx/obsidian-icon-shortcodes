@@ -60,7 +60,6 @@ export class FileIconData implements FileIconDataType {
       return (async () => {
         const svgEl = await this.plugin.fileIconCache.getIcon(this.path);
         if (svgEl) {
-          svgEl.addClass("isc-svg-icon");
           this.fixFillColor(svgEl);
           el.append(svgEl);
         } else {
