@@ -1,22 +1,24 @@
 import { FileSystemAdapter } from "obsidian";
 import IconSC from "../isc-main";
-import { FileIconData as FileIconDataType, FileIconInfo } from "./types";
+import { FileIconData as FileIconDataType } from "./types";
 import { extname } from "path";
 
 import { getClsForIcon, getPacknNameFromId } from "./utils";
 
-export class FileIconData implements FileIconDataType {
+export default class FileIconData implements FileIconDataType {
   static getData(
     id: string,
     path: string,
     plugin: IconSC,
   ): FileIconData | null {
     const result = getPacknNameFromId(id);
-    if (!result) return null;
+    if (!result || result.pack === "emoji") return null;
     return new FileIconData(id, result.name, result.pack, path, plugin);
   }
 
-  public type = "file" as const;
+  public get type() {
+    return "file" as const;
+  }
   public path: string;
   constructor(
     private _id: string,
@@ -51,11 +53,15 @@ export class FileIconData implements FileIconDataType {
   public get resourcePath() {
     return this.vault.adapter.getResourcePath(this.path);
   }
+
+  public get isSVG() {
+    return this.ext === ".svg";
+  }
   public getDOM(svg: true): Promise<HTMLSpanElement>;
   public getDOM(svg: false): HTMLSpanElement;
-  public getDOM(svg: boolean): Promise<HTMLSpanElement> | HTMLSpanElement {
+  public getDOM(svg = true): Promise<HTMLSpanElement> | HTMLSpanElement {
     const el = createSpan({ cls: getClsForIcon(this) });
-    if (svg && this.ext === ".svg") {
+    if (svg && this.isSVG) {
       el.addClass("isc-svg-icon");
       return (async () => {
         const svgEl = await this.plugin.fileIconCache.getIcon(this.path);

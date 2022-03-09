@@ -11,7 +11,8 @@ export type IconData = FileIconData | EmojiIconData | BultiInIconData;
 type withId = { id: string };
 
 type EmojiIconInfo = IconBasicInfo & { pack: "emoji" } & withId;
-export type EmojiIconData = EmojiIconInfo & { char: string; type: "emoji" };
+export type EmojiIconData = EmojiIconInfo &
+  IconBasicData & { char: string; type: "emoji" };
 
 type FileBasicInfo = IconBasicInfo & {
   /** path relative to vault */
@@ -22,7 +23,7 @@ type FileBasicInfo = IconBasicInfo & {
 
 type IconBasicData = {
   getDOM(svg: true): HTMLSpanElement | Promise<HTMLSpanElement>;
-  getDOM(svg: false): HTMLSpanElement;
+  getDOM(svg?: false): HTMLSpanElement;
 };
 
 export type FileIconInfo = FileBasicInfo & withId;
@@ -33,6 +34,7 @@ export type FileIconData = FileBasicInfo &
     /** resource path to icon file */
     resourcePath: string;
     type: "file";
+    isSVG: boolean;
   };
 export const isFileIconInfo = (id: IconInfo): id is FileIconInfo =>
   !!(id as FileIconInfo).ext;

@@ -39,7 +39,7 @@ class BultiInIconData implements BultiInIconDataType {
   public get dataUri() {
     return svg2uri(this.data);
   }
-  public getDOM(svg: boolean): HTMLSpanElement {
+  public getDOM(svg = true): HTMLSpanElement {
     const el = createSpan({ cls: getClsForIcon(this) });
     if (svg) {
       el.addClass("isc-svg-icon");

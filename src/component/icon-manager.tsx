@@ -13,7 +13,7 @@ import ReactDOM from "react-dom";
 import { useImmer } from "use-immer";
 
 import PackManager from "../icon-packs/pack-manager";
-import { FileIconData, FileIconInfo, IconInfo } from "../icon-packs/types";
+import { FileIconInfo, IconInfo } from "../icon-packs/types";
 import IconSC from "../isc-main";
 import IconPreview from "./icon-preview";
 

@@ -1,17 +1,9 @@
 import "./icon.less";
 
-import cls from "classnames";
 import Fuse from "fuse.js";
 import JSZip from "jszip";
 import emoji from "node-emoji";
-import {
-  EventRef,
-  Events,
-  normalizePath,
-  Notice,
-  Platform,
-  Vault,
-} from "obsidian";
+import { EventRef, Events, normalizePath, Notice, Platform } from "obsidian";
 import { basename, join } from "path";
 
 import IconSC from "../isc-main";
@@ -21,22 +13,17 @@ import {
   BuiltInIconPacknames,
   BuiltInSVGIconPacks,
 } from "./built-ins";
-import {
-  BultiInIconData,
-  EmojiIconData,
-  IconData,
-  IconInfo,
-  isFileIconInfo,
-} from "./types";
+import { BultiInIconData, IconData, IconInfo, isFileIconInfo } from "./types";
 import {
   extPattern,
-  getClsForIcon,
   getIconsFromFileList,
   iconFilePattern,
   sanitizeId,
   stripColons,
 } from "./utils";
-import { FileIconData } from "./file-icon";
+import FileIconData from "./file-icon";
+import EmojiIconData from "./emoji";
+import assertNever from "assert-never";
 
 const CUSTOM_ICON_PATH = "/icons.json";
 const CUSTOM_ICON_DIR = "icons";
@@ -94,18 +81,6 @@ export default class PackManager extends Events {
     return emoji.hasEmoji(id) || BuiltInSVGIconPacks.has(id);
   }
 
-  private _getEmojiIcon(id: string, raw = false): string | HTMLSpanElement {
-    return raw
-      ? emoji.get(id)
-      : createSpan({
-          cls: [
-            ...getClsForIcon({ pack: "emoji", name: id, id: id }),
-            "isc-emoji-icon",
-          ],
-          text: emoji.get(id),
-        });
-  }
-
   /**
    * @param id accept shortcode with colons
    * @param raw if given, return resource path to icon file instead of img element
@@ -114,14 +89,19 @@ export default class PackManager extends Events {
   getIcon(id: string, raw?: false): HTMLSpanElement | null;
   getIcon(id: string, raw = false): string | HTMLSpanElement | null {
     id = stripColons(id);
-    if (emoji.hasEmoji(id)) return this._getEmojiIcon(id, raw);
-    else if (BuiltInSVGIconPacks.has(id)) {
-      const icon = BuiltInSVGIconPacks.get(id)!;
-      return raw ? icon.dataUri : icon.getDOM(false);
-    } else if (this._customIcons.has(id)) {
-      const icon = this._customIcons.get(id)!;
-      return raw ? icon.resourcePath : icon.getDOM(false);
-    } else return null;
+    const data = this.getIconData(id);
+    if (!data) return null;
+    const getDOM = () => data.getDOM(false);
+    switch (data.type) {
+      case "emoji":
+        return raw ? data.char : getDOM();
+      case "bulti-in":
+        return raw ? data.dataUri : getDOM();
+      case "file":
+        return raw ? data.resourcePath : getDOM();
+      default:
+        assertNever(data);
+    }
   }
 
   async getSVGIcon(id: string, raw: true): Promise<string | null>;
@@ -131,32 +111,31 @@ export default class PackManager extends Events {
     raw = false,
   ): Promise<string | HTMLSpanElement | null> {
     id = stripColons(id);
-    if (emoji.hasEmoji(id)) return this._getEmojiIcon(id, raw);
-    else if (BuiltInSVGIconPacks.has(id)) {
-      const icon = BuiltInSVGIconPacks.get(id)!,
-        el = icon.getDOM(true);
+    const data = this.getIconData(id);
+    if (!data) return null;
+    const getDOM = () => data.getDOM(true);
+    if (data.type === "emoji") {
+      return raw ? data.char : getDOM();
+    } else if (
+      data.type === "bulti-in" ||
+      (data.type === "file" && data.isSVG)
+    ) {
+      const el = await getDOM();
       return raw ? el.innerHTML : el;
-    } else if (this._customIcons.has(id)) {
-      const icon = this._customIcons.get(id)!,
-        el = await icon.getDOM(true);
-      return raw ? el.innerHTML : el;
-    } else return null;
+    } else {
+      return raw ? data.resourcePath : getDOM();
+    }
   }
 
   getIconData(id: string): IconData | null {
     id = stripColons(id);
-    if (emoji.hasEmoji(id)) {
-      return {
-        id,
-        name: id,
-        pack: "emoji",
-        char: emoji.get(id),
-        type: "emoji",
-      } as EmojiIconData;
-    } else if (BuiltInSVGIconPacks.has(id)) {
-      return BuiltInSVGIconPacks.get(id) as BultiInIconData;
-    } else if (this._customIcons.has(id)) {
-      return this._customIcons.get(id)!;
+    let data: IconData | null | undefined;
+    if (
+      (data = EmojiIconData.getData(id)) ||
+      (data = BuiltInSVGIconPacks.get(id)) ||
+      (data = this._customIcons.get(id))
+    ) {
+      return data;
     } else return null;
   }
 
