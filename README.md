@@ -66,10 +66,14 @@ In order to customize the icons in order to change their color, size, etc, you s
 5. Add the following:
    ```css
    .isc-icon {
-     /** changes for all icons (except emoji). */
+     /** changes for all icons. */
    }
-   .isc-icon.isc-{ICON_PACK_NAME} {
-     /** changes for icons in the specific icon pack */
+   .isc-icon.icon-emoji-icon {
+     /** changes for emoji icons. */
+   }
+   .isc-icon.isc-fas {
+     /* changes for icons in the specific icon pack */
+     /* (font awesome soild in this example) */
    }
    ```
 6. Go Back to Settings -> Appearance -> CSS Snippets
@@ -89,13 +93,6 @@ Your changes will now be applied and you can edit the file when you want.
    2. access api: `getApi()` / `getApi(YourPluginInstance)`
 
 For all exposed API method, check [api.ts](src/typings/api.ts)
-
-## Bulti-in Icon Packs and Licenses
-
-| Icon Pack                                              | License                                                           | Version |
-| ------------------------------------------------------ | ----------------------------------------------------------------- | ------- |
-| [Font Awesome](https://fontawesome.com/)               | [CC BY 4.0 License](https://creativecommons.org/licenses/by/4.0/) | 5.15.4  |
-| [Remixicon](https://github.com/Remix-Design/RemixIcon) | [Apache License Version 2.0](http://www.apache.org/licenses/)     | 2.5.0   |
 
 ## Compatibility
 
