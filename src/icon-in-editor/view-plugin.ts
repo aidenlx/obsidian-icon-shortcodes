@@ -48,10 +48,7 @@ const getIconLivePreviewPlugin = (plugin: IconSC): ViewPlugin<IconPlugin> => {
     view: EditorView,
   ) {
     let target = evt.target as HTMLElement;
-    if (
-      target.matches("span.cm-isc") ||
-      target.parentElement?.matches("span.cm-isc")
-    ) {
+    if (target.matchParent(".cm-isc-icon", view.contentDOM)) {
       const elFrom = view.posAtDOM(target);
       let anchor: number = -1,
         head: number = -1;
