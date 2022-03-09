@@ -60,8 +60,9 @@ export class FileIconData implements FileIconDataType {
       return (async () => {
         const svgEl = await this.plugin.fileIconCache.getIcon(this.path);
         if (svgEl) {
-          el.append(svgEl);
           svgEl.addClass("isc-svg-icon");
+          this.fixFontAwesome(svgEl);
+          el.append(svgEl);
         } else {
           console.error("failed to get icon data for", this.path);
         }
@@ -73,4 +74,12 @@ export class FileIconData implements FileIconDataType {
       return el;
     }
   }
+
+  fixFontAwesome(svg: SVGElement): void {
+    if (!faPacks.includes(this.pack)) return;
+    for (const pathEl of svg.getElementsByTagName("path")) {
+      pathEl.setAttr("fill", "currentColor");
+    }
+  }
 }
+const faPacks = ["fab", "far", "fas"];
