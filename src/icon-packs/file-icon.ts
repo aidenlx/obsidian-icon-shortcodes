@@ -61,7 +61,7 @@ export class FileIconData implements FileIconDataType {
         const svgEl = await this.plugin.fileIconCache.getIcon(this.path);
         if (svgEl) {
           svgEl.addClass("isc-svg-icon");
-          this.fixFontAwesome(svgEl);
+          this.fixFillColor(svgEl);
           el.append(svgEl);
         } else {
           console.error("failed to get icon data for", this.path);
@@ -75,11 +75,13 @@ export class FileIconData implements FileIconDataType {
     }
   }
 
-  fixFontAwesome(svg: SVGElement): void {
-    if (!faPacks.includes(this.pack)) return;
+  fixFillColor(svg: SVGElement): void {
+    if (!packToPatch.includes(this.pack)) return;
     for (const pathEl of svg.getElementsByTagName("path")) {
-      pathEl.setAttr("fill", "currentColor");
+      if (!pathEl.hasAttribute("fill")) {
+        pathEl.setAttribute("fill", "currentColor");
+      }
     }
   }
 }
-const faPacks = ["fab", "far", "fas"];
+const packToPatch = ["fab", "far", "fas", "rif", "ril"];

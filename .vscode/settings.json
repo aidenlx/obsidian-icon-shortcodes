@@ -1,6 +1,7 @@
 {
   "conventionalCommits.scopes": [
     "browser-packs",
-    "icon-in-editor"
+    "icon-in-editor",
+    "icon-packs"
   ]
 }
