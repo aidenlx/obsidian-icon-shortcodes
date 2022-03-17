@@ -1,4 +1,4 @@
-import { Plugin } from "obsidian";
+import { Plugin, setIcon } from "obsidian";
 
 import buildIconPlugin from "./icon-in-editor";
 import type { ShortcodePosField } from "./icon-in-editor/state";
@@ -6,8 +6,9 @@ import getShortcodePosField from "./icon-in-editor/state";
 import FileIconCache from "./icon-packs/icon-cache";
 import PackManager from "./icon-packs/pack-manager";
 import tryUpdateIcons from "./modules/json-to-svg";
-import { getMDPostProcessor, getNodePostProcessor } from "./modules/post-ps";
 import { EmojiSuggester } from "./modules/suggester";
+import { getMDPostProcessor, getNodePostProcessor } from "./post-ps";
+import { setupPostProcessors } from "./post-ps";
 import { DEFAULT_SETTINGS, IconSCSettings, IconSCSettingTab } from "./settings";
 import { getApi } from "./typings/api";
 import API, { API_NAME } from "./typings/api";
@@ -54,7 +55,7 @@ export default class IconSC extends Plugin {
       this.register(() => (window[API_NAME] = undefined));
 
     this.registerEditorSuggest(new EmojiSuggester(this));
-    this.registerMarkdownPostProcessor(this._nodeProcessor);
+    setupPostProcessors(this);
     buildIconPlugin(this);
 
     this.addSettingTab(new IconSCSettingTab(this.app, this));

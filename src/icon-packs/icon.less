@@ -2,7 +2,7 @@
   cursor: pointer;
 }
 
-span.isc-icon {
+.isc-icon {
   vertical-align: middle;
   &.isc-char-icon {
     vertical-align: baseline;
@@ -19,6 +19,13 @@ span.isc-icon {
     .markdown-source-view & {
       height: var(--editor-font-size);
       width: var(--editor-font-size);
+    }
+  }
+  .callout .callout-icon& {
+    & > img,
+    & > svg {
+      height: 16px;
+      width: 16px;
     }
   }
 }
