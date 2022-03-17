@@ -10,11 +10,11 @@ const getCalloutIconPostProcessor =
         ".callout-title > .callout-icon",
       )! as HTMLElement;
       const observer = new MutationObserver(async (m) => {
-        observer.disconnect();
         if (iconEl.childElementCount > 0) return;
         const id = getCssPropertyValue(iconEl, "--callout-icon"),
           icon = await plugin.api.getSVGIcon(id);
         if (!icon) return;
+        observer.disconnect();
         iconEl.className += " " + icon.className;
         iconEl.replaceChildren(...icon.childNodes);
       });
