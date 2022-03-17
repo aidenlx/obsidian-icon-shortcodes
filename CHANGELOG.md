@@ -1,3 +1,23 @@
+# [0.9.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.8.4...0.9.0) (2022-03-17)
+
+
+### Bug Fixes
+
+* fix plugin fail to load while loading settings ([dbe4083](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/dbe4083444051de718a4ea5dcc11a6a3c19ea11a))
+* **icon-in-editor:** fix inline svg icon break click handler ([47a47bc](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/47a47bc425417ee94e6a4ba4be22012e4e79ed69))
+* **icon-packs:** fix broken classnames in emoji warpper; fix emoji vertical align; add class EmojiIconData ([df72588](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/df72588e8c70d362583b619cccfb60215d26abf8))
+* **icon-packs:** patch remixicon fill color ([bdf1d19](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/bdf1d1908ed49a22fe3748d9795c51f8e9804905))
+* **settings:** fix list of enabled icon packs from old version breaks icon pack filter ([2b0d43a](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/2b0d43af61a47a664682dd64d713586ce8698924))
+
+
+### Features
+
+* **icon-packs:** fix font awesome icons not following context color ([a93d1df](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/a93d1dfb6ca79d24412c8c4abaf6484d2be1ba78))
+* **icon-packs:** support inline svg render ([e9cd3c1](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/e9cd3c1f940732923d2d15124290910c8d57be7d)), closes [#23](https://github.com/aidenlx/obsidian-icon-shortcodes/issues/23)
+* **icon:** adjust icon vertical align style ([cfc7561](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/cfc7561ff23a171465e8a8a9038261721cfaba7b))
+* **post-ps:** add callout support ([04b4a8e](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/04b4a8ee0ebe327c70e84c5137f0d2a4e198908b))
+* **settings:** add toggle for custom icons to enable/disable them in suggester ([28c83df](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/28c83df82dfd758d0d70d4b853fea15dc45ac678))
+
 ## [0.8.4](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.8.3...0.8.4) (2022-03-08)
 
 

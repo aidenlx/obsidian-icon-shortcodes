@@ -1,6 +1,6 @@
 {
   "name": "@aidenlx/obsidian-icon-shortcodes",
-  "version": "0.8.4",
+  "version": "0.9.0",
   "description": "API utils for obsidian-icon-shortcodes",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
