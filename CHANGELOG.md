@@ -1,3 +1,10 @@
+## [0.9.1](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.9.0...0.9.1) (2022-03-17)
+
+
+### Bug Fixes
+
+* **callout-icon:** fix custom icon not rendered sometimes ([4d04318](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/4d04318cbab1af94281216d161a6bfcbf9b2eeba))
+
 # [0.9.0](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.8.4...0.9.0) (2022-03-17)
 
 
