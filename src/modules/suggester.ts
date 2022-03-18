@@ -26,17 +26,16 @@ const getSuggestions = (input: string, packManager: PackManager) => {
   }
 };
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-function renderSuggestion(
+async function renderSuggestion(
   this: SuggesterBase,
   suggestion: FuzzyMatch<IconInfo>,
   el: HTMLElement,
-): void {
+): Promise<void> {
   const { id, name } = suggestion.item,
     { matches } = suggestion,
-    result = this.packManager.getIcon(id);
-  if (!result) throw new TypeError("Failed to get icon for key: " + id);
+    iconEl = await this.packManager.getSVGIcon(id);
+  if (!iconEl) throw new TypeError("Failed to get icon for key: " + id);
 
-  const icon = result;
   const shortcode = el;
   if (matches) {
     const indices =
@@ -51,9 +50,7 @@ function renderSuggestion(
   } else {
     shortcode.setText(name.replace(/[_-]/g, " "));
   }
-  el.createSpan({ cls: `suggestion-flair` }, (el) =>
-    typeof icon === "string" ? (el.textContent = icon) : el.appendChild(icon),
-  );
+  el.createSpan({ cls: `suggestion-flair` }, (el) => el.appendChild(iconEl));
 }
 
 export class EmojiSuggesterModal
