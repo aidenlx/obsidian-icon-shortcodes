@@ -1,7 +1,3 @@
-.view-content .mod-cm6 .cm-isc {
-  cursor: pointer;
-}
-
 .isc-icon {
   vertical-align: middle;
   &.isc-char-icon {
@@ -9,17 +5,21 @@
   }
   & > img,
   & > svg {
-    height: 1em;
-    width: 1em;
     cursor: default !important;
     .view-content .mod-cm6 .cm-isc > & {
       cursor: pointer;
     }
-    .markdown-preview-view &,
-    .markdown-source-view & {
-      height: var(--editor-font-size);
-      width: var(--editor-font-size);
+    .dimension(1em);
+    .markdown-source-view &,
+    .markdown-preview-view & {
+      .dimension(var(--editor-font-size));
     }
+    each(range(6), #(@level) {
+      .markdown-source-view .HyperMD-header-@{level} &,
+      .markdown-preview-view h@{level} & {
+        .dimension(~"var(--h@{level})");
+      }
+    });
   }
   .callout .callout-icon& {
     & > img,
@@ -32,4 +32,9 @@
   .suggestion-flair > & {
     color: var(--text-normal);
   }
+}
+
+.dimension(@size) {
+  height: @size;
+  width: @size;
 }
