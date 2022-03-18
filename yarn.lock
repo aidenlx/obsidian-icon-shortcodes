@@ -38,7 +38,7 @@ __metadata:
   dependencies:
     "@aidenlx/esbuild-plugin-obsidian": ^0.1.8
     "@aidenlx/eslint-config": ^0.1.2
-    "@aidenlx/obsidian-plugin-bumper": ^0.1.9
+    "@aidenlx/obsidian-plugin-bumper": ^0.1.12
     "@aidenlx/prettier-config": ^0.1.0
     "@aidenlx/release-it-config": ^0.1.11
     "@aidenlx/ts-config": ^0.1.2
@@ -113,12 +113,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@aidenlx/obsidian-plugin-bumper@npm:^0.1.9":
-  version: 0.1.9
-  resolution: "@aidenlx/obsidian-plugin-bumper@npm:0.1.9::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40aidenlx%2Fobsidian-plugin-bumper%2F-%2Fobsidian-plugin-bumper-0.1.9.tgz"
+"@aidenlx/obsidian-plugin-bumper@npm:^0.1.12":
+  version: 0.1.12
+  resolution: "@aidenlx/obsidian-plugin-bumper@npm:0.1.12::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40aidenlx%2Fobsidian-plugin-bumper%2F-%2Fobsidian-plugin-bumper-0.1.12.tgz"
   peerDependencies:
     release-it: ^14.0.0
-  checksum: 33ba67ff3ccbacd08b3ec30b0fdaa4a0400fd8786488119aaf163de6b7da0a719f2023fb9e5f7ecc9abff88f53631bc0e70c536ede546286130e1b46abeb529f
+  checksum: 6f4812b75fb30f001f556ec8d820803d3facc272a0559c4ce7b2bab3b33d4626a793886fc40c1934c67cd08e1ca2f683a1acb90a4598d28a7160604c4f914d8d
   languageName: node
   linkType: hard
 

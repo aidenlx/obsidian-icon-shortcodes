@@ -30,7 +30,7 @@
   "devDependencies": {
     "@aidenlx/esbuild-plugin-obsidian": "^0.1.8",
     "@aidenlx/eslint-config": "^0.1.2",
-    "@aidenlx/obsidian-plugin-bumper": "^0.1.9",
+    "@aidenlx/obsidian-plugin-bumper": "^0.1.12",
     "@aidenlx/prettier-config": "^0.1.0",
     "@aidenlx/release-it-config": "^0.1.11",
     "@aidenlx/ts-config": "^0.1.2",
