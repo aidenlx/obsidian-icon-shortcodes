@@ -1,3 +1,10 @@
+## [0.9.2](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.9.1...0.9.2) (2022-03-18)
+
+
+### Bug Fixes
+
+* **suggester:** fix icon color in suggester not adapt to theme ([8c42968](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/8c42968e071c7933877d096e1d037de617b59fe1))
+
 ## [0.9.1](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.9.0...0.9.1) (2022-03-17)
 
 
