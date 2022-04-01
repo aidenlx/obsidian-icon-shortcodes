@@ -1,3 +1,5 @@
+@font-size: 1em;
+
 .isc-icon {
   vertical-align: middle;
   &.isc-char-icon {
@@ -9,10 +11,10 @@
     .view-content .mod-cm6 .cm-isc > & {
       cursor: pointer;
     }
-    .dimension(1em);
+    .dimension(@font-size);
     .markdown-source-view &,
     .markdown-preview-view & {
-      .dimension(var(--editor-font-size));
+      .dimension(var(--font-text-size, var(--editor-font-size, @font-size)));
     }
     each(range(6), #(@level) {
       .markdown-source-view .HyperMD-header-@{level} &,
