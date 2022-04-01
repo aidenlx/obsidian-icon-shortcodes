@@ -1,3 +1,11 @@
+## [0.9.3](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.9.2...0.9.3) (2022-04-01)
+
+
+### Bug Fixes
+
+* **icon:** fix broken icon size in obsidian v0.14.4+ ([132147b](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/132147bd0d026955995fe37dd81d1399c501857d)), closes [#43](https://github.com/aidenlx/obsidian-icon-shortcodes/issues/43)
+* **icon:** fix heading font size not applied to icons ([e5b0c99](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/e5b0c99f5ed4cb5f92762d8bcbee5ff238b52f51)), closes [#38](https://github.com/aidenlx/obsidian-icon-shortcodes/issues/38)
+
 ## [0.9.2](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.9.1...0.9.2) (2022-03-18)
 
 
