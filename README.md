@@ -65,13 +65,13 @@ In order to customize the icons in order to change their color, size, etc, you s
 4. Open icons.css in your preferred text editor
 5. Add the following:
    ```css
-   .isc-icon {
+   .isc-icon > *:first-child {
      /** changes for all icons. */
    }
-   .isc-icon.icon-emoji-icon {
+   .isc-icon.icon-emoji-icon > *:first-child {
      /** changes for emoji icons. */
    }
-   .isc-icon.isc-fas {
+   .isc-icon.isc-fas > *:first-child {
      /* changes for icons in the specific icon pack */
      /* (font awesome soild in this example) */
    }
