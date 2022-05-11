@@ -1,3 +1,10 @@
+## [0.9.4](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.9.3...0.9.4) (2022-05-11)
+
+
+### Bug Fixes
+
+* **suggester:** fix dimmed icon in minimal theme ([3135a7b](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/3135a7b96388274821dec0edebaeccf151c7c3d2))
+
 ## [0.9.3](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.9.2...0.9.3) (2022-04-01)
 
 
