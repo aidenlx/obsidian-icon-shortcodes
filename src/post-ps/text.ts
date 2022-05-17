@@ -27,25 +27,25 @@ export const getNodePostProcessor = (
     for (const code of [
       ...text.wholeText.matchAll(getGlobalRegexp(RE_SHORTCODE)),
     ]
-      .sort((a, b) => (a.index as number) - (b.index as number))
-      .map((arr) => arr[0])) {
-      text = await insertElToText(text, code);
+      .sort((a, b) => (b.index as number) - (a.index as number))
+      .map((arr) => ({ text: arr[0], index: arr.index! }))) {
+      await insertElToText(text, code);
     }
   };
-  const insertElToText = async (text: Text, pattern: string) => {
-    const index = text.wholeText.indexOf(pattern);
-    if (index < 0) return text;
+  const insertElToText = async (
+    text: Text,
+    { text: pattern, index }: { text: string; index: number },
+  ) => {
     const icon = await plugin.packManager.getSVGIcon(stripColons(pattern));
     if (!icon) return text;
     if (typeof icon === "string") {
       text.textContent &&
         (text.textContent = text.textContent?.replace(pattern, icon));
     } else {
-      text = text.splitText(index);
-      text.parentElement?.insertBefore(icon, text);
-      text.textContent = text.wholeText.substring(pattern.length);
+      const toReplace = text.splitText(index);
+      toReplace.parentElement?.insertBefore(icon, toReplace);
+      toReplace.textContent = toReplace.wholeText.substring(pattern.length);
     }
-    return text;
   };
 
   return (el: HTMLElement) => {
@@ -55,7 +55,24 @@ export const getNodePostProcessor = (
     let currentNode: Node | null = walker.currentNode;
     while (currentNode) {
       if (currentNode.nodeType === 3) {
-        scReplace(currentNode as Text);
+        const text = currentNode as Text & { __PENDING__?: Promise<any> };
+        // don't wait for new node to be inserted
+        (async () => {
+          let textNodes = [text];
+          if (text.__PENDING__) {
+            // wait for prevous post processor to finish
+            await text.__PENDING__;
+            // rescan for new text nodes
+            textNodes = [...text.parentElement!.childNodes].filter(
+              (n): n is Text => n instanceof Text,
+            );
+          }
+          const pending = Promise.all(textNodes.map(scReplace));
+          // save promise to __PENDING__ to notify other async post processor
+          text.__PENDING__ = pending;
+          await pending;
+          delete text.__PENDING__;
+        })();
       }
       currentNode = walker.nextNode();
     }

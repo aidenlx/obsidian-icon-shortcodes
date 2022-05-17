@@ -3,6 +3,7 @@
     "browser-packs",
     "icon-in-editor",
     "icon-packs",
-    "suggester"
+    "suggester",
+    "post-ps"
   ]
 }
