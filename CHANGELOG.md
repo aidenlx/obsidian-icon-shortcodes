@@ -1,3 +1,10 @@
+## [0.9.5](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.9.4...0.9.5) (2022-05-17)
+
+
+### Bug Fixes
+
+* **post-ps:** improve compatabilty with dataview inline fields ([6ec7ba8](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/6ec7ba8869277d61b7b06f3b16ea82e77405b5aa))
+
 ## [0.9.4](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.9.3...0.9.4) (2022-05-11)
 
 
