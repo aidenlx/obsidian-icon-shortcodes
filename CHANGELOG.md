@@ -1,3 +1,10 @@
+## [0.9.6](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.9.5...0.9.6) (2022-06-15)
+
+
+### Bug Fixes
+
+* fix compatibility issue for obsidian v0.15.0+ ([8b7723d](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/8b7723da5434aceb7506b4b93234f6d3705aa370)), closes [#51](https://github.com/aidenlx/obsidian-icon-shortcodes/issues/51)
+
 ## [0.9.5](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.9.4...0.9.5) (2022-05-17)
 
 
