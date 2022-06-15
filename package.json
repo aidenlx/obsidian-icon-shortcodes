@@ -15,7 +15,7 @@
     "check": "tsc --noEmit",
     "prelib": "rm -rf lib && node ./scripts/cp-dts.mjs",
     "lib": "tsc --project tsconfig-lib.json",
-    "build": "yarn run lib && cross-env BUILD=production node esbuild.config.mjs",
+    "build": "pnpm run lib && cross-env BUILD=production node esbuild.config.mjs",
     "build-beta": "cross-env BUILD=production BETA=1 node esbuild.config.mjs",
     "prettier": "prettier --write 'src/**/*.+(ts|tsx|json|html|css)'",
     "eslint": "eslint . --ext .ts,.tsx --fix",
@@ -34,7 +34,7 @@
     "@aidenlx/prettier-config": "^0.1.0",
     "@aidenlx/release-it-config": "^0.1.11",
     "@aidenlx/ts-config": "^0.1.2",
-    "@codemirror/language": "github:lishid/cm-language",
+    "@codemirror/language": "git+ssh://git@github.com/lishid/cm-language.git",
     "@codemirror/state": "^6.0.0",
     "@codemirror/view": "^6.0.0",
     "@fortawesome/fontawesome-free": "6.0.0",
@@ -43,7 +43,6 @@
     "@release-it/conventional-changelog": "^3.3.0",
     "@types/dompurify": "^2.3.3",
     "@types/json-schema": "^7.0.9",
-    "@types/jszip": "^3.4.1",
     "@types/mime-types": "^2.1.1",
     "@types/node": "^16.11.7",
     "@types/node-emoji": "^1.8.1",
@@ -59,7 +58,7 @@
     "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
     "devicon": "2.14.0",
-    "esbuild": "^0.13.13",
+    "esbuild": "^0.14.43",
     "esbuild-plugin-inline-worker": "^0.1.1",
     "esbuild-plugin-less": "^1.1.5",
     "eslint": "^8.2.0",
@@ -83,7 +82,7 @@
     "mini-svg-data-uri": "^1.4.3",
     "monkey-around": "^2.3.0",
     "node-emoji": "github:rhysd/node-emoji#fix-gh-short-codes",
-    "obsidian": "latest",
+    "obsidian": "github:obsidianmd/obsidian-api",
     "path-browserify": "^1.0.1",
     "preact": "^10.5.15",
     "prettier": "^2.4.1",
@@ -103,7 +102,7 @@
   "dependencies": {
     "compare-versions": "^4.1.1",
     "fuse.js": "^6.4.6",
-    "obsidian": "^0.13.26"
+    "obsidian": "latest"
   },
   "publishConfig": {
     "access": "public"
