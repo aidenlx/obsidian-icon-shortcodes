@@ -47,7 +47,7 @@ try {
     format: "cjs",
     mainFields: ["browser", "module", "main"],
     banner: { js: banner },
-    sourcemap: isProd ? false : "inline",
+    sourcemap: "inline",
     minify: isProd,
     define: {
       "process.env.NODE_ENV": JSON.stringify(process.env.BUILD),

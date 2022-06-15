@@ -1,12 +1,12 @@
 import { syntaxTree } from "@codemirror/language";
+import { tokenClassNodeProp } from "@codemirror/language";
 import {
   Range,
   RangeSet,
   RangeSetBuilder,
   RangeValue,
-} from "@codemirror/rangeset";
+} from "@codemirror/state";
 import { EditorState, StateField } from "@codemirror/state";
-import { tokenClassNodeProp } from "@codemirror/stream-parser";
 import type { NodeType } from "@lezer/common";
 
 import {
@@ -82,7 +82,7 @@ const getShortcodePosField = (plugin: IconSC) => {
     syntaxTree(state).iterate({
       from: from - 1,
       to: to + 1,
-      enter: (type, from, to) => {
+      enter: ({ type, from, to }) => {
         if (type.name === "Document") return;
         if (from !== prevTo) saveRange(prevTo, from);
         prevTo = to;

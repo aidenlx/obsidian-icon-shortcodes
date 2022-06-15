@@ -1,5 +1,10 @@
-import { DecorationSet, PluginField, ViewUpdate } from "@codemirror/view";
-import { EditorView, ViewPlugin } from "@codemirror/view";
+import {
+  Decoration,
+  DecorationSet,
+  EditorView,
+  ViewPlugin,
+  ViewUpdate,
+} from "@codemirror/view";
 import { editorLivePreviewField } from "obsidian";
 
 import type IconSC from "../isc-main";
@@ -39,7 +44,11 @@ const getIconLivePreviewPlugin = (plugin: IconSC): ViewPlugin<IconPlugin> => {
       mousedown: IconClickHandler,
     },
     decorations: (v) => v.decorations,
-    provide: PluginField.atomicRanges.from((v) => v.decorations),
+    provide: (plugin) =>
+      EditorView.atomicRanges.of((view) => {
+        let value = view.plugin(plugin);
+        return value ? value.decorations : Decoration.none;
+      }),
   });
   /* eslint-disable prefer-arrow/prefer-arrow-functions */
   function IconClickHandler(
