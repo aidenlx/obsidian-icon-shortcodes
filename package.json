@@ -102,7 +102,7 @@
   "dependencies": {
     "compare-versions": "^4.1.1",
     "fuse.js": "^6.4.6",
-    "obsidian": "latest"
+    "obsidian": "^0.16.3"
   },
   "publishConfig": {
     "access": "public"

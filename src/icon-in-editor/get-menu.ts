@@ -9,7 +9,7 @@ const getMenu = (
   plugin: IconSC,
   view: EditorView,
 ) => {
-  return new Menu(plugin.app)
+  return new Menu()
     .addItem((item) =>
       item
         .setIcon("image-glyph")

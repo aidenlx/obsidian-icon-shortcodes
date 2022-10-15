@@ -6,7 +6,9 @@ import { confirm } from "./dialog";
 
 const jsonToSvg = async (plugin: IconSC) => {
   const { vault } = plugin.app;
-  const data = await vault.readJson(plugin.packManager.customIconsFilePath);
+  const data = (await vault.readJson(
+    plugin.packManager.customIconsFilePath,
+  )) as Record<string, string>;
   let path = plugin.packManager.customIconsDir;
   if (!(await vault.adapter.exists(path))) {
     await vault.adapter.mkdir(path);

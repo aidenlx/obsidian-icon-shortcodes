@@ -36,7 +36,12 @@ async function renderSuggestion(
     iconEl = await this.packManager.getSVGIcon(id);
   if (!iconEl) throw new TypeError("Failed to get icon for key: " + id);
 
-  const shortcode = el;
+  el.addClass("mod-complex");
+
+  const shortcode = el
+    .createDiv("suggestion-content")
+    .createDiv("suggestion-title");
+
   if (matches) {
     const indices =
       matches.length === 1
@@ -50,7 +55,9 @@ async function renderSuggestion(
   } else {
     shortcode.setText(name.replace(/[_-]/g, " "));
   }
-  el.createSpan({ cls: `suggestion-flair` }, (el) => el.appendChild(iconEl));
+  el.createDiv("suggestion-aux").createSpan("suggestion-flair", (el) =>
+    el.appendChild(iconEl),
+  );
 }
 
 export class EmojiSuggesterModal
