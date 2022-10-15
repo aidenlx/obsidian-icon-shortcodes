@@ -1,3 +1,10 @@
+## [0.9.7](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.9.6...0.9.7) (2022-10-15)
+
+
+### Bug Fixes
+
+* update styles for obsidian v1.0.0 ([5d168f0](https://github.com/aidenlx/obsidian-icon-shortcodes/commit/5d168f0e20bb296fea271f5697fb5d0d7e2837c4))
+
 ## [0.9.6](https://github.com/aidenlx/obsidian-icon-shortcodes/compare/0.9.5...0.9.6) (2022-06-15)
 
 
