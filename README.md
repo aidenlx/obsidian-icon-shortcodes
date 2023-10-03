@@ -8,7 +8,7 @@ Insert emoji and custom icons with shortcodes
 - Render custom icons in editor (Legacy editor supported by [Codemirror Options](https://github.com/nothingislost/obsidian-codemirror-options)
 - Built-in Unicode 13.1 Emoji, [Lucide](https://lucide.dev) support
 - [Font Awesome](https://fontawesome.com/), and [Remixicon](https://github.com/Remix-Design/RemixIcon) available via download
-- [API](#for-developer) ready to be intergated by other plugins
+- [API](#for-developer) ready to be integrated by other plugins
 - Fuzzy search: type in `:book` to find 📖(`:open_book:`) and 📗(`:green_book:`)
 
 Inspired by [obsidian-emoji-shortcodes](https://github.com/phibr0/obsidian-emoji-shortcodes), [obsidian-icon-folder](https://github.com/FlorianWoelki/obsidian-icon-folder), [obsidian-icons](https://github.com/visini/obsidian-icons-plugin) and [remark-emoji](https://github.com/rhysd/remark-emoji).
